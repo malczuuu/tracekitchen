@@ -1,0 +1,18 @@
+server:
+  port: 8701
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,metrics,prometheus"
+  endpoint:
+    health:
+      show-details: always
+spring:
+  application:
+    name: tracekitchen-downstream
+  jackson:
+    default-property-inclusion: non_null
+springdoc:
+  api-docs:
+    path: /v3/api-docs

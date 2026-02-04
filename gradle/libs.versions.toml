@@ -1,0 +1,33 @@
+[versions]
+idea-ext = "1.4"
+problem4j-spring = "2.1.2"
+spotless = "8.2.1"
+spring-boot = "4.0.2"
+springdoc-openapi = "3.0.1"
+
+[plugins]
+idea-ext = { id = "org.jetbrains.gradle.plugin.idea-ext", version.ref = "idea-ext" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+
+[libraries]
+# managed by spring-boot-dependencies
+spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
+spring-boot-micrometer-tracing = { module = "org.springframework.boot:spring-boot-micrometer-tracing" }
+spring-boot-micrometer-tracing-test = { module = "org.springframework.boot:spring-boot-micrometer-tracing-test" }
+spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
+spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+spring-boot-starter-webmvc = { module = "org.springframework.boot:spring-boot-starter-webmvc" }
+spring-boot-starter-webmvc-test = { module = "org.springframework.boot:spring-boot-starter-webmvc-test" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }
+micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-prometheus" }
+
+# managed by problem4j-spring-bom
+problem4j-spring-bom = { module = "io.github.problem4j:problem4j-spring-bom", version.ref = "problem4j-spring" }
+problem4j-core = { module = "io.github.problem4j:problem4j-core" }
+problem4j-spring-webmvc = { module = "io.github.problem4j:problem4j-spring-webmvc" }
+
+# managed by springdoc-openapi-bom
+springdoc-openapi-bom = { module = "org.springdoc:springdoc-openapi-bom", version.ref = "springdoc-openapi" }
+springdoc-openapi-starter-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui" }
