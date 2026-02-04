@@ -7,12 +7,14 @@ dependencies {
 
     implementation(project(":tracekitchen-lib-common"))
 
+    implementation(libs.spring.boot.micrometer.tracing.opentelemetry)
     implementation(libs.spring.boot.starter.actuator)
+    implementation(libs.spring.boot.starter.restclient)
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.spring.boot.starter.webmvc)
-    implementation(libs.spring.boot.micrometer.tracing)
 
     implementation(libs.micrometer.registry.prometheus)
+    implementation(libs.micrometer.tracing.bridge.otel)
     implementation(libs.problem4j.spring.webmvc)
     implementation(libs.springdoc.openapi.starter.webmvc.ui)
 

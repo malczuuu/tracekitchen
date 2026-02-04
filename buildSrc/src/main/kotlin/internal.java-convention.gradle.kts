@@ -15,7 +15,6 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 tasks.withType<Jar>().configureEach {
-    dependsOn("cleanLibs")
     manifest {
         attributes["Implementation-Title"] = project.name
         attributes["Implementation-Version"] = project.version

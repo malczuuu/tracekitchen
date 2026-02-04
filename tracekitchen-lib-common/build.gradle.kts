@@ -5,9 +5,10 @@ plugins {
 dependencies {
     api(platform(project(":tracekitchen-lib-bom")))
 
-    api(libs.jackson.databind)
-    api(libs.problem4j.core)
-
     compileOnly(libs.spring.boot.micrometer.tracing)
+    compileOnly(libs.spring.boot.starter.restclient)
     compileOnly(libs.spring.boot.starter.webmvc)
+
+    compileOnly(libs.jackson.databind)
+    compileOnly(libs.problem4j.spring.webmvc)
 }
