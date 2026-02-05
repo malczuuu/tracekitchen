@@ -13,9 +13,6 @@ spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
 [libraries]
 # managed by spring-boot-dependencies
 spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
-spring-boot-micrometer-tracing = { module = "org.springframework.boot:spring-boot-micrometer-tracing" }
-spring-boot-micrometer-tracing-opentelemetry = { module = "org.springframework.boot:spring-boot-micrometer-tracing-opentelemetry" }
-spring-boot-micrometer-tracing-test = { module = "org.springframework.boot:spring-boot-micrometer-tracing-test" }
 spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
 spring-boot-starter-restclient = { module = "org.springframework.boot:spring-boot-starter-restclient" }
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
@@ -24,7 +21,6 @@ spring-boot-starter-webmvc-test = { module = "org.springframework.boot:spring-bo
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }
 micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-prometheus" }
-micrometer-tracing-bridge-otel = { module = "io.micrometer:micrometer-tracing-bridge-otel" }
 
 # managed by problem4j-spring-bom
 problem4j-spring-bom = { module = "io.github.problem4j:problem4j-spring-bom", version.ref = "problem4j-spring" }

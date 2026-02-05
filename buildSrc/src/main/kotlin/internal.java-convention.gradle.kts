@@ -17,9 +17,12 @@ tasks.withType<JavaCompile>().configureEach {
 tasks.withType<Jar>().configureEach {
     manifest {
         attributes["Implementation-Title"] = project.name
-        attributes["Implementation-Version"] = project.version
         attributes["Build-Jdk-Spec"] = java.toolchain.languageVersion.get().toString()
         attributes["Created-By"] = "Gradle ${gradle.gradleVersion}"
+
+        if (project.version != Project.DEFAULT_VERSION) {
+            attributes["Implementation-Version"] = project.version
+        }
     }
     from("${rootProject.rootDir}/LICENSE") {
         into("META-INF/")
@@ -28,11 +31,7 @@ tasks.withType<Jar>().configureEach {
 }
 
 tasks.withType<Test>().configureEach {
-    useJUnitPlatform {
-        if (project.findProperty("containers.enabled")?.toString() == "false") {
-            excludeTags("testcontainers")
-        }
-    }
+    useJUnitPlatform()
 
     testLogging {
         events("passed", "skipped", "failed", "standardOut", "standardError")

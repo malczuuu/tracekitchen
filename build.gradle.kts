@@ -16,7 +16,6 @@ spotless {
         endWithNewline()
         lineEndings = LineEnding.UNIX
     }
-
     kotlin {
         target("**/src/**/*.kt")
 
@@ -24,7 +23,6 @@ spotless {
         endWithNewline()
         lineEndings = LineEnding.UNIX
     }
-
     kotlinGradle {
         target("**/*.gradle.kts")
         targetExclude("**/build/**")
@@ -33,7 +31,6 @@ spotless {
         endWithNewline()
         lineEndings = LineEnding.UNIX
     }
-
     format("yaml") {
         target("**/*.yml", "**/*.yaml")
         targetExclude("**/build/**")
@@ -43,7 +40,6 @@ spotless {
         endWithNewline()
         lineEndings = LineEnding.UNIX
     }
-
     format("misc") {
         target("**/.gitattributes", "**/.gitignore")
 

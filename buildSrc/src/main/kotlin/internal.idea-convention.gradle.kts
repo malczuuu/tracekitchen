@@ -12,14 +12,14 @@ idea {
         settings {
             runConfigurations {
                 create<Application>("launch app-downstream") {
-                    mainClass = "io.github.malczuuu.tracekitchen.downstream.DownstreamApplication"
-                    moduleName = "tracekitchen.tracekitchen-app-downstream.main"
+                    mainClass = "io.github.malczuuu.tracekitchen.app.downstream.DownstreamApplication"
+                    moduleName = "tracekitchen-parent.tracekitchen.app-downstream.main"
                     workingDirectory = rootProject.rootDir.absolutePath
                     programParameters = ""
                 }
                 create<Application>("launch app-entrypoint") {
-                    mainClass = "io.github.malczuuu.tracekitchen.entrypoint.EntrypointApplication"
-                    moduleName = "tracekitchen.tracekitchen-app-entrypoint.main"
+                    mainClass = "io.github.malczuuu.tracekitchen.app.entrypoint.EntrypointApplication"
+                    moduleName = "tracekitchen-parent.tracekitchen.app-entrypoint.main"
                     workingDirectory = rootProject.rootDir.absolutePath
                     programParameters = ""
                 }
