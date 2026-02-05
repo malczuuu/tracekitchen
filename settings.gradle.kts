@@ -14,6 +14,7 @@ include(":tracekitchen:app-downstream")
 include(":tracekitchen:app-entrypoint")
 include(":tracekitchen:library-bom")
 include(":tracekitchen:library-common")
+include(":tracekitchen:library-tracing")
 
 verifyProjectNameDuplicates(rootProject)
 changeChildrenBuildFileNames(rootProject)
