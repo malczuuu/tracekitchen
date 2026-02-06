@@ -41,18 +41,18 @@ fun verifyProjectNameDuplicates(project: ProjectDescriptor) {
 }
 
 /**
- * Changes build file names of all child projects to `<project-name>.gradle.kts`.
- */
-fun changeChildrenBuildFileNames(project: ProjectDescriptor) {
-    project.children.forEach { changeChildrenBuildFileName(it) }
-}
-
-/**
  * Collects project names into the provided map.
  */
 fun collectProjectNames(project: ProjectDescriptor, names: MutableMap<String, MutableList<ProjectDescriptor>>) {
     names.computeIfAbsent(project.name) { mutableListOf() }.add(project)
     project.children.forEach { collectProjectNames(it, names) }
+}
+
+/**
+ * Changes build file names of all child projects to `<project-name>.gradle.kts`.
+ */
+fun changeChildrenBuildFileNames(project: ProjectDescriptor) {
+    project.children.forEach { changeChildrenBuildFileName(it) }
 }
 
 /**
