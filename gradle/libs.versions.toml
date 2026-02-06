@@ -18,8 +18,11 @@ spring-boot-starter-restclient = { module = "org.springframework.boot:spring-boo
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
 spring-boot-starter-webmvc = { module = "org.springframework.boot:spring-boot-starter-webmvc" }
 spring-boot-starter-webmvc-test = { module = "org.springframework.boot:spring-boot-starter-webmvc-test" }
+assertj-core = { module = "org.assertj:assertj-core" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }
+jspecify = { module = "org.jspecify:jspecify" }
 micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-prometheus" }
 
 # managed by problem4j-spring-bom

@@ -6,6 +6,7 @@ dependencies {
     implementation(platform(project(":tracekitchen:library-bom")))
 
     implementation(project(":tracekitchen:library-common"))
+    implementation(project(":tracekitchen:library-tracing-spring-webmvc"))
 
     implementation(libs.spring.boot.starter.actuator)
     implementation(libs.spring.boot.starter.restclient)
