@@ -4,10 +4,10 @@ plugins {
 
 dependencies {
     api(platform(project(":tracekitchen:library-bom")))
-    api(project(":tracekitchen:library-tracing-spring"))
+    api(project(":tracekitchen:library-tracing"))
 
-    api(libs.spring.boot.starter.webmvc)
+    api(libs.spring.boot.starter)
 
-    testImplementation(libs.spring.boot.starter.webmvc.test)
+    testImplementation(libs.spring.boot.starter.test)
     testRuntimeOnly(libs.junit.platform.launcher)
 }
