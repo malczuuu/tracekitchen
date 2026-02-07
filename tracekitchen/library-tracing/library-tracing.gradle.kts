@@ -9,5 +9,6 @@ dependencies {
 
     testImplementation(libs.assertj.core)
     testImplementation(libs.junit.jupiter)
+    testImplementation(libs.testclock)
     testRuntimeOnly(libs.junit.platform.launcher)
 }

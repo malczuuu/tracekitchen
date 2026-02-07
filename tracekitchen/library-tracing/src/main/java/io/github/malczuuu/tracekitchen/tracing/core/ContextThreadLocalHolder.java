@@ -17,16 +17,18 @@ final class ContextThreadLocalHolder {
     STACK.get().push(context);
   }
 
-  static void pop() {
+  static @Nullable TraceContext pop() {
     Deque<TraceContext> deque = STACK.get();
     if (deque.isEmpty()) {
-      return;
+      return null;
     }
 
-    deque.pop();
+    TraceContext context = deque.pop();
 
     if (deque.isEmpty()) {
       STACK.remove();
     }
+
+    return context;
   }
 }

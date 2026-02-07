@@ -2,6 +2,9 @@ package io.github.malczuuu.tracekitchen.tracing.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mercateo.test.clock.TestClock;
+import java.time.Duration;
+import java.time.OffsetDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,11 +12,15 @@ import org.junit.jupiter.api.Test;
 
 class SimpleTracerTest {
 
+  private TestClock clock;
+
   private Tracer tracer;
 
   @BeforeEach
   void beforeEach() {
-    tracer = new SimpleTracer(TraceFactory.getInstance());
+    TraceFactory traceFactory = TraceFactory.getInstance();
+    clock = TestClock.fixed(OffsetDateTime.parse("2025-09-22T12:33:17Z"));
+    tracer = new SimpleTracer(traceFactory, NoOpLoggingAdapter.getInstance(), clock);
   }
 
   @Test
@@ -43,7 +50,7 @@ class SimpleTracerTest {
 
     Tracer tracer =
         new SimpleTracer(
-            TraceFactory.getInstance(), new RecordingLoggingAdapter(pushHits, dropHits));
+            TraceFactory.getInstance(), new RecordingLoggingAdapter(pushHits, dropHits), clock);
 
     TraceContext parent = tracer.createContext();
 
@@ -97,5 +104,23 @@ class SimpleTracerTest {
 
       assertThat(op.getContext()).isSameAs(parent);
     }
+  }
+
+  @Test
+  void givenParentAndChildContext_whenOpeningAndClosingContext_shouldTrackDuration() {
+    TraceContext parent = tracer.createContext();
+    TraceContext child;
+    try (var op = tracer.open(parent)) {
+      child = parent.makeChild();
+
+      clock.fastForward(Duration.ofSeconds(3));
+      try (var oc = tracer.open(child)) {
+        clock.fastForward(Duration.ofSeconds(1));
+      }
+      clock.fastForward(Duration.ofSeconds(2));
+    }
+
+    assertThat(parent.getDuration()).isEqualTo(Duration.ofSeconds(6));
+    assertThat(child.getDuration()).isEqualTo(Duration.ofSeconds(1));
   }
 }

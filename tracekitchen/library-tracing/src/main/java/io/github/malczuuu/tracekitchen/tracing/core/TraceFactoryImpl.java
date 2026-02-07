@@ -15,10 +15,10 @@ final class TraceFactoryImpl implements TraceFactory {
 
   @Override
   public String makeSpanId() {
-    return generate();
+    return generate().substring(0, 16);
   }
 
   private String generate() {
-    return UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+    return UUID.randomUUID().toString().replaceAll("-", "");
   }
 }

@@ -13,7 +13,8 @@ public interface TraceFactory {
 
   /**
    * Returns a shared default instance of {@link TraceFactory}, that returns 32-character hex
-   * strings in both {@link #makeTraceId()} and {@link #makeSpanId()} methods.
+   * strings in {@link #makeTraceId()} and 16-character hex strings in {@link #makeSpanId()}
+   * methods.
    *
    * @return a default instance of {@link TraceFactory}
    */

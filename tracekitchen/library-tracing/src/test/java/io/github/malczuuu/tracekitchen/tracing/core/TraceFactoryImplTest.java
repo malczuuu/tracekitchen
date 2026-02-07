@@ -29,10 +29,10 @@ class TraceFactoryImplTest {
   }
 
   @Test
-  void whenGeneratingSpanId_shouldBe32CharactersLong() {
+  void whenGeneratingSpanId_shouldBe16CharactersLong() {
     String id = traceFactory.makeSpanId();
 
-    assertThat(id).hasSize(32);
+    assertThat(id).hasSize(16);
   }
 
   @Test

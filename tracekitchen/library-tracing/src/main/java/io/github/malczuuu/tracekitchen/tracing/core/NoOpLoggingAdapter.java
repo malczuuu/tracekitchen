@@ -1,6 +1,6 @@
 package io.github.malczuuu.tracekitchen.tracing.core;
 
-class LoggingContextAdapterImpl implements LoggingContextAdapter {
+class NoOpLoggingAdapter implements LoggingContextAdapter {
 
   static LoggingContextAdapter getInstance() {
     return Holder.INSTANCE;
@@ -13,6 +13,6 @@ class LoggingContextAdapterImpl implements LoggingContextAdapter {
   public void drop() {}
 
   private static final class Holder {
-    private static final LoggingContextAdapterImpl INSTANCE = new LoggingContextAdapterImpl();
+    private static final NoOpLoggingAdapter INSTANCE = new NoOpLoggingAdapter();
   }
 }

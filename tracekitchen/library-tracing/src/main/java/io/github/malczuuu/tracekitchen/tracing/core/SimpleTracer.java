@@ -1,5 +1,6 @@
 package io.github.malczuuu.tracekitchen.tracing.core;
 
+import java.time.Clock;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -23,15 +24,7 @@ public class SimpleTracer implements Tracer {
 
   private final TraceFactory traceFactory;
   private final LoggingContextAdapter loggingContextAdapter;
-
-  /**
-   * Creates a new {@code SimpleTracer} with the given {@link TraceFactory}.
-   *
-   * @param traceFactory the factory to generate trace and span IDs
-   */
-  public SimpleTracer(TraceFactory traceFactory) {
-    this(traceFactory, LoggingContextAdapterImpl.getInstance());
-  }
+  private final Clock clock;
 
   /**
    * Creates a new {@code SimpleTracer} with the given {@link TraceFactory} and {@link
@@ -40,9 +33,11 @@ public class SimpleTracer implements Tracer {
    * @param traceFactory the factory to generate trace and span IDs
    * @param loggingContextAdapter adapter to inject context into logging context
    */
-  public SimpleTracer(TraceFactory traceFactory, LoggingContextAdapter loggingContextAdapter) {
+  public SimpleTracer(
+      TraceFactory traceFactory, LoggingContextAdapter loggingContextAdapter, Clock clock) {
     this.traceFactory = traceFactory;
     this.loggingContextAdapter = loggingContextAdapter;
+    this.clock = clock;
   }
 
   /** {@inheritDoc} */
@@ -67,12 +62,16 @@ public class SimpleTracer implements Tracer {
   @Override
   public OpenContext open(TraceContext context) {
     ContextThreadLocalHolder.push(context);
+    context.open(clock.instant());
     synchronizeContext();
 
     return new OpenContextWrapper(
         context,
         () -> {
-          ContextThreadLocalHolder.pop();
+          TraceContext closed = ContextThreadLocalHolder.pop();
+          if (closed != null) {
+            closed.close(clock.instant());
+          }
           synchronizeContext();
         });
   }

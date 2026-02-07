@@ -4,6 +4,7 @@ problem4j-spring = "2.1.2"
 spotless = "8.2.1"
 spring-boot = "4.0.2"
 springdoc-openapi = "3.0.1"
+testclock = "1.0.4"
 
 [plugins]
 idea-ext = { id = "org.jetbrains.gradle.plugin.idea-ext", version.ref = "idea-ext" }
@@ -32,3 +33,6 @@ problem4j-spring-webmvc = { module = "io.github.problem4j:problem4j-spring-webmv
 # managed by springdoc-openapi-bom
 springdoc-openapi-bom = { module = "org.springdoc:springdoc-openapi-bom", version.ref = "springdoc-openapi" }
 springdoc-openapi-starter-webmvc-ui = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui" }
+
+# individulal depedences
+testclock = { module = "com.mercateo:test-clock", version.ref = "testclock" }

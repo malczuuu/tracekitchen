@@ -9,6 +9,7 @@ import io.github.malczuuu.tracekitchen.tracing.webmvc.DefaultServletRequestExtra
 import io.github.malczuuu.tracekitchen.tracing.webmvc.DefaultTracingHttpRequestInterceptor;
 import io.github.malczuuu.tracekitchen.tracing.webmvc.ServletRequestExtractor;
 import io.github.malczuuu.tracekitchen.tracing.webmvc.TracingHttpRequestInterceptor;
+import java.time.Clock;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -17,6 +18,12 @@ import org.springframework.context.annotation.Bean;
 @AutoConfiguration
 @EnableConfigurationProperties(TracingWebMvcProperties.class)
 public final class TracingWebMvcAutoConfiguration {
+
+  @Bean
+  @ConditionalOnMissingBean(Clock.class)
+  Clock clock() {
+    return Clock.systemUTC();
+  }
 
   @Bean
   @ConditionalOnMissingBean(TraceFactory.class)
@@ -32,8 +39,9 @@ public final class TracingWebMvcAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(Tracer.class)
-  Tracer tracer(TraceFactory traceFactory, LoggingContextAdapter loggingContextAdapter) {
-    return new SimpleTracer(traceFactory, loggingContextAdapter);
+  Tracer tracer(
+      TraceFactory traceFactory, LoggingContextAdapter loggingContextAdapter, Clock clock) {
+    return new SimpleTracer(traceFactory, loggingContextAdapter, clock);
   }
 
   @Bean

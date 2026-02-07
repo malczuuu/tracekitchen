@@ -1,5 +1,7 @@
 package io.github.malczuuu.tracekitchen.tracing.core;
 
+import java.time.Duration;
+import java.time.Instant;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -44,4 +46,12 @@ public interface TraceContext {
    * @return parent span ID, or {@code null} for root
    */
   @Nullable String getParentSpanId();
+
+  void open(Instant time);
+
+  void close(Instant time);
+
+  ContextState getState();
+
+  Duration getDuration();
 }
