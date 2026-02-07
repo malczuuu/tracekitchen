@@ -47,11 +47,39 @@ public interface TraceContext {
    */
   @Nullable String getParentSpanId();
 
+  /**
+   * Opens the context at the specified time.
+   *
+   * @param time the {@link Instant} when the context is opened
+   * @throws IllegalStateException if the context is already opened
+   */
   void open(Instant time);
 
+  /**
+   * Closes the context at the specified time.
+   *
+   * @param time the {@link Instant} when the context is closed
+   * @throws IllegalStateException if the context is not opened, already closed, or if the specified
+   *     time is before the open time
+   */
   void close(Instant time);
 
+  /**
+   * Returns the current state of the context. State depends on previously called (or not-called)
+   * {@link #open(Instant)} and/or {@link #close(Instant)} methods.
+   *
+   * @return the {@link ContextState} representing the current state
+   */
   ContextState getState();
 
+  /**
+   * Returns the total duration for which the context has been open.
+   *
+   * <p>The duration is zero if the context has never been opened or has not yet been closed.
+   *
+   * @return a {@link Duration} representing the elapsed time between the last {@link
+   *     #open(Instant)} and {@link #close(Instant)} calls, or {@link Duration#ZERO} if the context
+   *     is not fully opened and closed
+   */
   Duration getDuration();
 }

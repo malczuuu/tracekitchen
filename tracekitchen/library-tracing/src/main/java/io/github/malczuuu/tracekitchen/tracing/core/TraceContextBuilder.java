@@ -43,5 +43,10 @@ public interface TraceContextBuilder {
    */
   TraceContextBuilder withParentSpanId(String parentSpanId);
 
+  /**
+   * Builds a new instance of {@link TraceContext} using the configured options.
+   *
+   * @return a fully configured {@link TraceContext} instance
+   */
   TraceContext build();
 }
