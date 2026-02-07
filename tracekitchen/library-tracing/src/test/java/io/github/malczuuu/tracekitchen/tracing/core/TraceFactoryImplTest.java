@@ -11,7 +11,7 @@ class TraceFactoryImplTest {
 
   @BeforeEach
   void beforeEach() {
-    traceFactory = new TraceFactoryImpl();
+    traceFactory = SimpleTraceFactory.getInstance();
   }
 
   @Test

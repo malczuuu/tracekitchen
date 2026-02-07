@@ -8,7 +8,7 @@ class TraceContextBuilderImplTest {
 
   @Test
   void givenBuilder_whenFillingValues_shouldConstructNewObjectOnEachStep() {
-    TraceContextBuilder builder = new TraceContextBuilderImpl(TraceFactory.getInstance());
+    TraceContextBuilder builder = new TraceContextBuilderImpl(SimpleTraceFactory.getInstance());
 
     var afterStep1 = builder.withTraceId("traceId");
     var afterStep2 = afterStep1.withSpanId("spanId");

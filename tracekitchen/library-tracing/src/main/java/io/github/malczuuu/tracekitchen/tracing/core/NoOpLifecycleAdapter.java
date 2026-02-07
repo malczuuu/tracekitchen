@@ -2,7 +2,7 @@ package io.github.malczuuu.tracekitchen.tracing.core;
 
 class NoOpLifecycleAdapter implements ContextLifecycleAdapter {
 
-  ContextLifecycleAdapter getInstance() {
+  static ContextLifecycleAdapter getInstance() {
     return Holder.INSTANCE;
   }
 

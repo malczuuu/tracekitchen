@@ -6,6 +6,8 @@ class NoOpLoggingAdapter implements LoggingContextAdapter {
     return Holder.INSTANCE;
   }
 
+  private NoOpLoggingAdapter() {}
+
   @Override
   public void push(TraceContext context) {}
 

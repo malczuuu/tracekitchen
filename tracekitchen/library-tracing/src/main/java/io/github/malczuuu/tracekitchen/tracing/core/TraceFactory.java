@@ -12,17 +12,6 @@ package io.github.malczuuu.tracekitchen.tracing.core;
 public interface TraceFactory {
 
   /**
-   * Returns a shared default instance of {@link TraceFactory}, that returns 32-character hex
-   * strings in {@link #makeTraceId()} and 16-character hex strings in {@link #makeSpanId()}
-   * methods.
-   *
-   * @return a default instance of {@link TraceFactory}
-   */
-  static TraceFactory getInstance() {
-    return TraceFactoryImpl.INSTANCE;
-  }
-
-  /**
    * Generates a new unique trace ID.
    *
    * @return a non-null, trace ID string

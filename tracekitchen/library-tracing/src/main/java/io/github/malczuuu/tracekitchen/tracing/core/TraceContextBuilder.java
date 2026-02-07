@@ -10,7 +10,7 @@ package io.github.malczuuu.tracekitchen.tracing.core;
  * the updated value.
  *
  * <pre>{@code
- * TraceContext ctx = tracer.extractedContext()
+ * TraceContext ctx = tracer.createBuilder()
  *     .withTraceId(headerTraceId)
  *     .withSpanId(headerSpanId)
  *     .withParentSpanId(parentSpanId)

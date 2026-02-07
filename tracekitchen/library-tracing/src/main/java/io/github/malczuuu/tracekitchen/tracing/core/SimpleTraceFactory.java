@@ -2,11 +2,13 @@ package io.github.malczuuu.tracekitchen.tracing.core;
 
 import java.util.UUID;
 
-final class TraceFactoryImpl implements TraceFactory {
+final class SimpleTraceFactory implements TraceFactory {
 
-  static final TraceFactoryImpl INSTANCE = new TraceFactoryImpl();
+  static TraceFactory getInstance() {
+    return Holder.INSTANCE;
+  }
 
-  TraceFactoryImpl() {}
+  private SimpleTraceFactory() {}
 
   @Override
   public String makeTraceId() {
@@ -20,5 +22,9 @@ final class TraceFactoryImpl implements TraceFactory {
 
   private String generate() {
     return UUID.randomUUID().toString().replaceAll("-", "");
+  }
+
+  private static final class Holder {
+    static final SimpleTraceFactory INSTANCE = new SimpleTraceFactory();
   }
 }

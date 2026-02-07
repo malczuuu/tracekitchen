@@ -7,6 +7,7 @@ import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.assertj.core.api.Assertions;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,9 +19,8 @@ class SimpleTracerTest {
 
   @BeforeEach
   void beforeEach() {
-    TraceFactory traceFactory = TraceFactory.getInstance();
     clock = TestClock.fixed(OffsetDateTime.parse("2025-09-22T12:33:17Z"));
-    tracer = new SimpleTracer(traceFactory, NoOpLoggingAdapter.getInstance(), clock);
+    tracer = new SimpleTracerBuilder().withClock(clock).build();
   }
 
   @Test
@@ -49,8 +49,21 @@ class SimpleTracerTest {
     AtomicInteger dropHits = new AtomicInteger(0);
 
     Tracer tracer =
-        new SimpleTracer(
-            TraceFactory.getInstance(), new RecordingLoggingAdapter(pushHits, dropHits), clock);
+        new SimpleTracerBuilder()
+            .withLoggingContextAdapter(
+                new LoggingContextAdapter() {
+                  @Override
+                  public void push(@NonNull TraceContext context) {
+                    pushHits.incrementAndGet();
+                  }
+
+                  @Override
+                  public void drop() {
+                    dropHits.incrementAndGet();
+                  }
+                })
+            .withClock(clock)
+            .build();
 
     TraceContext parent = tracer.createContext();
 
@@ -68,6 +81,46 @@ class SimpleTracerTest {
     }
     assertThat(pushHits).hasValue(3);
     assertThat(dropHits).hasValue(1);
+  }
+
+  @Test
+  void givenParentContext_whenOpeningAndClosing_tenContextLifecycleIsTracked() {
+    AtomicInteger onOpenedHits = new AtomicInteger(0);
+    AtomicInteger onClosedHits = new AtomicInteger(0);
+
+    Tracer tracer =
+        new SimpleTracerBuilder()
+            .withContextLifecycleAdapter(
+                new ContextLifecycleAdapter() {
+                  @Override
+                  public void onContextOpened(@NonNull TraceContext context) {
+                    onOpenedHits.incrementAndGet();
+                  }
+
+                  @Override
+                  public void onContextClosed(@NonNull TraceContext context) {
+                    onClosedHits.incrementAndGet();
+                  }
+                })
+            .withClock(clock)
+            .build();
+
+    TraceContext parent = tracer.createContext();
+
+    try (var op = tracer.open(parent)) {
+      assertThat(onOpenedHits).hasValue(1);
+      assertThat(onClosedHits).hasValue(0);
+
+      TraceContext child = parent.makeChild();
+      try (var oc = tracer.open(child)) {
+        assertThat(onOpenedHits).hasValue(2);
+        assertThat(onClosedHits).hasValue(0);
+      }
+      assertThat(onOpenedHits).hasValue(2);
+      assertThat(onClosedHits).hasValue(1);
+    }
+    assertThat(onOpenedHits).hasValue(2);
+    assertThat(onClosedHits).hasValue(2);
   }
 
   @Test

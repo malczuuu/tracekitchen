@@ -24,19 +24,17 @@ public class SimpleTracer implements Tracer {
 
   private final TraceFactory traceFactory;
   private final LoggingContextAdapter loggingContextAdapter;
+  private final ContextLifecycleAdapter contextLifecycleAdapter;
   private final Clock clock;
 
-  /**
-   * Creates a new {@code SimpleTracer} with the given {@link TraceFactory} and {@link
-   * LoggingContextAdapter}.
-   *
-   * @param traceFactory the factory to generate trace and span IDs
-   * @param loggingContextAdapter adapter to inject context into logging context
-   */
-  public SimpleTracer(
-      TraceFactory traceFactory, LoggingContextAdapter loggingContextAdapter, Clock clock) {
+  SimpleTracer(
+      TraceFactory traceFactory,
+      LoggingContextAdapter loggingContextAdapter,
+      ContextLifecycleAdapter contextLifecycleAdapter,
+      Clock clock) {
     this.traceFactory = traceFactory;
     this.loggingContextAdapter = loggingContextAdapter;
+    this.contextLifecycleAdapter = contextLifecycleAdapter;
     this.clock = clock;
   }
 
@@ -63,6 +61,7 @@ public class SimpleTracer implements Tracer {
   public OpenContext open(TraceContext context) {
     ContextThreadLocalHolder.push(context);
     context.open(clock.instant());
+    contextLifecycleAdapter.onContextOpened(context);
     synchronizeContext();
 
     return new OpenContextWrapper(
@@ -71,6 +70,7 @@ public class SimpleTracer implements Tracer {
           TraceContext closed = ContextThreadLocalHolder.pop();
           if (closed != null) {
             closed.close(clock.instant());
+            contextLifecycleAdapter.onContextClosed(closed);
           }
           synchronizeContext();
         });

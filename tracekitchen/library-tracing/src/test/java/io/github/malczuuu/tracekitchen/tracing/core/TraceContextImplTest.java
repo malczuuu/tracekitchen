@@ -13,7 +13,7 @@ class TraceContextImplTest {
 
   @BeforeEach
   void beforeEach() {
-    traceFactory = TraceFactory.getInstance();
+    traceFactory = SimpleTraceFactory.getInstance();
   }
 
   @Test

@@ -1,15 +1,13 @@
 package io.github.malczuuu.tracekitchen.tracing.webmvc.autoconfigure;
 
-import io.github.malczuuu.tracekitchen.tracing.core.LoggingContextAdapter;
-import io.github.malczuuu.tracekitchen.tracing.core.SimpleTracer;
-import io.github.malczuuu.tracekitchen.tracing.core.TraceFactory;
+import io.github.malczuuu.tracekitchen.tracing.core.SimpleTracerBuilder;
 import io.github.malczuuu.tracekitchen.tracing.core.Tracer;
-import io.github.malczuuu.tracekitchen.tracing.webmvc.DefaultLoggingContextAdapter;
 import io.github.malczuuu.tracekitchen.tracing.webmvc.DefaultServletRequestExtractor;
 import io.github.malczuuu.tracekitchen.tracing.webmvc.DefaultTracingHttpRequestInterceptor;
 import io.github.malczuuu.tracekitchen.tracing.webmvc.ServletRequestExtractor;
+import io.github.malczuuu.tracekitchen.tracing.webmvc.SimpleTracerBuilderCustomizer;
 import io.github.malczuuu.tracekitchen.tracing.webmvc.TracingHttpRequestInterceptor;
-import java.time.Clock;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -20,28 +18,19 @@ import org.springframework.context.annotation.Bean;
 public final class TracingWebMvcAutoConfiguration {
 
   @Bean
-  @ConditionalOnMissingBean(Clock.class)
-  Clock clock() {
-    return Clock.systemUTC();
-  }
-
-  @Bean
-  @ConditionalOnMissingBean(TraceFactory.class)
-  TraceFactory traceFactory() {
-    return TraceFactory.getInstance();
-  }
-
-  @Bean
-  @ConditionalOnMissingBean(LoggingContextAdapter.class)
-  LoggingContextAdapter loggingContextAdapter() {
-    return new DefaultLoggingContextAdapter();
+  @ConditionalOnMissingBean(SimpleTracerBuilder.class)
+  SimpleTracerBuilder simpleTracerBuilder(ObjectProvider<SimpleTracerBuilderCustomizer> provider) {
+    SimpleTracerBuilder builder = new SimpleTracerBuilder();
+    for (SimpleTracerBuilderCustomizer customizer : provider.orderedStream().toList()) {
+      builder = customizer.customize(builder);
+    }
+    return builder;
   }
 
   @Bean
   @ConditionalOnMissingBean(Tracer.class)
-  Tracer tracer(
-      TraceFactory traceFactory, LoggingContextAdapter loggingContextAdapter, Clock clock) {
-    return new SimpleTracer(traceFactory, loggingContextAdapter, clock);
+  Tracer tracer(SimpleTracerBuilder simpleTracerBuilder) {
+    return simpleTracerBuilder.build();
   }
 
   @Bean
