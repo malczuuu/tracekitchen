@@ -1,7 +1,5 @@
 package io.github.malczuuu.tracekitchen.annotation;
 
-import io.github.malczuuu.tracekitchen.TraceContext;
-
 /**
  * Defines the propagation behavior of a {@code TraceContext} when a {@link Traceable} method is
  * invoked.
@@ -15,11 +13,8 @@ import io.github.malczuuu.tracekitchen.TraceContext;
  *       context.
  * </ul>
  *
- * @see TraceContext
- * @deprecated Marked as {@code @Deprecated} tue to its experimental nature. May change in the
- *     future, so use with caution.
+ * @see io.github.malczuuu.tracekitchen.TraceContext
  */
-@Deprecated
 public enum TraceScope {
 
   /**

@@ -14,12 +14,15 @@ public class LoggingContextLifecycleAdapter implements TraceContextLifecycleAdap
   @Override
   public void afterOpened(TraceContext context, @Nullable TraceContext previousContext) {
     set(context);
-    log.info("Context opened");
+    log.debug("Context [{}] opened", context.getName());
   }
 
   @Override
   public void afterClosed(TraceContext context, @Nullable TraceContext currentContext) {
-    log.info("Context closed; duration={}", context.getDuration());
+    log.debug(
+        "Context [{}] closed; durationMilli={}",
+        context.getName(),
+        context.getDuration().toMillis());
     if (currentContext != null) {
       set(currentContext);
     } else {

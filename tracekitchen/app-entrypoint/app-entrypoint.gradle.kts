@@ -9,6 +9,7 @@ dependencies {
     implementation(project(":tracekitchen:library-tracing-spring-webmvc"))
 
     implementation(libs.spring.boot.starter.actuator)
+    implementation(libs.spring.boot.starter.aspectj)
     implementation(libs.spring.boot.starter.log4j2)
     implementation(libs.spring.boot.starter.restclient)
     implementation(libs.spring.boot.starter.validation)

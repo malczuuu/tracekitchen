@@ -1,6 +1,5 @@
 package io.github.malczuuu.tracekitchen.annotation;
 
-import io.github.malczuuu.tracekitchen.TraceContext;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -28,16 +27,20 @@ import java.lang.annotation.Target;
  * <p>This annotation can be placed on classes or methods. When placed on a class, it applies to all
  * public methods of the class unless overridden at the method level.
  *
- * @see TraceContext
- * @deprecated Marked as {@code @Deprecated} tue to its experimental nature. May change in the
- *     future, so use with caution.
+ * @see io.github.malczuuu.tracekitchen.TraceContext
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-@Deprecated
 public @interface Traceable {
+
+  /**
+   * Defines the trace name for this method or class.
+   *
+   * @return the trace name
+   */
+  String name() default "";
 
   /**
    * Defines the tracing scope for this method or class.

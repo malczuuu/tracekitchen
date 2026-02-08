@@ -18,18 +18,24 @@ public class EntrypointController {
 
   private static final Logger log = LoggerFactory.getLogger(EntrypointController.class);
 
+  private final SampleService sampleService;
   private final RestClient restClient;
   private final String baseUrl;
 
   public EntrypointController(
+      SampleService sampleService,
       RestClient restClient,
       @Value("${tracekitchen.entrypoint.downstream-base-url}") String baseUrl) {
+    this.sampleService = sampleService;
     this.restClient = restClient;
     this.baseUrl = baseUrl;
   }
 
   @GetMapping(produces = MediaType.TEXT_PLAIN_VALUE)
   public @Nullable String get() {
+    sampleService.requires();
+    sampleService.requiresNew();
+    sampleService.classAware();
     ResponseEntity<String> response =
         restClient.get().uri(baseUrl + "/downstream").retrieve().toEntity(String.class);
     log.info("Called downstream GET /downstream and returned body={}", response.getBody());

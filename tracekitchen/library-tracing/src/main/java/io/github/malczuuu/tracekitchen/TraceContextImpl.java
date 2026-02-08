@@ -41,12 +41,17 @@ final class TraceContextImpl implements TraceContext {
 
   @Override
   public TraceContext makeChild() {
-    return new TraceContextImpl(null, traceId, traceFactory.makeSpanId(), spanId, traceFactory);
+    return new TraceContextImpl(name, traceId, traceFactory.makeSpanId(), spanId, traceFactory);
   }
 
   @Override
   public TraceContext makeChild(String name) {
     return new TraceContextImpl(name, traceId, traceFactory.makeSpanId(), spanId, traceFactory);
+  }
+
+  @Override
+  public String getName() {
+    return name != null ? name : "<anonymous>";
   }
 
   @Override

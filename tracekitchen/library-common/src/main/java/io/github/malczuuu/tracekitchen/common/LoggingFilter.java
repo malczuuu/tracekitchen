@@ -8,12 +8,9 @@ import java.io.IOException;
 import java.time.Clock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.Ordered;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-public class LoggingFilter extends OncePerRequestFilter implements Ordered {
-
-  public static final int ORDER = Ordered.LOWEST_PRECEDENCE;
+public class LoggingFilter extends OncePerRequestFilter {
 
   private static final Logger log = LoggerFactory.getLogger(LoggingFilter.class);
 
@@ -38,10 +35,5 @@ public class LoggingFilter extends OncePerRequestFilter implements Ordered {
           request.getRequestURI(),
           elapsed);
     }
-  }
-
-  @Override
-  public int getOrder() {
-    return ORDER;
   }
 }

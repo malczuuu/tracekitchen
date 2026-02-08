@@ -5,9 +5,11 @@ plugins {
 dependencies {
     api(platform(project(":tracekitchen:library-bom")))
 
+    api(project(":tracekitchen:library-tracing-spring-aspect"))
     api(project(":tracekitchen:library-tracing-spring-restclient"))
     api(project(":tracekitchen:library-tracing-spring-webmvc"))
 
+    compileOnly(libs.spring.boot.starter.aspectj)
     compileOnly(libs.spring.boot.starter.restclient)
     compileOnly(libs.spring.boot.starter.webmvc)
 
@@ -15,6 +17,7 @@ dependencies {
     api(libs.problem4j.spring.webmvc)
     api(libs.springdoc.openapi.starter.webmvc.ui)
 
+    testImplementation(libs.spring.boot.starter.aspectj.test)
     testImplementation(libs.spring.boot.starter.webmvc.test)
     testImplementation(libs.spring.boot.starter.restclient.test)
     testRuntimeOnly(libs.junit.platform.launcher)

@@ -42,6 +42,13 @@ public interface TraceContext {
   TraceContext makeChild(String name);
 
   /**
+   * Returns the name of this context.
+   *
+   * @return non-null context name ({@code "<anonymous>"} if no name assigned)
+   */
+  String getName();
+
+  /**
    * Returns the trace identifier for this context.
    *
    * @return non-null trace ID
