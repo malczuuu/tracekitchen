@@ -1,8 +1,8 @@
 package io.github.malczuuu.tracekitchen.common.autoconfigure;
 
-import io.github.malczuuu.tracekitchen.common.logging.LoggingAdviceInspector;
-import io.github.malczuuu.tracekitchen.common.logging.LoggingFilter;
-import io.github.malczuuu.tracekitchen.common.support.OpenApiPathSorter;
+import io.github.malczuuu.tracekitchen.common.LoggingAdviceInspector;
+import io.github.malczuuu.tracekitchen.common.LoggingFilter;
+import io.github.malczuuu.tracekitchen.common.OpenApiPathSorter;
 import java.time.Clock;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -28,13 +28,13 @@ public final class CommonAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(LoggingAdviceInspector.class)
-  public LoggingAdviceInspector loggingAdviceInspector() {
+  LoggingAdviceInspector loggingAdviceInspector() {
     return new LoggingAdviceInspector();
   }
 
   @Bean
   @ConditionalOnMissingBean(RestClient.class)
-  public RestClient restClient(RestClient.Builder builder) {
+  RestClient restClient(RestClient.Builder builder) {
     return builder.build();
   }
 

@@ -42,6 +42,12 @@ public class SimpleTracer implements Tracer {
 
   /** {@inheritDoc} */
   @Override
+  public TraceContext newRootContext(String name) {
+    return new TraceContextImpl(name, traceFactory);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public TraceContextBuilder contextBuilder() {
     return new TraceContextBuilderImpl(traceFactory);
   }

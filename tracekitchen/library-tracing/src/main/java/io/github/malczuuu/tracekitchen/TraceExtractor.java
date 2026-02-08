@@ -1,5 +1,7 @@
 package io.github.malczuuu.tracekitchen;
 
+import java.util.Optional;
+
 /**
  * Functional interface for extracting a {@link TraceContext} from an external source.
  *
@@ -26,5 +28,5 @@ public interface TraceExtractor<T> {
    * @param origin the source object (e.g., HTTP request, message) from which to extract trace info
    * @return the extracted {@link TraceContext}
    */
-  TraceContext extract(T origin);
+  Optional<TraceContext> extract(T origin);
 }

@@ -2,7 +2,6 @@ package io.github.malczuuu.tracekitchen.spring.restclient.autoconfigure;
 
 import io.github.malczuuu.tracekitchen.Tracer;
 import io.github.malczuuu.tracekitchen.spring.autoconfigure.TracekitchenProperties;
-import io.github.malczuuu.tracekitchen.spring.restclient.DefaultTracingHttpRequestInterceptor;
 import io.github.malczuuu.tracekitchen.spring.restclient.TracingHttpRequestInterceptor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -15,8 +14,8 @@ public final class TracekitchenRestClientAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(TracingHttpRequestInterceptor.class)
-  TracingHttpRequestInterceptor tracingHttpRequestInterceptor(
+  TracingHttpRequestInterceptor tracekitchenTracingHttpRequestInterceptor(
       Tracer tracer, TracekitchenProperties properties) {
-    return new DefaultTracingHttpRequestInterceptor(tracer, properties);
+    return new TracingHttpRequestInterceptor(tracer, properties);
   }
 }

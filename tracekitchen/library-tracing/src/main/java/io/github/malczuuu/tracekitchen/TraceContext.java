@@ -27,6 +27,21 @@ public interface TraceContext {
   TraceContext makeChild();
 
   /**
+   * Creates a named child context of this context.
+   *
+   * <p>The child context inherits the trace ID of this context and sets this context's span ID as
+   * its parent span ID. The child context is assigned a new, unique span ID and is associated with
+   * the given span name.
+   *
+   * <p>The provided name is intended for observability and diagnostic purposes (e.g. span or
+   * operation naming) and does not affect context propagation.
+   *
+   * @param name the name of the child span; must not be {@code null} or blank
+   * @return a new child {@link TraceContext} with the given name
+   */
+  TraceContext makeChild(String name);
+
+  /**
    * Returns the trace identifier for this context.
    *
    * @return non-null trace ID

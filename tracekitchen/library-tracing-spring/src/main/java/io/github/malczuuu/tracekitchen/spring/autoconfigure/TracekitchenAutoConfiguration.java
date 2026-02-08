@@ -17,13 +17,14 @@ public class TracekitchenAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(LoggingContextSimpleTracerBuilderCustomizer.class)
-  LoggingContextSimpleTracerBuilderCustomizer loggingSimpleTracerBuilderCustomizer() {
+  LoggingContextSimpleTracerBuilderCustomizer tracekitchenLoggingSimpleTracerBuilderCustomizer() {
     return builder -> builder.addLifecycleAdapter(new LoggingContextLifecycleAdapter());
   }
 
   @Bean
   @ConditionalOnMissingBean(SimpleTracerBuilder.class)
-  SimpleTracerBuilder simpleTracerBuilder(ObjectProvider<SimpleTracerBuilderCustomizer> provider) {
+  SimpleTracerBuilder tracekitchenSimpleTracerBuilder(
+      ObjectProvider<SimpleTracerBuilderCustomizer> provider) {
     SimpleTracerBuilder builder = new SimpleTracerBuilder();
     for (SimpleTracerBuilderCustomizer customizer : provider.orderedStream().toList()) {
       builder = customizer.customize(builder);
@@ -33,7 +34,7 @@ public class TracekitchenAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(Tracer.class)
-  Tracer tracer(SimpleTracerBuilder simpleTracerBuilder) {
+  Tracer tracekitchenTracer(SimpleTracerBuilder simpleTracerBuilder) {
     return simpleTracerBuilder.build();
   }
 }

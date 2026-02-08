@@ -8,14 +8,17 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.springframework.core.Ordered;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-public class TraceAwareFilter extends OncePerRequestFilter {
+public class TraceExtractorFilter extends OncePerRequestFilter implements Ordered {
+
+  public static final int ORDER = Ordered.HIGHEST_PRECEDENCE + 100;
 
   private final ServletRequestExtractor servletRequestExtractor;
   private final Tracer tracer;
 
-  public TraceAwareFilter(ServletRequestExtractor servletRequestExtractor, Tracer tracer) {
+  public TraceExtractorFilter(ServletRequestExtractor servletRequestExtractor, Tracer tracer) {
     this.servletRequestExtractor = servletRequestExtractor;
     this.tracer = tracer;
   }
@@ -24,10 +27,19 @@ public class TraceAwareFilter extends OncePerRequestFilter {
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
-    TraceContext parent = servletRequestExtractor.extract(request);
-    TraceContext current = parent.makeChild();
-    try (OpenContext o = tracer.open(current)) {
+    String contextName = request.getMethod() + " " + request.getRequestURI();
+    TraceContext context =
+        servletRequestExtractor
+            .extract(request)
+            .map(c -> c.makeChild(contextName))
+            .orElseGet(() -> tracer.newRootContext(contextName));
+    try (OpenContext o = tracer.open(context)) {
       filterChain.doFilter(request, response);
     }
+  }
+
+  @Override
+  public int getOrder() {
+    return ORDER;
   }
 }

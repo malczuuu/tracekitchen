@@ -61,6 +61,6 @@ class ContextThreadLocalHolderTest {
   }
 
   private static TraceContext fakeContext(String traceId, String spanId) {
-    return new TraceContextImpl(traceId, spanId, null, SimpleTraceFactory.getInstance());
+    return new TraceContextImpl(null, traceId, spanId, null, SimpleTraceFactory.getInstance());
   }
 }

@@ -43,6 +43,18 @@ public interface Tracer {
   TraceContext newRootContext();
 
   /**
+   * Creates a new named root tracing context with a new trace ID and span ID, without parent span
+   * ID.
+   *
+   * <p>The provided name is intended for observability and diagnostic purposes (e.g. span or
+   * operation naming) and does not affect context propagation.
+   *
+   * @param name the name of the child span; must not be {@code null} or blank
+   * @return a new {@link TraceContext} representing the root span
+   */
+  TraceContext newRootContext(String name);
+
+  /**
    * Returns a builder for constructing a {@link TraceContext}.
    *
    * <p>Use this to create contexts from incoming trace information (headers, messages) or to

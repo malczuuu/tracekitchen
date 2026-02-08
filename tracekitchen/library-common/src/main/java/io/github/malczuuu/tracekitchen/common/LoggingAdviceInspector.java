@@ -1,4 +1,4 @@
-package io.github.malczuuu.tracekitchen.common.logging;
+package io.github.malczuuu.tracekitchen.common;
 
 import io.github.problem4j.core.Problem;
 import io.github.problem4j.core.ProblemContext;
@@ -25,6 +25,6 @@ public class LoggingAdviceInspector implements AdviceWebMvcInspector {
     String method = request instanceof ServletWebRequest s ? s.getRequest().getMethod() : "";
     String uri = request instanceof ServletWebRequest s ? s.getRequest().getRequestURI() : "";
     String call = String.join(" ", method, uri).strip();
-    log.error("Handle error from RestController on {}; response={}", call, problem, ex);
+    log.error("Handle controller error on {}; response={}", call, problem, ex);
   }
 }

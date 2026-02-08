@@ -14,7 +14,7 @@ management:
       probability: 1.0
 spring:
   application:
-    name: tracekitchen-entrypoint
+    name: app-entrypoint
   jackson:
     default-property-inclusion: non_null
 springdoc:

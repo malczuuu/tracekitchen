@@ -14,7 +14,7 @@ management:
       probability: 1.0
 spring:
   application:
-    name: tracekitchen-downstream
+    name: app-downstream
   jackson:
     default-property-inclusion: non_null
 springdoc:

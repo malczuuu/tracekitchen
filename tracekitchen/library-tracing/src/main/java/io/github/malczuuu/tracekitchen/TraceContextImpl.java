@@ -8,6 +8,7 @@ import org.jspecify.annotations.Nullable;
 
 final class TraceContextImpl implements TraceContext {
 
+  private final @Nullable String name;
   private final String traceId;
   private final String spanId;
   private final @Nullable String parentSpanId;
@@ -18,11 +19,20 @@ final class TraceContextImpl implements TraceContext {
   private @Nullable Instant closedAt = null;
 
   TraceContextImpl(TraceFactory traceFactory) {
-    this(traceFactory.makeTraceId(), traceFactory.makeSpanId(), null, traceFactory);
+    this(null, traceFactory.makeTraceId(), traceFactory.makeSpanId(), null, traceFactory);
+  }
+
+  public TraceContextImpl(String name, TraceFactory traceFactory) {
+    this(name, traceFactory.makeTraceId(), traceFactory.makeSpanId(), null, traceFactory);
   }
 
   TraceContextImpl(
-      String traceId, String spanId, @Nullable String parentSpanId, TraceFactory traceFactory) {
+      @Nullable String name,
+      String traceId,
+      String spanId,
+      @Nullable String parentSpanId,
+      TraceFactory traceFactory) {
+    this.name = name;
     this.traceId = traceId;
     this.spanId = spanId;
     this.parentSpanId = parentSpanId;
@@ -31,7 +41,12 @@ final class TraceContextImpl implements TraceContext {
 
   @Override
   public TraceContext makeChild() {
-    return new TraceContextImpl(traceId, traceFactory.makeSpanId(), spanId, traceFactory);
+    return new TraceContextImpl(null, traceId, traceFactory.makeSpanId(), spanId, traceFactory);
+  }
+
+  @Override
+  public TraceContext makeChild(String name) {
+    return new TraceContextImpl(name, traceId, traceFactory.makeSpanId(), spanId, traceFactory);
   }
 
   @Override
@@ -96,6 +111,10 @@ final class TraceContextImpl implements TraceContext {
   @Override
   public String toString() {
     List<String> lines = new ArrayList<>();
+    if (name != null) {
+      lines.add("name='" + name + "'");
+    }
+
     lines.add("traceId='" + traceId + "'");
     lines.add("spanId='" + spanId + "'");
 
