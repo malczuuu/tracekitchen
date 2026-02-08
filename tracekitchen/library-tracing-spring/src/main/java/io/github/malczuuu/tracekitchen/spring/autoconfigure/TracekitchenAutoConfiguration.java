@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Bean;
 
 @AutoConfiguration
 @EnableConfigurationProperties(TracekitchenProperties.class)
-public final class TracekitchenAutoConfiguration {
+public class TracekitchenAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(LoggingContextSimpleTracerBuilderCustomizer.class)

@@ -9,10 +9,12 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 
 @AutoConfiguration
 @EnableConfigurationProperties(TracekitchenWebMvcProperties.class)
-public final class TracekitchenWebMvcConfiguration {
+public class TracekitchenWebMvcAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(ServletRequestExtractor.class)
@@ -22,6 +24,7 @@ public final class TracekitchenWebMvcConfiguration {
   }
 
   @Bean
+  @Order(Ordered.LOWEST_PRECEDENCE)
   @ConditionalOnMissingBean(TraceAwareFilter.class)
   TraceAwareFilter traceAwareFilter(
       ServletRequestExtractor servletRequestExtractor, Tracer tracer) {

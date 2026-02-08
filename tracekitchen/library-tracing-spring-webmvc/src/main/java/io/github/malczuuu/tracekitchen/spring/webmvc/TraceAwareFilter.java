@@ -24,8 +24,9 @@ public class TraceAwareFilter extends OncePerRequestFilter {
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
-    TraceContext context = servletRequestExtractor.extract(request);
-    try (OpenContext o = tracer.open(context)) {
+    TraceContext parent = servletRequestExtractor.extract(request);
+    TraceContext current = parent.makeChild();
+    try (OpenContext o = tracer.open(current)) {
       filterChain.doFilter(request, response);
     }
   }

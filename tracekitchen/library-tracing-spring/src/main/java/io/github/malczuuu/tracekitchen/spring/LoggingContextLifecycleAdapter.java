@@ -24,7 +24,11 @@ public class LoggingContextLifecycleAdapter implements TraceContextLifecycleAdap
   private void set(TraceContext current) {
     MDC.put("traceId", current.getTraceId());
     MDC.put("spanId", current.getSpanId());
-    MDC.put("parentSpanId", current.getParentSpanId());
+    if (current.getParentSpanId() != null) {
+      MDC.put("parentSpanId", current.getParentSpanId());
+    } else {
+      MDC.remove("parentSpanId");
+    }
   }
 
   private void drop() {

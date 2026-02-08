@@ -1,5 +1,6 @@
 package io.github.malczuuu.tracekitchen.app.entrypoint;
 
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +29,7 @@ public class EntrypointController {
   }
 
   @GetMapping(produces = MediaType.TEXT_PLAIN_VALUE)
-  public String get() {
+  public @Nullable String get() {
     ResponseEntity<String> response =
         restClient.get().uri(baseUrl + "/downstream").retrieve().toEntity(String.class);
     log.info("Called downstream GET /downstream and returned body={}", response.getBody());
@@ -36,7 +37,7 @@ public class EntrypointController {
   }
 
   @PostMapping(produces = MediaType.TEXT_PLAIN_VALUE)
-  public String post() {
+  public @Nullable String post() {
     ResponseEntity<String> response =
         restClient.post().uri(baseUrl + "/downstream").retrieve().toEntity(String.class);
     log.info("Called downstream POST /downstream and returned body={}", response.getBody());

@@ -6,9 +6,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(
-    classes = {TracekitchenAutoConfiguration.class, TracekitchenWebMvcConfiguration.class})
+    classes = {TracekitchenAutoConfiguration.class, TracekitchenWebMvcAutoConfiguration.class})
 @ActiveProfiles(profiles = {"test"})
-class TracekitchenWebMvcConfigurationTest {
+class TracekitchenWebMvcAutoConfigurationTest {
 
   @Test
   void contextLoads() {}
