@@ -1,4 +1,4 @@
-package io.github.malczuuu.tracekitchen.spring.aop.autoconfigure;
+package io.github.malczuuu.tracekitchen.spring.aspect.autoconfigure;
 
 import io.github.malczuuu.tracekitchen.spring.autoconfigure.TracekitchenAutoConfiguration;
 import org.junit.jupiter.api.Test;

@@ -5,6 +5,7 @@ plugins {
 dependencies {
     api(platform(project(":tracekitchen:library-bom")))
 
+    api(project(":tracekitchen:library-tracing-spring-restclient"))
     api(project(":tracekitchen:library-tracing-spring-webmvc"))
 
     compileOnly(libs.spring.boot.starter.restclient)

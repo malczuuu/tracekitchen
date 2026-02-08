@@ -5,11 +5,16 @@ import io.github.malczuuu.tracekitchen.spring.autoconfigure.TracekitchenProperti
 import io.github.malczuuu.tracekitchen.spring.webmvc.ServletRequestExtractor;
 import io.github.malczuuu.tracekitchen.spring.webmvc.TraceExtractorFilter;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.webmvc.autoconfigure.WebMvcAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 
 @AutoConfiguration
+@ConditionalOnBooleanProperty(name = "tracekitchen.webmvc.enabled", matchIfMissing = true)
+@ConditionalOnClass(WebMvcAutoConfiguration.class)
 @EnableConfigurationProperties(TracekitchenWebMvcProperties.class)
 public class TracekitchenWebMvcAutoConfiguration {
 

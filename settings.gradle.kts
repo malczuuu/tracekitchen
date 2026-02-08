@@ -16,7 +16,7 @@ include(":tracekitchen:library-bom")
 include(":tracekitchen:library-common")
 include(":tracekitchen:library-tracing")
 include(":tracekitchen:library-tracing-spring")
-include(":tracekitchen:library-tracing-spring-aop")
+include(":tracekitchen:library-tracing-spring-aspect")
 include(":tracekitchen:library-tracing-spring-restclient")
 include(":tracekitchen:library-tracing-spring-webmvc")
 

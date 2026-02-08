@@ -38,5 +38,8 @@ public class TracingHttpRequestInterceptor implements ClientHttpRequestIntercept
     if (!settings.getSpanIdHeaderNames().isEmpty()) {
       request.getHeaders().add(settings.getSpanIdHeaderNames().get(0), context.getSpanId());
     }
+    if (!settings.getParentIdHeaderNames().isEmpty()) {
+      request.getHeaders().add(settings.getParentIdHeaderNames().get(0), context.getParentSpanId());
+    }
   }
 }

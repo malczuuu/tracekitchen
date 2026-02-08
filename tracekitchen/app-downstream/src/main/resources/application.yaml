@@ -23,3 +23,6 @@ springdoc:
 tracekitchen:
   common:
     openapi-title: Downstream API
+  trace-id-header-names: X-Trace-Id
+  span-id-header-names: X-Span-Id
+  parent-span-id-header-names: X-Parent-Span-Id

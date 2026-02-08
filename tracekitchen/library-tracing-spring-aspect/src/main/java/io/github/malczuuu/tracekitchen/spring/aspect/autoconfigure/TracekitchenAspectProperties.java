@@ -1,14 +1,14 @@
-package io.github.malczuuu.tracekitchen.spring.restclient.autoconfigure;
+package io.github.malczuuu.tracekitchen.spring.aspect.autoconfigure;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
-@ConfigurationProperties(prefix = "tracekitchen.restclient")
-public class TracekitchenRestClientProperties {
+@ConfigurationProperties(prefix = "tracekitchen.aspect")
+public class TracekitchenAspectProperties {
 
   private final boolean enabled;
 
-  public TracekitchenRestClientProperties(@DefaultValue("true") boolean enabled) {
+  public TracekitchenAspectProperties(@DefaultValue("true") boolean enabled) {
     this.enabled = enabled;
   }
 
