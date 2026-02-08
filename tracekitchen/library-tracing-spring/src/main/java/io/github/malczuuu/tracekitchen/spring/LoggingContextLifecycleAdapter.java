@@ -3,17 +3,23 @@ package io.github.malczuuu.tracekitchen.spring;
 import io.github.malczuuu.tracekitchen.TraceContext;
 import io.github.malczuuu.tracekitchen.TraceContextLifecycleAdapter;
 import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 public class LoggingContextLifecycleAdapter implements TraceContextLifecycleAdapter {
 
+  private static final Logger log = LoggerFactory.getLogger(LoggingContextLifecycleAdapter.class);
+
   @Override
   public void afterOpened(TraceContext context, @Nullable TraceContext previousContext) {
     set(context);
+    log.info("Context opened");
   }
 
   @Override
   public void afterClosed(TraceContext context, @Nullable TraceContext currentContext) {
+    log.info("Context closed; duration={}", context.getDuration());
     if (currentContext != null) {
       set(currentContext);
     } else {
