@@ -18,6 +18,7 @@ include(":tracekitchen-core")
 include(":tracekitchen-spring")
 include(":tracekitchen-spring-aspect")
 include(":tracekitchen-spring-restclient")
+include(":tracekitchen-spring-starter")
 include(":tracekitchen-spring-webmvc")
 
 verifyProjectNameDuplicates(rootProject)
