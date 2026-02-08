@@ -8,17 +8,17 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention").version("1.0.0")
 }
 
-rootProject.name = "tracekitchen-root"
+rootProject.name = "tracekitchen"
 
-include(":tracekitchen:app-downstream")
-include(":tracekitchen:app-entrypoint")
-include(":tracekitchen:library-bom")
-include(":tracekitchen:library-common")
-include(":tracekitchen:library-tracing")
-include(":tracekitchen:library-tracing-spring")
-include(":tracekitchen:library-tracing-spring-aspect")
-include(":tracekitchen:library-tracing-spring-restclient")
-include(":tracekitchen:library-tracing-spring-webmvc")
+include(":internal:app-downstream")
+include(":internal:app-entrypoint")
+include(":internal:library-bom")
+include(":internal:library-common")
+include(":tracekitchen-core")
+include(":tracekitchen-spring")
+include(":tracekitchen-spring-aspect")
+include(":tracekitchen-spring-restclient")
+include(":tracekitchen-spring-webmvc")
 
 verifyProjectNameDuplicates(rootProject)
 changeChildrenBuildFileNames(rootProject)

@@ -3,10 +3,9 @@ plugins {
 }
 
 dependencies {
-    implementation(platform(project(":tracekitchen:library-bom")))
+    implementation(platform(project(":internal:library-bom")))
 
-    implementation(project(":tracekitchen:library-common"))
-    implementation(project(":tracekitchen:library-tracing-spring-webmvc"))
+    implementation(project(":internal:library-common"))
 
     implementation(libs.spring.boot.starter.actuator)
     implementation(libs.spring.boot.starter.aspectj)
@@ -15,7 +14,6 @@ dependencies {
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.spring.boot.starter.webmvc)
 
-    implementation(libs.micrometer.registry.prometheus)
     implementation(libs.problem4j.spring.webmvc)
     implementation(libs.springdoc.openapi.starter.webmvc.ui)
 

@@ -4,6 +4,7 @@ import io.github.malczuuu.tracekitchen.Tracer;
 import io.github.malczuuu.tracekitchen.spring.autoconfigure.TracekitchenProperties;
 import io.github.malczuuu.tracekitchen.spring.restclient.TracingHttpRequestInterceptor;
 import io.github.malczuuu.tracekitchen.spring.restclient.TracingRestClientCustomizer;
+import io.github.malczuuu.tracekitchen.spring.restclient.TracingRestTemplateCustomizer;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -19,10 +20,23 @@ import org.springframework.context.annotation.Bean;
 public final class TracekitchenRestClientAutoConfiguration {
 
   @Bean
+  @ConditionalOnMissingBean(TracingHttpRequestInterceptor.class)
+  TracingHttpRequestInterceptor tracekitchenTracingHttpRequestInterceptor(
+      Tracer tracer, TracekitchenProperties properties) {
+    return new TracingHttpRequestInterceptor(tracer, properties);
+  }
+
+  @Bean
   @ConditionalOnMissingBean(TracingRestClientCustomizer.class)
   TracingRestClientCustomizer tracekitchenTracingRestClientCustomizer(
-      Tracer tracer, TracekitchenProperties properties) {
-    return builder ->
-        builder.requestInterceptor(new TracingHttpRequestInterceptor(tracer, properties));
+      TracingHttpRequestInterceptor clientHttpRequestInterceptor) {
+    return builder -> builder.requestInterceptor(clientHttpRequestInterceptor);
+  }
+
+  @Bean
+  @ConditionalOnMissingBean(TracingRestTemplateCustomizer.class)
+  public TracingRestTemplateCustomizer tracekitchenTracingRestTemplateCustomizer(
+      TracingHttpRequestInterceptor clientHttpRequestInterceptor) {
+    return builder -> builder.getInterceptors().add(clientHttpRequestInterceptor);
   }
 }

@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    api(platform(project(":tracekitchen:library-bom")))
+    api(platform(project(":internal:library-bom")))
 
     api(libs.jspecify)
 

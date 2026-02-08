@@ -3,8 +3,8 @@ plugins {
 }
 
 dependencies {
-    api(platform(project(":tracekitchen:library-bom")))
-    api(project(":tracekitchen:library-tracing"))
+    api(platform(project(":internal:library-bom")))
+    api(project(":tracekitchen-core"))
 
     compileOnly(libs.spring.boot.starter)
 
