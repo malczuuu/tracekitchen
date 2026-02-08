@@ -4,6 +4,7 @@ import io.github.malczuuu.tracekitchen.Tracer;
 import io.github.malczuuu.tracekitchen.spring.autoconfigure.TracekitchenProperties;
 import io.github.malczuuu.tracekitchen.spring.webmvc.DefaultServletRequestExtractor;
 import io.github.malczuuu.tracekitchen.spring.webmvc.ServletRequestExtractor;
+import io.github.malczuuu.tracekitchen.spring.webmvc.TraceAwareFilter;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -18,5 +19,12 @@ public final class TracekitchenWebMvcConfiguration {
   ServletRequestExtractor servletRequestExtractor(
       Tracer tracer, TracekitchenProperties properties) {
     return new DefaultServletRequestExtractor(tracer, properties);
+  }
+
+  @Bean
+  @ConditionalOnMissingBean(TraceAwareFilter.class)
+  TraceAwareFilter traceAwareFilter(
+      ServletRequestExtractor servletRequestExtractor, Tracer tracer) {
+    return new TraceAwareFilter(servletRequestExtractor, tracer);
   }
 }

@@ -9,6 +9,7 @@ dependencies {
     implementation(project(":tracekitchen:library-tracing-spring-webmvc"))
 
     implementation(libs.spring.boot.starter.actuator)
+    implementation(libs.spring.boot.starter.log4j2)
     implementation(libs.spring.boot.starter.restclient)
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.spring.boot.starter.webmvc)
@@ -19,4 +20,9 @@ dependencies {
 
     testImplementation(libs.spring.boot.starter.webmvc.test)
     testRuntimeOnly(libs.junit.platform.launcher)
+}
+
+configurations.all {
+    exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
+    exclude(group = "org.apache.logging.log4j", module = "log4j-to-slf4j")
 }
