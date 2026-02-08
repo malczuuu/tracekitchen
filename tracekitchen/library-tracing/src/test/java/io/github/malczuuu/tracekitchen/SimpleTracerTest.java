@@ -8,6 +8,7 @@ import java.time.OffsetDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.assertj.core.api.Assertions;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -53,12 +54,14 @@ class SimpleTracerTest {
             .addLifecycleAdapter(
                 new TraceContextLifecycleAdapter() {
                   @Override
-                  public void afterOpened(@NonNull TraceContext context) {
+                  public void afterOpened(
+                      @NonNull TraceContext context, @Nullable TraceContext previousContext) {
                     onOpenedHits.incrementAndGet();
                   }
 
                   @Override
-                  public void afterClosed(@NonNull TraceContext context) {
+                  public void afterClosed(
+                      @NonNull TraceContext context, @Nullable TraceContext currentContext) {
                     onClosedHits.incrementAndGet();
                   }
                 })
@@ -94,12 +97,14 @@ class SimpleTracerTest {
     TraceContextLifecycleAdapter adapter1 =
         new TraceContextLifecycleAdapter() {
           @Override
-          public void afterOpened(@NonNull TraceContext context) {
+          public void afterOpened(
+              @NonNull TraceContext context, @Nullable TraceContext previousContext) {
             adapter1Opened.incrementAndGet();
           }
 
           @Override
-          public void afterClosed(@NonNull TraceContext context) {
+          public void afterClosed(
+              @NonNull TraceContext context, @Nullable TraceContext currentContext) {
             adapter1Closed.incrementAndGet();
           }
         };
@@ -107,12 +112,14 @@ class SimpleTracerTest {
     TraceContextLifecycleAdapter adapter2 =
         new TraceContextLifecycleAdapter() {
           @Override
-          public void afterOpened(@NonNull TraceContext context) {
+          public void afterOpened(
+              @NonNull TraceContext context, @Nullable TraceContext previousContext) {
             adapter2Opened.incrementAndGet();
           }
 
           @Override
-          public void afterClosed(@NonNull TraceContext context) {
+          public void afterClosed(
+              @NonNull TraceContext context, @Nullable TraceContext currentContext) {
             adapter2Closed.incrementAndGet();
           }
         };

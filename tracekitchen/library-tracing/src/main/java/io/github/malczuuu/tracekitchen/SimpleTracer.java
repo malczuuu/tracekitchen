@@ -17,7 +17,8 @@ import org.jspecify.annotations.Nullable;
  *   <li>Build {@link TraceContext} from extracted or custom values
  *   <li>Open a {@link OpenContext} scope using {@code try-with-resources}
  *   <li>Automatically push/pop context to {@code ThreadLocal} stack
- *   <li>Automatically populate {@code MDC} with trace identifiers
+ *   <li>Allow propagating context data into MDC or consuming lifecycle events in any other way via
+ *       {@link TraceContextLifecycleAdapter}
  * </ul>
  */
 public class SimpleTracer implements Tracer {
@@ -54,18 +55,24 @@ public class SimpleTracer implements Tracer {
    */
   @Override
   public OpenContext open(TraceContext context) {
+    TraceContext previousContext = ContextThreadLocalHolder.current();
+
     ContextThreadLocalHolder.push(context);
     context.open(clock.instant());
-    lifecycleAdapter.afterOpened(context);
+    lifecycleAdapter.afterOpened(context, previousContext);
 
     return new OpenContextWrapper(
         context,
         () -> {
           TraceContext closed = ContextThreadLocalHolder.pop();
-          if (closed != null) {
-            closed.close(clock.instant());
-            lifecycleAdapter.afterClosed(closed);
+          if (closed != context) {
+            throw new IllegalStateException(
+                "Context stack corrupted, expected to close " + context + " but was " + closed);
           }
+
+          closed.close(clock.instant());
+          TraceContext currentContext = ContextThreadLocalHolder.current();
+          lifecycleAdapter.afterClosed(closed, currentContext);
         });
   }
 
@@ -79,24 +86,45 @@ public class SimpleTracer implements Tracer {
     return ContextThreadLocalHolder.current();
   }
 
+  /** A convenience implementation of {@link OpenContext}. */
   protected static class OpenContextWrapper implements OpenContext {
 
     private final TraceContext context;
     private final Runnable close;
+    private boolean open = true;
 
+    /**
+     * Wraps context with procedure what to do on closing.
+     *
+     * @param context the current context
+     * @param close the action to execute on closing
+     */
     protected OpenContextWrapper(TraceContext context, Runnable close) {
       this.context = context;
       this.close = close;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return the non-null active {@link TraceContext}
+     */
     @Override
     public TraceContext getContext() {
       return context;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Guards from multiple closing attempts.
+     */
     @Override
     public void close() {
-      close.run();
+      if (open) {
+        close.run();
+        open = false;
+      }
     }
   }
 }

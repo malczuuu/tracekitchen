@@ -12,7 +12,7 @@ public class SimpleTracerBuilder {
 
   /** Creates new {@link SimpleTracerBuilder} object. */
   public SimpleTracerBuilder() {
-    this(null, new CompositeLifecycleAdapter(), null);
+    this(null, CompositeLifecycleAdapter.empty(), null);
   }
 
   private SimpleTracerBuilder(

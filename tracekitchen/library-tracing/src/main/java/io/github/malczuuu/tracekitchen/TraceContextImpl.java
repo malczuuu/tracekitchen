@@ -2,6 +2,8 @@ package io.github.malczuuu.tracekitchen;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import org.jspecify.annotations.Nullable;
 
 final class TraceContextImpl implements TraceContext {
@@ -89,5 +91,24 @@ final class TraceContextImpl implements TraceContext {
       return Duration.ZERO;
     }
     return Duration.between(openedAt, closedAt);
+  }
+
+  @Override
+  public String toString() {
+    List<String> lines = new ArrayList<>();
+    lines.add("traceId='" + traceId + "'");
+    lines.add("spanId='" + spanId + "'");
+
+    if (parentSpanId != null) {
+      lines.add("parentSpanId='" + parentSpanId + "'");
+    }
+    if (openedAt != null) {
+      lines.add("openedAt=" + openedAt);
+    }
+    if (closedAt != null) {
+      lines.add("closedAt=" + closedAt);
+    }
+
+    return "[" + String.join(", ", lines) + "]";
   }
 }

@@ -2,12 +2,17 @@ package io.github.malczuuu.tracekitchen;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 
-class CompositeLifecycleAdapter implements TraceContextLifecycleAdapter {
+final class CompositeLifecycleAdapter implements TraceContextLifecycleAdapter {
+
+  public static CompositeLifecycleAdapter empty() {
+    return new CompositeLifecycleAdapter();
+  }
 
   private final List<TraceContextLifecycleAdapter> delegates;
 
-  CompositeLifecycleAdapter() {
+  private CompositeLifecycleAdapter() {
     this(List.of());
   }
 
@@ -28,12 +33,12 @@ class CompositeLifecycleAdapter implements TraceContextLifecycleAdapter {
   }
 
   @Override
-  public void afterOpened(TraceContext context) {
-    delegates.forEach(delegate -> delegate.afterOpened(context));
+  public void afterOpened(TraceContext context, @Nullable TraceContext previousContext) {
+    delegates.forEach(delegate -> delegate.afterOpened(context, previousContext));
   }
 
   @Override
-  public void afterClosed(TraceContext context) {
-    delegates.forEach(delegate -> delegate.afterClosed(context));
+  public void afterClosed(TraceContext context, @Nullable TraceContext currentContext) {
+    delegates.forEach(delegate -> delegate.afterClosed(context, currentContext));
   }
 }
