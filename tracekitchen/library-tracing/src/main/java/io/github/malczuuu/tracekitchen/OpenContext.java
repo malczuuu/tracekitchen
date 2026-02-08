@@ -8,7 +8,7 @@ package io.github.malczuuu.tracekitchen;
  * restores the previous context on close.
  *
  * <pre>{@code
- * TraceContext parent = tracer.createContext();
+ * TraceContext parent = tracer.newRootContext();
  *
  * try (OpenContext parentScope = tracer.open(parent)) {
  *   log.info("inside parent span");
@@ -22,7 +22,7 @@ package io.github.malczuuu.tracekitchen;
  * }
  * }</pre>
  */
-public interface OpenContext extends AutoCloseable, ContextAware {
+public interface OpenContext extends AutoCloseable, TraceContextAware {
 
   /**
    * Returns the active tracing context associated with this scope.

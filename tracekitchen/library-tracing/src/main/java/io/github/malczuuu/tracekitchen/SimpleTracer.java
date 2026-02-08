@@ -23,30 +23,25 @@ import org.jspecify.annotations.Nullable;
 public class SimpleTracer implements Tracer {
 
   private final TraceFactory traceFactory;
-  private final LoggingContextAdapter loggingContextAdapter;
-  private final ContextLifecycleAdapter contextLifecycleAdapter;
+  private final TraceContextLifecycleAdapter lifecycleAdapter;
   private final Clock clock;
 
-  SimpleTracer(
-      TraceFactory traceFactory,
-      LoggingContextAdapter loggingContextAdapter,
-      ContextLifecycleAdapter contextLifecycleAdapter,
-      Clock clock) {
+  public SimpleTracer(
+      TraceFactory traceFactory, TraceContextLifecycleAdapter lifecycleAdapter, Clock clock) {
     this.traceFactory = traceFactory;
-    this.loggingContextAdapter = loggingContextAdapter;
-    this.contextLifecycleAdapter = contextLifecycleAdapter;
+    this.lifecycleAdapter = lifecycleAdapter;
     this.clock = clock;
   }
 
   /** {@inheritDoc} */
   @Override
-  public TraceContext createContext() {
+  public TraceContext newRootContext() {
     return new TraceContextImpl(traceFactory);
   }
 
   /** {@inheritDoc} */
   @Override
-  public TraceContextBuilder createBuilder() {
+  public TraceContextBuilder contextBuilder() {
     return new TraceContextBuilderImpl(traceFactory);
   }
 
@@ -61,8 +56,7 @@ public class SimpleTracer implements Tracer {
   public OpenContext open(TraceContext context) {
     ContextThreadLocalHolder.push(context);
     context.open(clock.instant());
-    contextLifecycleAdapter.onContextOpened(context);
-    synchronizeContext();
+    lifecycleAdapter.afterOpened(context);
 
     return new OpenContextWrapper(
         context,
@@ -70,9 +64,8 @@ public class SimpleTracer implements Tracer {
           TraceContext closed = ContextThreadLocalHolder.pop();
           if (closed != null) {
             closed.close(clock.instant());
-            contextLifecycleAdapter.onContextClosed(closed);
+            lifecycleAdapter.afterClosed(closed);
           }
-          synchronizeContext();
         });
   }
 
@@ -86,21 +79,12 @@ public class SimpleTracer implements Tracer {
     return ContextThreadLocalHolder.current();
   }
 
-  private void synchronizeContext() {
-    TraceContext ctx = ContextThreadLocalHolder.current();
-    if (ctx != null) {
-      loggingContextAdapter.push(ctx);
-    } else {
-      loggingContextAdapter.drop();
-    }
-  }
-
-  private static final class OpenContextWrapper implements OpenContext {
+  protected static class OpenContextWrapper implements OpenContext {
 
     private final TraceContext context;
     private final Runnable close;
 
-    OpenContextWrapper(TraceContext context, Runnable close) {
+    protected OpenContextWrapper(TraceContext context, Runnable close) {
       this.context = context;
       this.close = close;
     }

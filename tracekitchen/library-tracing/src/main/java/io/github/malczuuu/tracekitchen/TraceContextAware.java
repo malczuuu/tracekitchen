@@ -11,7 +11,7 @@ import org.jspecify.annotations.Nullable;
  * <p>The returned {@link TraceContext} represents the context that is active or relevant for this
  * object and may be {@code null} if no context is associated.
  */
-public interface ContextAware {
+public interface TraceContextAware {
 
   /**
    * Returns the associated tracing context.

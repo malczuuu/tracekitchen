@@ -10,25 +10,23 @@ import org.jspecify.annotations.Nullable;
  *
  * <pre>{@code
  * // create a root context using builder (e.g., from incoming headers)
- * TraceContext root =
- *     tracer
- *         .createBuilder()
- *         .withTraceId(request.headers.xTraceId)
- *         .withSpanId(request.headers.xSpanId)
- *         .withParentSpanId(request.headers.xParentSpanId)
- *         .build();
+ * TraceContext root = tracer.contextBuilder()
+ *     .withTraceId(request.headers.xTraceId)
+ *     .withSpanId(request.headers.xSpanId)
+ *     .withParentSpanId(request.headers.xParentSpanId)
+ *     .build();
  *
  * // open the context for the current scope (try-with-resources)
  * try (OpenContext o = tracer.open(root)) {
- *   log.info("This is happening inside root span");
+ *     log.info("This is happening inside root span");
  *
- *   // spawn a child context
- *   TraceContext child = root.makeChild();
+ *     // spawn a child context
+ *     TraceContext child = root.makeChild();
  *
- *   try (OpenContext oc = tracer.open(child)) {
- *     log.info("This is happening inside child span");
- *     // log can be different from previous one if MDC is supported
- *   }
+ *     try (OpenContext oc = tracer.open(child)) {
+ *         log.info("This is happening inside child span");
+ *         // log can be different from previous one if MDC is supported
+ *     }
  * }
  *
  * // outside of any scope, getCurrentContext() will return null
@@ -42,7 +40,7 @@ public interface Tracer {
    *
    * @return a new {@link TraceContext} representing the root span
    */
-  TraceContext createContext();
+  TraceContext newRootContext();
 
   /**
    * Returns a builder for constructing a {@link TraceContext}.
@@ -52,7 +50,7 @@ public interface Tracer {
    *
    * @return a new {@link TraceContextBuilder}
    */
-  TraceContextBuilder createBuilder();
+  TraceContextBuilder contextBuilder();
 
   /**
    * Opens the given context for the current execution scope.

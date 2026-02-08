@@ -5,19 +5,19 @@ package io.github.malczuuu.tracekitchen;
  *
  * <p>Implementations can use this to perform actions when a context is opened or closed.
  */
-public interface ContextLifecycleAdapter {
+public interface TraceContextLifecycleAdapter {
 
   /**
-   * Called when a context has been opened.
+   * Called after a context has been opened.
    *
    * @param context the {@link TraceContext} that was opened
    */
-  void onContextOpened(TraceContext context);
+  default void afterOpened(TraceContext context) {}
 
   /**
-   * Called when a context has been closed.
+   * Called after a context has been closed.
    *
    * @param context the {@link TraceContext} that was closed
    */
-  void onContextClosed(TraceContext context);
+  default void afterClosed(TraceContext context) {}
 }

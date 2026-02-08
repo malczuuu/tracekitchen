@@ -20,7 +20,7 @@ public class DefaultServletRequestExtractor implements ServletRequestExtractor {
 
   @Override
   public TraceContext extract(HttpServletRequest origin) {
-    TraceContextBuilder builder = tracer.createBuilder();
+    TraceContextBuilder builder = tracer.contextBuilder();
 
     builder = appendTraceId(origin, builder);
     builder = appendSpanId(origin, builder);

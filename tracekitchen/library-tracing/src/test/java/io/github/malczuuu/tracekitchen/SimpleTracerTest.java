@@ -25,7 +25,7 @@ class SimpleTracerTest {
 
   @Test
   void givenParentContext_whenOpeningChild_thenCurrentIsUpdatedAndRestored() {
-    TraceContext parent = tracer.createContext();
+    TraceContext parent = tracer.newRootContext();
 
     Assertions.assertThat(ContextThreadLocalHolder.current()).isNull();
 
@@ -44,68 +44,28 @@ class SimpleTracerTest {
   }
 
   @Test
-  void givenParentContext_whenOpeningChild_thenContextIsAdapterIntoLogging() {
-    AtomicInteger pushHits = new AtomicInteger(0);
-    AtomicInteger dropHits = new AtomicInteger(0);
-
-    Tracer tracer =
-        new SimpleTracerBuilder()
-            .withLoggingContextAdapter(
-                new LoggingContextAdapter() {
-                  @Override
-                  public void push(@NonNull TraceContext context) {
-                    pushHits.incrementAndGet();
-                  }
-
-                  @Override
-                  public void drop() {
-                    dropHits.incrementAndGet();
-                  }
-                })
-            .withClock(clock)
-            .build();
-
-    TraceContext parent = tracer.createContext();
-
-    try (var op = tracer.open(parent)) {
-      assertThat(pushHits).hasValue(1);
-      assertThat(dropHits).hasValue(0);
-
-      TraceContext child = parent.makeChild();
-      try (var oc = tracer.open(child)) {
-        assertThat(pushHits).hasValue(2);
-        assertThat(dropHits).hasValue(0);
-      }
-      assertThat(pushHits).hasValue(3);
-      assertThat(dropHits).hasValue(0);
-    }
-    assertThat(pushHits).hasValue(3);
-    assertThat(dropHits).hasValue(1);
-  }
-
-  @Test
   void givenParentContext_whenOpeningAndClosing_tenContextLifecycleIsTracked() {
     AtomicInteger onOpenedHits = new AtomicInteger(0);
     AtomicInteger onClosedHits = new AtomicInteger(0);
 
     Tracer tracer =
         new SimpleTracerBuilder()
-            .withContextLifecycleAdapter(
-                new ContextLifecycleAdapter() {
+            .addLifecycleAdapter(
+                new TraceContextLifecycleAdapter() {
                   @Override
-                  public void onContextOpened(@NonNull TraceContext context) {
+                  public void afterOpened(@NonNull TraceContext context) {
                     onOpenedHits.incrementAndGet();
                   }
 
                   @Override
-                  public void onContextClosed(@NonNull TraceContext context) {
+                  public void afterClosed(@NonNull TraceContext context) {
                     onClosedHits.incrementAndGet();
                   }
                 })
             .withClock(clock)
             .build();
 
-    TraceContext parent = tracer.createContext();
+    TraceContext parent = tracer.newRootContext();
 
     try (var op = tracer.open(parent)) {
       assertThat(onOpenedHits).hasValue(1);
@@ -124,8 +84,73 @@ class SimpleTracerTest {
   }
 
   @Test
+  void givenMultipleLifecycleAdapters_whenOpeningAndClosing_thenAllAdaptersAreInvoked() {
+    AtomicInteger adapter1Opened = new AtomicInteger();
+    AtomicInteger adapter1Closed = new AtomicInteger();
+
+    AtomicInteger adapter2Opened = new AtomicInteger();
+    AtomicInteger adapter2Closed = new AtomicInteger();
+
+    TraceContextLifecycleAdapter adapter1 =
+        new TraceContextLifecycleAdapter() {
+          @Override
+          public void afterOpened(@NonNull TraceContext context) {
+            adapter1Opened.incrementAndGet();
+          }
+
+          @Override
+          public void afterClosed(@NonNull TraceContext context) {
+            adapter1Closed.incrementAndGet();
+          }
+        };
+
+    TraceContextLifecycleAdapter adapter2 =
+        new TraceContextLifecycleAdapter() {
+          @Override
+          public void afterOpened(@NonNull TraceContext context) {
+            adapter2Opened.incrementAndGet();
+          }
+
+          @Override
+          public void afterClosed(@NonNull TraceContext context) {
+            adapter2Closed.incrementAndGet();
+          }
+        };
+
+    Tracer tracer =
+        new SimpleTracerBuilder()
+            .addLifecycleAdapter(adapter1)
+            .addLifecycleAdapter(adapter2)
+            .withClock(clock)
+            .build();
+
+    TraceContext parent = tracer.newRootContext();
+
+    try (var p = tracer.open(parent)) {
+      assertThat(adapter1Opened).hasValue(1);
+      assertThat(adapter2Opened).hasValue(1);
+      assertThat(adapter1Closed).hasValue(0);
+      assertThat(adapter2Closed).hasValue(0);
+
+      TraceContext child = parent.makeChild();
+      try (var c = tracer.open(child)) {
+        assertThat(adapter1Opened).hasValue(2);
+        assertThat(adapter2Opened).hasValue(2);
+        assertThat(adapter1Closed).hasValue(0);
+        assertThat(adapter2Closed).hasValue(0);
+      }
+
+      assertThat(adapter1Closed).hasValue(1);
+      assertThat(adapter2Closed).hasValue(1);
+    }
+
+    assertThat(adapter1Closed).hasValue(2);
+    assertThat(adapter2Closed).hasValue(2);
+  }
+
+  @Test
   void givenNestedContexts_whenRetrievingCurrentContext_shouldUseCorrectOne() {
-    TraceContext parent = tracer.createContext();
+    TraceContext parent = tracer.newRootContext();
 
     assertThat(tracer.getCurrentContext()).isNull();
 
@@ -145,7 +170,7 @@ class SimpleTracerTest {
 
   @Test
   void givenOpenContext_shouldBeAwareOfCurrent() {
-    TraceContext parent = tracer.createContext();
+    TraceContext parent = tracer.newRootContext();
 
     try (var op = tracer.open(parent)) {
       assertThat(op.getContext()).isSameAs(parent);
@@ -161,7 +186,7 @@ class SimpleTracerTest {
 
   @Test
   void givenParentAndChildContext_whenOpeningAndClosingContext_shouldTrackDuration() {
-    TraceContext parent = tracer.createContext();
+    TraceContext parent = tracer.newRootContext();
     TraceContext child;
     try (var op = tracer.open(parent)) {
       child = parent.makeChild();

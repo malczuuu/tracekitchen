@@ -7,23 +7,20 @@ import org.jspecify.annotations.Nullable;
 public class SimpleTracerBuilder {
 
   private final @Nullable TraceFactory traceFactory;
-  private final @Nullable LoggingContextAdapter loggingContextAdapter;
-  private final @Nullable ContextLifecycleAdapter contextLifecycleAdapter;
+  private final CompositeLifecycleAdapter lifecycleAdapter;
   private final @Nullable Clock clock;
 
   /** Creates new {@link SimpleTracerBuilder} object. */
   public SimpleTracerBuilder() {
-    this(null, null, null, null);
+    this(null, new CompositeLifecycleAdapter(), null);
   }
 
   private SimpleTracerBuilder(
       @Nullable TraceFactory traceFactory,
-      @Nullable LoggingContextAdapter loggingContextAdapter,
-      @Nullable ContextLifecycleAdapter contextLifecycleAdapter,
+      CompositeLifecycleAdapter lifecycleAdapter,
       @Nullable Clock clock) {
     this.traceFactory = traceFactory;
-    this.loggingContextAdapter = loggingContextAdapter;
-    this.contextLifecycleAdapter = contextLifecycleAdapter;
+    this.lifecycleAdapter = lifecycleAdapter;
     this.clock = clock;
   }
 
@@ -34,32 +31,22 @@ public class SimpleTracerBuilder {
    * @return a new builder instance with the given trace factory
    */
   public SimpleTracerBuilder withTraceFactory(@Nullable TraceFactory traceFactory) {
-    return new SimpleTracerBuilder(
-        traceFactory, loggingContextAdapter, contextLifecycleAdapter, clock);
+    return new SimpleTracerBuilder(traceFactory, lifecycleAdapter, clock);
   }
 
   /**
-   * Sets the {@link LoggingContextAdapter} to integrate with MDC.
+   * Adds the {@link TraceContextLifecycleAdapter} to receive context lifecycle events.
    *
-   * @param loggingContextAdapter the logging adapter to use, or {@code null} to use default
-   * @return a new builder instance with the given logging context adapter
-   */
-  public SimpleTracerBuilder withLoggingContextAdapter(
-      @Nullable LoggingContextAdapter loggingContextAdapter) {
-    return new SimpleTracerBuilder(
-        traceFactory, loggingContextAdapter, contextLifecycleAdapter, clock);
-  }
-
-  /**
-   * Sets the {@link ContextLifecycleAdapter} to receive context lifecycle events.
-   *
-   * @param contextLifecycleAdapter the lifecycle adapter to use, or {@code null} to default
+   * @param lifecycleAdapter the lifecycle adapter to add
    * @return a new builder instance with the given context lifecycle adapter
    */
-  public SimpleTracerBuilder withContextLifecycleAdapter(
-      @Nullable ContextLifecycleAdapter contextLifecycleAdapter) {
+  public SimpleTracerBuilder addLifecycleAdapter(
+      @Nullable TraceContextLifecycleAdapter lifecycleAdapter) {
+    if (lifecycleAdapter == null) {
+      return this;
+    }
     return new SimpleTracerBuilder(
-        traceFactory, loggingContextAdapter, contextLifecycleAdapter, clock);
+        traceFactory, this.lifecycleAdapter.add(lifecycleAdapter), clock);
   }
 
   /**
@@ -69,8 +56,7 @@ public class SimpleTracerBuilder {
    * @return a new builder instance with the given clock
    */
   public SimpleTracerBuilder withClock(@Nullable Clock clock) {
-    return new SimpleTracerBuilder(
-        traceFactory, loggingContextAdapter, contextLifecycleAdapter, clock);
+    return new SimpleTracerBuilder(traceFactory, lifecycleAdapter, clock);
   }
 
   /**
@@ -81,15 +67,7 @@ public class SimpleTracerBuilder {
   public SimpleTracer build() {
     TraceFactory traceFactory =
         this.traceFactory != null ? this.traceFactory : SimpleTraceFactory.getInstance();
-    LoggingContextAdapter loggingContextAdapter =
-        this.loggingContextAdapter != null
-            ? this.loggingContextAdapter
-            : NoOpLoggingAdapter.getInstance();
-    ContextLifecycleAdapter contextLifecycleAdapter =
-        this.contextLifecycleAdapter != null
-            ? this.contextLifecycleAdapter
-            : NoOpLifecycleAdapter.getInstance();
     Clock clock = this.clock != null ? this.clock : Clock.systemUTC();
-    return new SimpleTracer(traceFactory, loggingContextAdapter, contextLifecycleAdapter, clock);
+    return new SimpleTracer(traceFactory, lifecycleAdapter, clock);
   }
 }
