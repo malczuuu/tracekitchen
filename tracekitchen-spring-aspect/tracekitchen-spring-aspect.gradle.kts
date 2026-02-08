@@ -3,8 +3,11 @@ plugins {
 }
 
 dependencies {
-    api(platform(project(":internal:library-bom")))
+    implementation(platform(libs.spring.boot.dependencies))
     api(project(":tracekitchen-spring"))
+
+    annotationProcessor(platform(libs.spring.boot.dependencies))
+    annotationProcessor(libs.spring.boot.configuration.processor)
 
     compileOnly(libs.spring.boot.starter.aspectj)
 

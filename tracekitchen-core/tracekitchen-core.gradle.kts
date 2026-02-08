@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    api(platform(project(":internal:library-bom")))
+    implementation(platform(libs.spring.boot.dependencies))
 
     api(libs.jspecify)
 
