@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
+/** Auto-configuration for TraceKitchen Aspect module. */
 @AutoConfiguration
 @ConditionalOnBooleanProperty(name = "tracekitchen.aspect.enabled", matchIfMissing = true)
 @ConditionalOnClass({AopAutoConfiguration.class, Advice.class})
@@ -20,13 +21,13 @@ public final class TracekitchenAspectAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(TracePropagatedAspect.class)
-  public TracePropagatedAspect tracekitchenTracePropagatedAspect(Tracer tracer) {
+  TracePropagatedAspect tracekitchenTracePropagatedAspect(Tracer tracer) {
     return new TracePropagatedAspect(tracer);
   }
 
   @Bean
   @ConditionalOnMissingBean(TraceScheduledAspect.class)
-  public TraceScheduledAspect tracekitchenTraceScheduledAspect(Tracer tracer) {
+  TraceScheduledAspect tracekitchenTraceScheduledAspect(Tracer tracer) {
     return new TraceScheduledAspect(tracer);
   }
 }

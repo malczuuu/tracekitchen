@@ -9,22 +9,57 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 
+/**
+ * Aspect that automatically propagates a {@link TraceContext} for methods annotated with {@code
+ * Scheduled}.
+ *
+ * <p>This aspect intercepts execution of scheduled methods and ensures that a {@link TraceContext}
+ * is available during the method's execution. If no context is active, a new root context is
+ * created. If a context already exists, a child span is created to maintain proper tracing
+ * hierarchy.
+ *
+ * <p>The context is automatically closed at the end of the method via try-with-resources, ensuring
+ * that any previous context is restored.
+ *
+ * <p>This allows scheduled tasks to participate in distributed tracing without requiring explicit
+ * context management in the task implementation.
+ *
+ * @see org.springframework.scheduling.annotation.Scheduled
+ */
 @Aspect
 public class TraceScheduledAspect {
 
   private final Tracer tracer;
 
+  /**
+   * Constructs the aspect with the provided {@link Tracer}.
+   *
+   * @param tracer the tracer used to create and open trace contexts
+   */
   public TraceScheduledAspect(Tracer tracer) {
     this.tracer = tracer;
   }
 
+  /**
+   * Around advice that wraps execution of methods annotated with {@link
+   * org.springframework.scheduling.annotation.Scheduled}.
+   *
+   * <p>If there is an active {@link TraceContext}, a child span is created. Otherwise, a new root
+   * context is created. The context is opened before method execution and automatically closed to
+   * restore any previous context.
+   *
+   * @param joinPoint the join point representing the intercepted scheduled method
+   * @return the method's return value
+   * @throws Throwable if the intercepted method throws
+   */
   @Around("@annotation(org.springframework.scheduling.annotation.Scheduled)")
-  public Object aroundTraceable(ProceedingJoinPoint joinPoint) throws Throwable {
-
+  public Object aroundScheduled(ProceedingJoinPoint joinPoint) throws Throwable {
     TraceContext context = tracer.getCurrentContext();
 
     if (context == null) {
       context = tracer.newRootContext(findMethodName(joinPoint));
+    } else {
+      context = context.makeChild(findMethodName(joinPoint));
     }
 
     try (OpenContext open = tracer.open(context)) {
@@ -32,7 +67,13 @@ public class TraceScheduledAspect {
     }
   }
 
-  private String findMethodName(ProceedingJoinPoint joinPoint) {
+  /**
+   * Builds a default method name for the trace context using the declaring class and method name.
+   *
+   * @param joinPoint the intercepted join point
+   * @return the default context name
+   */
+  protected String findMethodName(ProceedingJoinPoint joinPoint) {
     MethodSignature sig = (MethodSignature) joinPoint.getSignature();
     Method method = sig.getMethod();
     return method.getDeclaringClass().getSimpleName() + "." + method.getName();
