@@ -16,8 +16,8 @@ TODO List:
 - [ ] Context propagation across reactive `WebClient` (most likely will be covered via previous task).
 - [ ] Context propagation across `@KafkaListener`, `@RabbitListner` and a demo on how to integrate with other messaging
   systems (NATS for example).
-- [ ] Context propagation across `@Async` method calls.
-- [ ] Context propagation in `@Scheduled` tasks.
+- [x] Context propagation across `@Async` method calls.
+- [x] Context propagation in `@Scheduled` tasks.
 - [ ] Context propagation across thread pools (ex. `ExecutorService`, `CompletableFuture` / `Future`, parallel streams).
 - [ ] Context propagation in Feign clients.
 - [ ] Inclusion of unit/integration tests.
@@ -38,44 +38,44 @@ This module defines the **trace context model** and its lifecycle without any de
 
 Responsibilities include:
 
-- `TraceContext` and `Tracer` abstraction
-- root and child context creation
-- span hierarchy management
-- lifecycle handling (`open` / `close`)
-- lifecycle callback adapters
+- `TraceContext` and `Tracer` abstraction,
+- root and child context creation,
+- span hierarchy management,
+- lifecycle handling (`open` / `close`),
+- lifecycle callback adapters.
 
 This module can be used in plain Java applications and serves as the base for all other integrations.
 
 ## Spring Integration Modules
 
-### `tracekitchen-spring`
+### `tracekitchen-spring:tracekitchen-spring-core`
 
 Provides core Spring support for TraceKitchen.
 
-This module adapts the core tracing model to Spring’s runtime model and dependency injection system.
+This module adapts the core tracing model to Spring's runtime model and dependency injection system.
 
 Responsibilities include:
 
-- wiring core components as Spring beans
-- integration with application lifecycle
-- shared Spring abstractions used by other Spring modules
+- wiring core components as Spring beans,
+- integration with application lifecycle,
+- shared Spring abstractions used by other Spring modules.
 
 This module does not define transport-specific behavior.
 
-### `tracekitchen-spring-aspect`
+### `tracekitchen-spring:tracekitchen-spring-aspect`
 
 Aspect-oriented integration for tracing.
 
 This module provides support for `@Traceable` annotation via AOP for automatic context opening/closing.
 
-### `tracekitchen-spring-restclient`
+### `tracekitchen-spring:tracekitchen-spring-restclient`
 
-Integration with Spring’s HTTP client infrastructure.
+Integration with Spring's HTTP client infrastructure.
 
 This module adds propagation interceptor for Spring Boot's `RestClient` and `RestTemplate`. Includes active trace
 context into outgoing requests.
 
-### `tracekitchen-spring-webmvc`
+### `tracekitchen-spring:tracekitchen-spring-webmvc`
 
 Server-side integration for Spring WebMVC.
 
@@ -100,9 +100,9 @@ An internal test application acting as an **entry-point service**.
 
 Used to:
 
-- validate incoming request tracing
-- test context creation at application boundaries
-- verify logging correlation and lifecycle behavior
+- validate incoming request tracing,
+- test context creation at application boundaries,
+- verify logging correlation and lifecycle behavior.
 
 ### `internal:app-downstream`
 
@@ -110,6 +110,6 @@ An internal test application acting as a **downstream service**.
 
 Used to:
 
-- validate trace context propagation across service boundaries
-- test client-side integrations
-- simulate multi-service tracing scenarios
+- validate trace context propagation across service boundaries,
+- test client-side integrations,
+- simulate multi-service tracing scenarios.

@@ -22,7 +22,7 @@ final class TraceContextImpl implements TraceContext {
     this(null, traceFactory.makeTraceId(), traceFactory.makeSpanId(), null, traceFactory);
   }
 
-  public TraceContextImpl(String name, TraceFactory traceFactory) {
+  TraceContextImpl(String name, TraceFactory traceFactory) {
     this(name, traceFactory.makeTraceId(), traceFactory.makeSpanId(), null, traceFactory);
   }
 

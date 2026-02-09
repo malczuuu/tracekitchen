@@ -10,16 +10,18 @@ plugins {
 
 rootProject.name = "tracekitchen"
 
+include(":tracekitchen-core")
+
+include(":tracekitchen-spring:tracekitchen-spring-core")
+include(":tracekitchen-spring:tracekitchen-spring-aspect")
+include(":tracekitchen-spring:tracekitchen-spring-restclient")
+include(":tracekitchen-spring:tracekitchen-spring-starter")
+include(":tracekitchen-spring:tracekitchen-spring-webmvc")
+
 include(":internal:app-downstream")
 include(":internal:app-entrypoint")
 include(":internal:library-bom")
 include(":internal:library-common")
-include(":tracekitchen-core")
-include(":tracekitchen-spring")
-include(":tracekitchen-spring-aspect")
-include(":tracekitchen-spring-restclient")
-include(":tracekitchen-spring-starter")
-include(":tracekitchen-spring-webmvc")
 
 verifyProjectNameDuplicates(rootProject)
 changeChildrenBuildFileNames(rootProject)

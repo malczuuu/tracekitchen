@@ -34,19 +34,32 @@ public class SimpleTracer implements Tracer {
     this.clock = clock;
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   *
+   * @return a new {@link TraceContext} representing the root span
+   */
   @Override
   public TraceContext newRootContext() {
     return new TraceContextImpl(traceFactory);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   *
+   * @param name the name of the child span; must not be {@code null} or blank
+   * @return a new {@link TraceContext} representing the root span
+   */
   @Override
   public TraceContext newRootContext(String name) {
     return new TraceContextImpl(name, traceFactory);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * {@inheritDoc}
+   *
+   * @return a new {@link TraceContextBuilder}
+   */
   @Override
   public TraceContextBuilder contextBuilder() {
     return new TraceContextBuilderImpl(traceFactory);
@@ -58,6 +71,9 @@ public class SimpleTracer implements Tracer {
    * <p>The given {@link TraceContext} becomes active in the current thread ({@code ThreadLocal})
    * and is also written into the {@code MDC} under keys {@code traceId}, {@code spanId}, and {@code
    * parentSpanId}. Closing the returned {@link OpenContext} will restore the previous context.
+   *
+   * @param context the context to make active
+   * @return an {@link OpenContext} representing the active scope
    */
   @Override
   public OpenContext open(TraceContext context) {

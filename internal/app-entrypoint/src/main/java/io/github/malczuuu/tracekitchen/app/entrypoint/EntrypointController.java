@@ -19,14 +19,17 @@ public class EntrypointController {
   private static final Logger log = LoggerFactory.getLogger(EntrypointController.class);
 
   private final SampleService sampleService;
+  private final AsyncService asyncService;
   private final RestClient restClient;
   private final String baseUrl;
 
   public EntrypointController(
       SampleService sampleService,
+      AsyncService asyncService,
       RestClient restClient,
       @Value("${tracekitchen.entrypoint.downstream-base-url}") String baseUrl) {
     this.sampleService = sampleService;
+    this.asyncService = asyncService;
     this.restClient = restClient;
     this.baseUrl = baseUrl;
   }
@@ -36,6 +39,7 @@ public class EntrypointController {
     sampleService.requires();
     sampleService.requiresNew();
     sampleService.classAware();
+    asyncService.async();
     ResponseEntity<String> response =
         restClient.get().uri(baseUrl + "/downstream").retrieve().toEntity(String.class);
     log.info("Called downstream GET /downstream and returned body={}", response.getBody());
