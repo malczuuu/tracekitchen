@@ -10,24 +10,6 @@ validation and testing.
 The goal of this structure is to keep the tracing model framework-agnostic while providing first-class integrations for
 Spring-based applications.
 
-TODO List:
-
-- [ ] Context propagation across Reactor and Spring WebFlux.
-- [ ] Context propagation across reactive `WebClient` (most likely will be covered via previous task).
-- [ ] Context propagation across `@KafkaListener`, `@RabbitListner` and a demo on how to integrate with other messaging
-  systems (NATS for example).
-- [x] Context propagation across `@Async` method calls.
-- [x] Context propagation in `@Scheduled` tasks.
-- [ ] Context propagation across thread pools (ex. `ExecutorService`, `CompletableFuture` / `Future`, parallel streams).
-- [ ] Context propagation in Feign clients.
-- [ ] Inclusion of unit/integration tests.
-- [ ] Integration with Actuator for metrics.
-- [ ] Demo on how to integrate it with non-Spring HTTP clients.
-- [ ] Error handling in context stack (currently there are all `IllegalStateException`-s being thrown).
-- [ ] Documentation of how existing traceability frameworks inspired this project and what conclusions were established
-  from experiments.
-- [ ] Documentation of how this can be used with existing tracing frameworks (W3C format, etc.).
-
 ## Core Modules
 
 ### `tracekitchen-core`
