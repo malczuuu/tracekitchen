@@ -21,7 +21,7 @@ public class TracingTaskDecorator implements TaskDecorator {
     }
     return () -> {
       TraceContext child = context.makeChild(context.getName() + " [subroutine]");
-      try (OpenContext open = tracer.open(child)) {
+      try (OpenContext open = child.open()) {
         runnable.run();
       }
     };

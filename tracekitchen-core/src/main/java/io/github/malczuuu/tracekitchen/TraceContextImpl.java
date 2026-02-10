@@ -1,5 +1,6 @@
 package io.github.malczuuu.tracekitchen;
 
+import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -13,17 +14,38 @@ final class TraceContextImpl implements TraceContext {
   private final String spanId;
   private final @Nullable String parentSpanId;
 
+  private final Clock clock;
+  private final TraceContextLifecycleAdapter lifecycleAdapter;
   private final TraceFactory traceFactory;
 
   private @Nullable Instant openedAt = null;
   private @Nullable Instant closedAt = null;
 
-  TraceContextImpl(TraceFactory traceFactory) {
-    this(null, traceFactory.makeTraceId(), traceFactory.makeSpanId(), null, traceFactory);
+  TraceContextImpl(
+      Clock clock, TraceContextLifecycleAdapter lifecycleAdapter, TraceFactory traceFactory) {
+    this(
+        null,
+        traceFactory.makeTraceId(),
+        traceFactory.makeSpanId(),
+        null,
+        clock,
+        lifecycleAdapter,
+        traceFactory);
   }
 
-  TraceContextImpl(String name, TraceFactory traceFactory) {
-    this(name, traceFactory.makeTraceId(), traceFactory.makeSpanId(), null, traceFactory);
+  TraceContextImpl(
+      String name,
+      Clock clock,
+      TraceContextLifecycleAdapter lifecycleAdapter,
+      TraceFactory traceFactory) {
+    this(
+        name,
+        traceFactory.makeTraceId(),
+        traceFactory.makeSpanId(),
+        null,
+        clock,
+        lifecycleAdapter,
+        traceFactory);
   }
 
   TraceContextImpl(
@@ -31,22 +53,28 @@ final class TraceContextImpl implements TraceContext {
       String traceId,
       String spanId,
       @Nullable String parentSpanId,
+      Clock clock,
+      TraceContextLifecycleAdapter lifecycleAdapter,
       TraceFactory traceFactory) {
     this.name = name;
     this.traceId = traceId;
     this.spanId = spanId;
     this.parentSpanId = parentSpanId;
+    this.clock = clock;
+    this.lifecycleAdapter = lifecycleAdapter;
     this.traceFactory = traceFactory;
   }
 
   @Override
   public TraceContext makeChild() {
-    return new TraceContextImpl(name, traceId, traceFactory.makeSpanId(), spanId, traceFactory);
+    return new TraceContextImpl(
+        name, traceId, traceFactory.makeSpanId(), spanId, clock, lifecycleAdapter, traceFactory);
   }
 
   @Override
   public TraceContext makeChild(String name) {
-    return new TraceContextImpl(name, traceId, traceFactory.makeSpanId(), spanId, traceFactory);
+    return new TraceContextImpl(
+        name, traceId, traceFactory.makeSpanId(), spanId, clock, lifecycleAdapter, traceFactory);
   }
 
   @Override
@@ -70,7 +98,29 @@ final class TraceContextImpl implements TraceContext {
   }
 
   @Override
-  public void open(Instant time) {
+  public OpenContext open() {
+    TraceContext previousContext = ContextThreadLocalHolder.current();
+
+    ContextThreadLocalHolder.push(this);
+    openAt(clock.instant());
+    lifecycleAdapter.afterOpened(this, previousContext);
+
+    return new OpenContextWrapper(
+        this,
+        () -> {
+          TraceContext closed = ContextThreadLocalHolder.pop();
+          if (closed != this) {
+            throw new IllegalStateException(
+                "Context stack corrupted, expected to close " + this + " but was " + closed);
+          }
+
+          this.closeAt(clock.instant());
+          TraceContext currentContext = ContextThreadLocalHolder.current();
+          lifecycleAdapter.afterClosed(this, currentContext);
+        });
+  }
+
+  void openAt(Instant time) {
     if (closedAt != null) {
       throw new IllegalStateException("Cannot open a closed context");
     }
@@ -80,8 +130,7 @@ final class TraceContextImpl implements TraceContext {
     openedAt = time;
   }
 
-  @Override
-  public void close(Instant time) {
+  void closeAt(Instant time) {
     if (openedAt == null) {
       throw new IllegalStateException("Cannot close a non-open context");
     }
@@ -134,5 +183,47 @@ final class TraceContextImpl implements TraceContext {
     }
 
     return "[" + String.join(", ", lines) + "]";
+  }
+
+  /** A convenience implementation of {@link OpenContext}. */
+  protected static class OpenContextWrapper implements OpenContext {
+
+    private final TraceContext context;
+    private final Runnable close;
+    private boolean open = true;
+
+    /**
+     * Wraps context with procedure what to do on closing.
+     *
+     * @param context the current context
+     * @param close the action to execute on closing
+     */
+    protected OpenContextWrapper(TraceContext context, Runnable close) {
+      this.context = context;
+      this.close = close;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return the non-null active {@link TraceContext}
+     */
+    @Override
+    public TraceContext getContext() {
+      return context;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Guards from multiple closing attempts.
+     */
+    @Override
+    public void close() {
+      if (open) {
+        close.run();
+        open = false;
+      }
+    }
   }
 }

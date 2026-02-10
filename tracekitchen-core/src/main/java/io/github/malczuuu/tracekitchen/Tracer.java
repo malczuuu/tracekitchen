@@ -23,7 +23,7 @@ import org.jspecify.annotations.Nullable;
  *     // spawn a child context
  *     TraceContext child = root.makeChild();
  *
- *     try (OpenContext oc = tracer.open(child)) {
+ *     try (OpenContext oc = child.open()) {
  *         log.info("This is happening inside child span");
  *         // log can be different from previous one if MDC is supported
  *     }
@@ -63,17 +63,6 @@ public interface Tracer {
    * @return a new {@link TraceContextBuilder}
    */
   TraceContextBuilder contextBuilder();
-
-  /**
-   * Opens the given context for the current execution scope.
-   *
-   * <p>Returns an {@link OpenContext} that should be used in a {@code try-with-resources} block to
-   * ensure the previous context is restored on close.
-   *
-   * @param context the context to make active
-   * @return an {@link OpenContext} representing the active scope
-   */
-  OpenContext open(TraceContext context);
 
   /**
    * Returns the currently active tracing context, or {@code null} if none.

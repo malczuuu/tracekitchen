@@ -62,7 +62,7 @@ class TracePropagatedAspectTest {
   @Test
   void givenOpenContext_whenCallingTraceableMethodWithoutName_shouldSpawnChild() {
     TraceContext parent = tracer.newRootContext("parent");
-    try (OpenContext ignored = tracer.open(parent)) {
+    try (OpenContext ignored = parent.open()) {
       TraceContext result = dummyService.traceableDefaultWithoutName();
 
       assertThat(result).isNotNull();
@@ -80,7 +80,7 @@ class TracePropagatedAspectTest {
   @Test
   void givenOpenContext_whenCallingTraceableMethodWithName_shouldSpawnChild() {
     TraceContext parent = tracer.newRootContext("parent");
-    try (OpenContext ignored = tracer.open(parent)) {
+    try (OpenContext ignored = parent.open()) {
       TraceContext result = dummyService.traceableDefaultWithName();
 
       assertThat(result).isNotNull();
@@ -128,7 +128,7 @@ class TracePropagatedAspectTest {
   @Test
   void givenOpenContext_whenCallingRequiresNewMethodWithoutName_shouldSpawnNewContext() {
     TraceContext parent = tracer.newRootContext("parent");
-    try (OpenContext ignored = tracer.open(parent)) {
+    try (OpenContext ignored = parent.open()) {
       TraceContext result = dummyService.traceableRequiresNewWithoutName();
 
       assertThat(result).isNotNull();
@@ -146,7 +146,7 @@ class TracePropagatedAspectTest {
   @Test
   void givenOpenContext_whenCallingRequiresNewMethodWithName_shouldSpawnNewContext() {
     TraceContext parent = tracer.newRootContext("parent");
-    try (OpenContext ignored = tracer.open(parent)) {
+    try (OpenContext ignored = parent.open()) {
       TraceContext result = dummyService.traceableRequiresNewWithName();
 
       assertThat(result).isNotNull();
@@ -174,7 +174,7 @@ class TracePropagatedAspectTest {
   @Test
   void givenOpenContext_whenCallingUntracedMethod_shouldReuseOpenContext() {
     TraceContext parent = tracer.newRootContext("parent");
-    try (OpenContext ignored = tracer.open(parent)) {
+    try (OpenContext ignored = parent.open()) {
       TraceContext result = dummyService.untraced();
 
       assertThat(result).isNotNull();

@@ -41,7 +41,7 @@ public class SimpleTracer implements Tracer {
    */
   @Override
   public TraceContext newRootContext() {
-    return new TraceContextImpl(traceFactory);
+    return new TraceContextImpl(clock, lifecycleAdapter, traceFactory);
   }
 
   /**
@@ -52,7 +52,7 @@ public class SimpleTracer implements Tracer {
    */
   @Override
   public TraceContext newRootContext(String name) {
-    return new TraceContextImpl(name, traceFactory);
+    return new TraceContextImpl(name, clock, lifecycleAdapter, traceFactory);
   }
 
   /**
@@ -62,40 +62,7 @@ public class SimpleTracer implements Tracer {
    */
   @Override
   public TraceContextBuilder contextBuilder() {
-    return new TraceContextBuilderImpl(traceFactory);
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * <p>The given {@link TraceContext} becomes active in the current thread ({@code ThreadLocal})
-   * and is also written into the {@code MDC} under keys {@code traceId}, {@code spanId}, and {@code
-   * parentSpanId}. Closing the returned {@link OpenContext} will restore the previous context.
-   *
-   * @param context the context to make active
-   * @return an {@link OpenContext} representing the active scope
-   */
-  @Override
-  public OpenContext open(TraceContext context) {
-    TraceContext previousContext = ContextThreadLocalHolder.current();
-
-    ContextThreadLocalHolder.push(context);
-    context.open(clock.instant());
-    lifecycleAdapter.afterOpened(context, previousContext);
-
-    return new OpenContextWrapper(
-        context,
-        () -> {
-          TraceContext closed = ContextThreadLocalHolder.pop();
-          if (closed != context) {
-            throw new IllegalStateException(
-                "Context stack corrupted, expected to close " + context + " but was " + closed);
-          }
-
-          closed.close(clock.instant());
-          TraceContext currentContext = ContextThreadLocalHolder.current();
-          lifecycleAdapter.afterClosed(closed, currentContext);
-        });
+    return new TraceContextBuilderImpl(clock, lifecycleAdapter, traceFactory);
   }
 
   /**
@@ -106,47 +73,5 @@ public class SimpleTracer implements Tracer {
   @Override
   public @Nullable TraceContext getCurrentContext() {
     return ContextThreadLocalHolder.current();
-  }
-
-  /** A convenience implementation of {@link OpenContext}. */
-  protected static class OpenContextWrapper implements OpenContext {
-
-    private final TraceContext context;
-    private final Runnable close;
-    private boolean open = true;
-
-    /**
-     * Wraps context with procedure what to do on closing.
-     *
-     * @param context the current context
-     * @param close the action to execute on closing
-     */
-    protected OpenContextWrapper(TraceContext context, Runnable close) {
-      this.context = context;
-      this.close = close;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return the non-null active {@link TraceContext}
-     */
-    @Override
-    public TraceContext getContext() {
-      return context;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Guards from multiple closing attempts.
-     */
-    @Override
-    public void close() {
-      if (open) {
-        close.run();
-        open = false;
-      }
-    }
   }
 }

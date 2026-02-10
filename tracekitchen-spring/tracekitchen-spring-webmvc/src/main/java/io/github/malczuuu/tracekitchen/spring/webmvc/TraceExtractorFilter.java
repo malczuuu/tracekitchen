@@ -33,7 +33,7 @@ public class TraceExtractorFilter extends OncePerRequestFilter implements Ordere
             .extract(request)
             .map(c -> c.makeChild(contextName))
             .orElseGet(() -> tracer.newRootContext(contextName));
-    try (OpenContext o = tracer.open(context)) {
+    try (OpenContext o = context.open()) {
       filterChain.doFilter(request, response);
     }
   }

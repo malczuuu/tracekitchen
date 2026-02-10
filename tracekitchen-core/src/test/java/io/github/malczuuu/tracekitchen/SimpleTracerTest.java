@@ -30,11 +30,11 @@ class SimpleTracerTest {
 
     Assertions.assertThat(ContextThreadLocalHolder.current()).isNull();
 
-    try (var op = tracer.open(parent)) {
+    try (var op = parent.open()) {
       assertThat(ContextThreadLocalHolder.current()).isSameAs(parent);
 
       TraceContext child = parent.makeChild();
-      try (var oc = tracer.open(child)) {
+      try (var oc = child.open()) {
         assertThat(ContextThreadLocalHolder.current()).isSameAs(child);
       }
 
@@ -70,12 +70,12 @@ class SimpleTracerTest {
 
     TraceContext parent = tracer.newRootContext();
 
-    try (var op = tracer.open(parent)) {
+    try (var op = parent.open()) {
       assertThat(onOpenedHits).hasValue(1);
       assertThat(onClosedHits).hasValue(0);
 
       TraceContext child = parent.makeChild();
-      try (var oc = tracer.open(child)) {
+      try (var oc = child.open()) {
         assertThat(onOpenedHits).hasValue(2);
         assertThat(onClosedHits).hasValue(0);
       }
@@ -133,14 +133,14 @@ class SimpleTracerTest {
 
     TraceContext parent = tracer.newRootContext();
 
-    try (var p = tracer.open(parent)) {
+    try (var p = parent.open()) {
       assertThat(adapter1Opened).hasValue(1);
       assertThat(adapter2Opened).hasValue(1);
       assertThat(adapter1Closed).hasValue(0);
       assertThat(adapter2Closed).hasValue(0);
 
       TraceContext child = parent.makeChild();
-      try (var c = tracer.open(child)) {
+      try (var c = child.open()) {
         assertThat(adapter1Opened).hasValue(2);
         assertThat(adapter2Opened).hasValue(2);
         assertThat(adapter1Closed).hasValue(0);
@@ -161,11 +161,11 @@ class SimpleTracerTest {
 
     assertThat(tracer.getCurrentContext()).isNull();
 
-    try (var op = tracer.open(parent)) {
+    try (var op = parent.open()) {
       assertThat(tracer.getCurrentContext()).isSameAs(parent);
 
       TraceContext child = parent.makeChild();
-      try (var oc = tracer.open(child)) {
+      try (var oc = child.open()) {
         assertThat(tracer.getCurrentContext()).isSameAs(child);
       }
 
@@ -179,11 +179,11 @@ class SimpleTracerTest {
   void givenOpenContext_shouldBeAwareOfCurrent() {
     TraceContext parent = tracer.newRootContext();
 
-    try (var op = tracer.open(parent)) {
+    try (var op = parent.open()) {
       assertThat(op.getContext()).isSameAs(parent);
 
       TraceContext child = parent.makeChild();
-      try (var oc = tracer.open(child)) {
+      try (var oc = child.open()) {
         assertThat(oc.getContext()).isSameAs(child);
       }
 
@@ -195,11 +195,11 @@ class SimpleTracerTest {
   void givenParentAndChildContext_whenOpeningAndClosingContext_shouldTrackDuration() {
     TraceContext parent = tracer.newRootContext();
     TraceContext child;
-    try (var op = tracer.open(parent)) {
+    try (var op = parent.open()) {
       child = parent.makeChild();
 
       clock.fastForward(Duration.ofSeconds(3));
-      try (var oc = tracer.open(child)) {
+      try (var oc = child.open()) {
         clock.fastForward(Duration.ofSeconds(1));
       }
       clock.fastForward(Duration.ofSeconds(2));

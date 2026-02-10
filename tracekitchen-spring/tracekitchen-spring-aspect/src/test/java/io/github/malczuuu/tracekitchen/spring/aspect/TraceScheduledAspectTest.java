@@ -46,7 +46,7 @@ class TraceScheduledAspectTest {
   @Test
   void givenOpenContext_whenCallingScheduledMethod_shouldReuseExistingContext() {
     TraceContext parent = tracer.newRootContext("parent");
-    try (OpenContext ignored = tracer.open(parent)) {
+    try (OpenContext ignored = parent.open()) {
 
       TraceContext result = service.scheduledWithParentContext();
 

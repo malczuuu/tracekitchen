@@ -2,10 +2,25 @@ package io.github.malczuuu.tracekitchen;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mercateo.test.clock.TestClock;
+import java.time.Clock;
+import java.time.OffsetDateTime;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class ContextThreadLocalHolderTest {
+
+  private Clock clock;
+  private TraceContextLifecycleAdapter lifecycleAdapter;
+  private TraceFactory traceFactory;
+
+  @BeforeEach
+  void beforeEach() {
+    clock = TestClock.fixed(OffsetDateTime.parse("2025-09-22T12:33:17Z"));
+    lifecycleAdapter = CompositeLifecycleAdapter.empty();
+    traceFactory = SimpleTraceFactory.getInstance();
+  }
 
   @AfterEach
   void afterEach() {
@@ -60,7 +75,7 @@ class ContextThreadLocalHolderTest {
     assertThat(ContextThreadLocalHolder.current()).isNull();
   }
 
-  private static TraceContext fakeContext(String traceId, String spanId) {
-    return new TraceContextImpl(null, traceId, spanId, null, SimpleTraceFactory.getInstance());
+  private TraceContext fakeContext(String traceId, String spanId) {
+    return new TraceContextImpl(null, traceId, spanId, null, clock, lifecycleAdapter, traceFactory);
   }
 }

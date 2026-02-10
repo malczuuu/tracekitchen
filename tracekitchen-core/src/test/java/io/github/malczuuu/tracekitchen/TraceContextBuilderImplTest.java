@@ -2,13 +2,29 @@ package io.github.malczuuu.tracekitchen;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.mercateo.test.clock.TestClock;
+import java.time.Clock;
+import java.time.OffsetDateTime;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class TraceContextBuilderImplTest {
 
+  private Clock clock;
+  private TraceContextLifecycleAdapter lifecycleAdapter;
+  private TraceFactory traceFactory;
+
+  @BeforeEach
+  void beforeEach() {
+    clock = TestClock.fixed(OffsetDateTime.parse("2025-09-22T12:33:17Z"));
+    lifecycleAdapter = CompositeLifecycleAdapter.empty();
+    traceFactory = SimpleTraceFactory.getInstance();
+  }
+
   @Test
   void givenBuilder_whenFillingValues_shouldConstructNewObjectOnEachStep() {
-    TraceContextBuilder builder = new TraceContextBuilderImpl(SimpleTraceFactory.getInstance());
+    TraceContextBuilder builder =
+        new TraceContextBuilderImpl(clock, lifecycleAdapter, traceFactory);
 
     var afterStep1 = builder.withTraceId("traceId");
     var afterStep2 = afterStep1.withSpanId("spanId");

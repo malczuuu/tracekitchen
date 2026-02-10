@@ -41,8 +41,7 @@ public class TraceScheduledAspect {
   }
 
   /**
-   * Around advice that wraps execution of methods annotated with {@link
-   * org.springframework.scheduling.annotation.Scheduled}.
+   * Around advice that wraps execution of methods annotated with {@code Scheduled}.
    *
    * <p>If there is an active {@link TraceContext}, a child span is created. Otherwise, a new root
    * context is created. The context is opened before method execution and automatically closed to
@@ -51,6 +50,7 @@ public class TraceScheduledAspect {
    * @param joinPoint the join point representing the intercepted scheduled method
    * @return the method's return value
    * @throws Throwable if the intercepted method throws
+   * @see org.springframework.scheduling.annotation.Scheduled
    */
   @Around("@annotation(org.springframework.scheduling.annotation.Scheduled)")
   public Object aroundScheduled(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -62,7 +62,7 @@ public class TraceScheduledAspect {
       context = context.makeChild(findMethodName(joinPoint));
     }
 
-    try (OpenContext open = tracer.open(context)) {
+    try (OpenContext open = context.open()) {
       return joinPoint.proceed();
     }
   }

@@ -10,11 +10,11 @@ package io.github.malczuuu.tracekitchen;
  * <pre>{@code
  * TraceContext parent = tracer.newRootContext();
  *
- * try (OpenContext parentScope = tracer.open(parent)) {
+ * try (OpenContext parentScope = parent.open()) {
  *   log.info("inside parent span");
  *
  *   TraceContext child = parent.makeChild();
- *   try (OpenContext childScope = tracer.open(child)) {
+ *   try (OpenContext childScope = child.open()) {
  *     log.info("inside child span");
  *   }
  *

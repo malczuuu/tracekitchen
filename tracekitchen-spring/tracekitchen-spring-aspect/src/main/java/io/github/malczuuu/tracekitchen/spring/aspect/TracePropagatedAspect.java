@@ -82,7 +82,7 @@ public class TracePropagatedAspect {
       context = parent != null ? parent.makeChild(contextName) : tracer.newRootContext(contextName);
     }
 
-    try (OpenContext open = tracer.open(context)) {
+    try (OpenContext open = context.open()) {
       return joinPoint.proceed();
     }
   }
