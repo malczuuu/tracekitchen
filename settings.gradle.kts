@@ -17,11 +17,11 @@ include(":testapp:library-common")
 
 include(":tracekit")
 
-include(":tracekit-spring:tracekit-spring-aspect")
-include(":tracekit-spring:tracekit-spring-core")
-include(":tracekit-spring:tracekit-spring-restclient")
-include(":tracekit-spring:tracekit-spring-starter")
-include(":tracekit-spring:tracekit-spring-webmvc")
+include(":tracekit-boot4:tracekit-boot4-aspect")
+include(":tracekit-boot4:tracekit-boot4-core")
+include(":tracekit-boot4:tracekit-boot4-restclient")
+include(":tracekit-boot4:tracekit-boot4-starter")
+include(":tracekit-boot4:tracekit-boot4-webmvc")
 
 verifyProjectNameDuplicates(rootProject)
 changeChildrenBuildFileNames(rootProject)

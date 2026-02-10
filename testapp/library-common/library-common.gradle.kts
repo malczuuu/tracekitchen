@@ -5,7 +5,7 @@ plugins {
 dependencies {
     api(platform(project(":testapp:library-bom")))
 
-    api(project(":tracekit-spring:tracekit-spring-starter"))
+    api(project(":tracekit-boot4:tracekit-boot4-starter"))
 
     compileOnly(libs.spring.boot.starter.aspectj)
     compileOnly(libs.spring.boot.starter.restclient)

@@ -30,9 +30,9 @@ This module can be used in plain Java applications and serves as the base for al
 
 ## Spring Integration Modules
 
-### `tracekit-spring:tracekit-spring-core`
+### `tracekit-boot4:tracekit-boot4-core`
 
-Provides core Spring support for TraceKit.
+Provides core Spring Boot 4 support for TraceKit.
 
 This module adapts the core tracing model to Spring's runtime model and dependency injection system.
 
@@ -44,22 +44,22 @@ Responsibilities include:
 
 This module does not define transport-specific behavior.
 
-### `tracekit-spring:tracekit-spring-aspect`
+### `tracekit-boot4:tracekit-boot4-aspect`
 
-Aspect-oriented integration for tracing.
+Aspect-oriented integration for tracing in Spring Boot 4.
 
 This module provides support for `@Traceable` annotation via AOP for automatic context opening/closing.
 
-### `tracekit-spring:tracekit-spring-restclient`
+### `tracekit-boot4:tracekit-boot4-restclient`
 
-Integration with Spring's HTTP client infrastructure.
+Integration with Spring's HTTP client infrastructure in Spring Boot 4.
 
 This module adds propagation interceptor for Spring Boot's `RestClient` and `RestTemplate`. Includes active trace
 context into outgoing requests.
 
-### `tracekit-spring:tracekit-spring-webmvc`
+### `tracekit-boot4:tracekit-boot4-webmvc`
 
-Server-side integration for Spring WebMVC.
+Server-side integration for Spring Boot 4 WebMVC.
 
 This module adds extractor filer for Spring Boot's WebMVC stack. Consumes tracing headers from incoming HTTP requests to
 propagate into application.
