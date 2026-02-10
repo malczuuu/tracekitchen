@@ -58,7 +58,7 @@ public final class TracekitRestClientAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(TracingRestTemplateCustomizer.class)
-  public TracingRestTemplateCustomizer tracekitTracingRestTemplateCustomizer(
+  TracingRestTemplateCustomizer tracekitTracingRestTemplateCustomizer(
       TracingHttpRequestInterceptor clientHttpRequestInterceptor) {
     return builder -> builder.getInterceptors().add(clientHttpRequestInterceptor);
   }
