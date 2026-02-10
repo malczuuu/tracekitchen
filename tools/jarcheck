@@ -1,0 +1,74 @@
+#!/bin/bash
+#
+# Copyright (c) 2026 Damian Malczewski
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
+###############################################################################
+#
+#   An utility script to checking which Java version compiled each submodule
+#   of this project.
+#
+###############################################################################
+
+echo "===================================================="
+echo "Verifying Java version for classes within JAR files."
+echo ""
+echo "  tracekit         must be 52 (Java 8)"
+echo "  tracekit-boot4/* must be 61 (Java 17)"
+echo ""
+echo "Note that JAR files must exist (./gradlew build)."
+echo ""
+
+echo "===== tracekit ====="
+javap \
+    -verbose \
+    -classpath tracekit/build/libs/tracekit.jar \
+    io.github.malczuuu.tracekit.Span \
+    | grep "major version"
+
+echo ""
+echo "===== tracekit-boot4-aspect ====="
+javap \
+    -verbose \
+    -classpath tracekit-boot4/tracekit-boot4-aspect/build/libs/tracekit-boot4-aspect.jar \
+    io.github.malczuuu.tracekit.boot4.aspect.autoconfigure.TracekitAspectAutoConfiguration \
+    | grep "major version"
+echo ""
+echo "===== tracekit-boot4-core ====="
+javap \
+    -verbose \
+    -classpath tracekit-boot4/tracekit-boot4-core/build/libs/tracekit-boot4-core.jar \
+    io.github.malczuuu.tracekit.boot4.autoconfigure.TracekitAutoConfiguration \
+    | grep "major version"
+echo ""
+echo "===== tracekit-boot4-restclient ====="
+javap \
+    -verbose \
+    -classpath tracekit-boot4/tracekit-boot4-restclient/build/libs/tracekit-boot4-restclient.jar \
+    io.github.malczuuu.tracekit.boot4.restclient.autoconfigure.TracekitRestClientAutoConfiguration \
+    | grep "major version"
+echo ""
+echo "===== tracekit-boot4-webmvc ====="
+javap \
+    -verbose \
+    -classpath tracekit-boot4/tracekit-boot4-webmvc/build/libs/tracekit-boot4-webmvc.jar \
+    io.github.malczuuu.tracekit.boot4.webmvc.autoconfigure.TracekitWebMvcAutoConfiguration \
+    | grep "major version"
