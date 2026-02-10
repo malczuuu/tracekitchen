@@ -6,13 +6,7 @@ import java.util.stream.Stream;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
-/**
- * {@code TracekitProperties} is a Spring {@link ConfigurationProperties} that provides
- * configuration for the HTTP headers used for propagating tracing information.
- *
- * <p>The class reads comma-separated header names from configuration properties prefixed with
- * {@code tracekit} and exposes them as lists for use by tracing libraries or HTTP clients.
- */
+/** Configuration properties for TraceKit Core module. */
 @ConfigurationProperties(prefix = "tracekit")
 public class TracekitProperties implements TraceHeaderSettings {
 
