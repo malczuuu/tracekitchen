@@ -55,9 +55,9 @@ public interface Span {
    *
    * <p>The duration is zero if the span has never been opened or has not yet been closed.
    *
-   * @return a {@link Duration} representing the elapsed time between the last {@link
-   *     SpanImpl#open()} and/or {@link OpenSpan#close()} calls, or {@link Duration#ZERO} if the
-   *     span is not fully opened and closed
+   * @return a {@link Duration} representing the elapsed time between the last {@link Span#open()}
+   *     and/or {@link OpenSpan#close()} calls, or {@link Duration#ZERO} if the span is not fully
+   *     opened and closed
    */
   Duration getDuration();
 

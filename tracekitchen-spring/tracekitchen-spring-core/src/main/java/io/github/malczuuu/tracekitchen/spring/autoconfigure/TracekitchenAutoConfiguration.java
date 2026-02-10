@@ -1,7 +1,7 @@
 package io.github.malczuuu.tracekitchen.spring.autoconfigure;
 
-import io.github.malczuuu.tracekitchen.SimpleTracerBuilder;
 import io.github.malczuuu.tracekitchen.Tracer;
+import io.github.malczuuu.tracekitchen.simple.SimpleTracerBuilder;
 import io.github.malczuuu.tracekitchen.spring.LoggingContextLifecycleAdapter;
 import io.github.malczuuu.tracekitchen.spring.LoggingContextSimpleTracerBuilderCustomizer;
 import io.github.malczuuu.tracekitchen.spring.SimpleTracerBuilderCustomizer;

@@ -1,5 +1,6 @@
-package io.github.malczuuu.tracekitchen;
+package io.github.malczuuu.tracekitchen.simple;
 
+import io.github.malczuuu.tracekitchen.TraceFactory;
 import java.util.UUID;
 
 final class SimpleTraceFactory implements TraceFactory {

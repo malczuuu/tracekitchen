@@ -1,5 +1,7 @@
-package io.github.malczuuu.tracekitchen;
+package io.github.malczuuu.tracekitchen.simple;
 
+import io.github.malczuuu.tracekitchen.SpanLifecycleAdapter;
+import io.github.malczuuu.tracekitchen.TraceFactory;
 import java.time.Clock;
 import org.jspecify.annotations.Nullable;
 

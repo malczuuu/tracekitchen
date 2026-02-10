@@ -1,5 +1,7 @@
-package io.github.malczuuu.tracekitchen;
+package io.github.malczuuu.tracekitchen.simple;
 
+import io.github.malczuuu.tracekitchen.Span;
+import io.github.malczuuu.tracekitchen.SpanLifecycleAdapter;
 import java.util.ArrayList;
 import java.util.List;
 import org.jspecify.annotations.Nullable;

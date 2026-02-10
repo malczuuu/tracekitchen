@@ -1,5 +1,11 @@
-package io.github.malczuuu.tracekitchen;
+package io.github.malczuuu.tracekitchen.simple;
 
+import io.github.malczuuu.tracekitchen.OpenSpan;
+import io.github.malczuuu.tracekitchen.Span;
+import io.github.malczuuu.tracekitchen.SpanLifecycleAdapter;
+import io.github.malczuuu.tracekitchen.SpanState;
+import io.github.malczuuu.tracekitchen.Trace;
+import io.github.malczuuu.tracekitchen.TraceFactory;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;

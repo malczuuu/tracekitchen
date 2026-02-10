@@ -1,8 +1,11 @@
-package io.github.malczuuu.tracekitchen;
+package io.github.malczuuu.tracekitchen.simple;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.mercateo.test.clock.TestClock;
+import io.github.malczuuu.tracekitchen.Span;
+import io.github.malczuuu.tracekitchen.SpanLifecycleAdapter;
+import io.github.malczuuu.tracekitchen.Tracer;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.concurrent.atomic.AtomicInteger;

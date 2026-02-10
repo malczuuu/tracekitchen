@@ -1,5 +1,6 @@
-package io.github.malczuuu.tracekitchen;
+package io.github.malczuuu.tracekitchen.simple;
 
+import io.github.malczuuu.tracekitchen.Span;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import org.jspecify.annotations.Nullable;

@@ -1,5 +1,6 @@
-package io.github.malczuuu.tracekitchen;
+package io.github.malczuuu.tracekitchen.simple;
 
+import io.github.malczuuu.tracekitchen.Trace;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

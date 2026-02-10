@@ -1,7 +1,8 @@
-package io.github.malczuuu.tracekitchen;
+package io.github.malczuuu.tracekitchen.simple;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.github.malczuuu.tracekitchen.TraceFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
