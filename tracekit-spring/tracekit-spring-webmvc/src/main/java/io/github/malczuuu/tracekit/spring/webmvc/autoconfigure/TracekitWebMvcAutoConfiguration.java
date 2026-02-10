@@ -5,6 +5,7 @@ import io.github.malczuuu.tracekit.spring.autoconfigure.TracekitProperties;
 import io.github.malczuuu.tracekit.spring.webmvc.ServletRequestExtractor;
 import io.github.malczuuu.tracekit.spring.webmvc.TracingAwareFilter;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 
 /** Auto-configuration for TraceKit WebMVC module. */
 @AutoConfiguration
+@ConditionalOnBean(Tracer.class)
 @ConditionalOnBooleanProperty(name = "tracekit.webmvc.enabled", matchIfMissing = true)
 @ConditionalOnClass(WebMvcAutoConfiguration.class)
 @EnableConfigurationProperties(TracekitWebMvcProperties.class)

@@ -8,12 +8,14 @@ import io.github.malczuuu.tracekit.spring.SimpleTracerBuilderCustomizer;
 import io.github.malczuuu.tracekit.spring.TracingTaskDecorator;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
 /** Auto-configuration for TraceKit module. */
 @AutoConfiguration
+@ConditionalOnBooleanProperty(name = "tracekit.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(TracekitProperties.class)
 public final class TracekitAutoConfiguration {
 

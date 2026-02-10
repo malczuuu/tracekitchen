@@ -10,6 +10,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 @ConfigurationProperties(prefix = "tracekit")
 public class TracekitProperties implements TraceHeaderSettings {
 
+  private final boolean enabled;
   private final String traceIdHeaderNames;
   private final String spanIdHeaderNames;
   private final String parentSpanIdHeaderNames;
@@ -17,17 +18,30 @@ public class TracekitProperties implements TraceHeaderSettings {
   /**
    * Creates a new {@link TracekitProperties} instance with the given header names.
    *
+   * @param enabled whether TraceKit module should be enabled; if {@code null}, defaults to {@code
+   *     true}
    * @param traceIdHeaderNames comma-separated list of trace ID header names
    * @param spanIdHeaderNames comma-separated list of span ID header names
    * @param parentSpanIdHeaderNames comma-separated list of parent span ID header names
    */
   public TracekitProperties(
+      @DefaultValue("true") boolean enabled,
       @DefaultValue("") String traceIdHeaderNames,
       @DefaultValue("") String spanIdHeaderNames,
       @DefaultValue("") String parentSpanIdHeaderNames) {
+    this.enabled = enabled;
     this.traceIdHeaderNames = traceIdHeaderNames;
     this.spanIdHeaderNames = spanIdHeaderNames;
     this.parentSpanIdHeaderNames = parentSpanIdHeaderNames;
+  }
+
+  /**
+   * Returns whether TraceKit module is enabled.
+   *
+   * @return {@code true} if module enabled, {@code false} otherwise
+   */
+  public boolean isEnabled() {
+    return enabled;
   }
 
   /**

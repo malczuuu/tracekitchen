@@ -6,6 +6,7 @@ import io.github.malczuuu.tracekit.spring.restclient.TracingHttpRequestIntercept
 import io.github.malczuuu.tracekit.spring.restclient.TracingRestClientCustomizer;
 import io.github.malczuuu.tracekit.spring.restclient.TracingRestTemplateCustomizer;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -14,6 +15,7 @@ import org.springframework.boot.restclient.autoconfigure.RestClientAutoConfigura
 import org.springframework.context.annotation.Bean;
 
 @AutoConfiguration
+@ConditionalOnBean(Tracer.class)
 @ConditionalOnBooleanProperty(name = "tracekit.restclient.enabled", matchIfMissing = true)
 @ConditionalOnClass(RestClientAutoConfiguration.class)
 @EnableConfigurationProperties(TracekitRestClientProperties.class)

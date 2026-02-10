@@ -6,6 +6,7 @@ import io.github.malczuuu.tracekit.spring.aspect.TraceableTracingAspect;
 import org.aspectj.weaver.Advice;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 
 /** Auto-configuration for TraceKit Aspect module. */
 @AutoConfiguration
+@ConditionalOnBean(Tracer.class)
 @ConditionalOnBooleanProperty(name = "tracekit.aspect.enabled", matchIfMissing = true)
 @ConditionalOnClass({AopAutoConfiguration.class, Advice.class})
 @EnableConfigurationProperties(TracekitAspectProperties.class)
