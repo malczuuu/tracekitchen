@@ -40,60 +40,60 @@ class SpanImplTest {
 
   @Test
   void givenOpenContext_whenOpening_shouldThrowException() {
-    SpanImpl context = new SpanImpl(clock, lifecycleAdapter, traceFactory);
+    SpanImpl span = new SpanImpl(clock, lifecycleAdapter, traceFactory);
 
-    context.openAt(Instant.parse("2025-03-19T09:53:11Z"));
+    span.openAt(Instant.parse("2025-03-19T09:53:11Z"));
 
-    assertThat(context.getState()).isEqualTo(SpanState.OPEN);
-    assertThatThrownBy(() -> context.openAt(Instant.parse("2025-03-19T09:53:13Z")))
+    assertThat(span.getState()).isEqualTo(SpanState.OPEN);
+    assertThatThrownBy(() -> span.openAt(Instant.parse("2025-03-19T09:53:13Z")))
         .isInstanceOf(IllegalStateException.class)
         .matches(e -> e.getMessage().equals("Cannot open an already opened span"));
   }
 
   @Test
   void givenClosedContext_whenOpening_shouldThrowException() {
-    SpanImpl context = new SpanImpl(clock, lifecycleAdapter, traceFactory);
+    SpanImpl span = new SpanImpl(clock, lifecycleAdapter, traceFactory);
 
-    context.openAt(Instant.parse("2025-03-19T09:53:11Z"));
-    context.closeAt(Instant.parse("2025-03-19T09:53:12Z"));
+    span.openAt(Instant.parse("2025-03-19T09:53:11Z"));
+    span.closeAt(Instant.parse("2025-03-19T09:53:12Z"));
 
-    assertThat(context.getState()).isEqualTo(SpanState.CLOSED);
-    assertThatThrownBy(() -> context.openAt(Instant.parse("2025-03-19T09:53:13Z")))
+    assertThat(span.getState()).isEqualTo(SpanState.CLOSED);
+    assertThatThrownBy(() -> span.openAt(Instant.parse("2025-03-19T09:53:13Z")))
         .isInstanceOf(IllegalStateException.class)
         .matches(e -> e.getMessage().equals("Cannot open a closed span"));
   }
 
   @Test
   void givenNotOpenContext_whenClosing_shouldThrowException() {
-    SpanImpl context = new SpanImpl(clock, lifecycleAdapter, traceFactory);
+    SpanImpl span = new SpanImpl(clock, lifecycleAdapter, traceFactory);
 
-    assertThat(context.getState()).isEqualTo(SpanState.NEW);
-    assertThatThrownBy(() -> context.closeAt(Instant.parse("2025-03-19T09:53:11Z")))
+    assertThat(span.getState()).isEqualTo(SpanState.NEW);
+    assertThatThrownBy(() -> span.closeAt(Instant.parse("2025-03-19T09:53:11Z")))
         .isInstanceOf(IllegalStateException.class)
         .matches(e -> e.getMessage().equals("Cannot close a non-open span"));
   }
 
   @Test
   void givenClosedContext_whenClosing_shouldThrowException() {
-    SpanImpl context = new SpanImpl(clock, lifecycleAdapter, traceFactory);
+    SpanImpl span = new SpanImpl(clock, lifecycleAdapter, traceFactory);
 
-    context.openAt(Instant.parse("2025-03-19T09:53:11Z"));
-    context.closeAt(Instant.parse("2025-03-19T09:53:12Z"));
+    span.openAt(Instant.parse("2025-03-19T09:53:11Z"));
+    span.closeAt(Instant.parse("2025-03-19T09:53:12Z"));
 
-    assertThat(context.getState()).isEqualTo(SpanState.CLOSED);
-    assertThatThrownBy(() -> context.closeAt(Instant.parse("2025-03-19T09:53:13Z")))
+    assertThat(span.getState()).isEqualTo(SpanState.CLOSED);
+    assertThatThrownBy(() -> span.closeAt(Instant.parse("2025-03-19T09:53:13Z")))
         .isInstanceOf(IllegalStateException.class)
         .matches(e -> e.getMessage().equals("Cannot close an already closed span"));
   }
 
   @Test
   void givenOpenContext_whenClosingWithTimeEarlierThanOpening_shouldThrowException() {
-    SpanImpl context = new SpanImpl(clock, lifecycleAdapter, traceFactory);
+    SpanImpl span = new SpanImpl(clock, lifecycleAdapter, traceFactory);
 
-    context.openAt(Instant.parse("2025-03-19T09:53:14Z"));
+    span.openAt(Instant.parse("2025-03-19T09:53:14Z"));
 
-    assertThat(context.getState()).isEqualTo(SpanState.OPEN);
-    assertThatThrownBy(() -> context.closeAt(Instant.parse("2025-03-19T09:53:13Z")))
+    assertThat(span.getState()).isEqualTo(SpanState.OPEN);
+    assertThatThrownBy(() -> span.closeAt(Instant.parse("2025-03-19T09:53:13Z")))
         .isInstanceOf(IllegalStateException.class)
         .matches(
             e -> e.getMessage().equals("Cannot close span with time earlier than opening time"));

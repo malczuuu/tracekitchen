@@ -13,14 +13,14 @@ import org.aspectj.lang.reflect.MethodSignature;
  * Aspect that automatically propagates a {@link Span} for methods annotated with {@code Scheduled}.
  *
  * <p>This aspect intercepts execution of scheduled methods and ensures that a {@link Span} is
- * available during the method's execution. If no context is active, a new root context is created.
- * If a context already exists, a child span is created to maintain proper tracing hierarchy.
+ * available during the method's execution. If no span is active, a new root span is created. If a
+ * span already exists, a child span is created to maintain proper tracing hierarchy.
  *
- * <p>The context is automatically closed at the end of the method via try-with-resources, ensuring
- * that any previous context is restored.
+ * <p>The span is automatically closed at the end of the method via try-with-resources, ensuring
+ * that any previous span is restored.
  *
  * <p>This allows scheduled tasks to participate in distributed tracing without requiring explicit
- * context management in the task implementation.
+ * span management in the task implementation.
  *
  * @see org.springframework.scheduling.annotation.Scheduled
  */
@@ -41,9 +41,9 @@ public class TraceScheduledAspect {
   /**
    * Around advice that wraps execution of methods annotated with {@code Scheduled}.
    *
-   * <p>If there is an active {@link Span}, a child span is created. Otherwise, a new root context
-   * is created. The context is opened before method execution and automatically closed to restore
-   * any previous context.
+   * <p>If there is an active {@link Span}, a child span is created. Otherwise, a new root span is
+   * created. The span is opened before method execution and automatically closed to restore any
+   * previous span.
    *
    * @param joinPoint the join point representing the intercepted scheduled method
    * @return the method's return value
@@ -65,10 +65,10 @@ public class TraceScheduledAspect {
   }
 
   /**
-   * Builds a default method name for the trace context using the declaring class and method name.
+   * Builds a default method name for the trace span using the declaring class and method name.
    *
    * @param joinPoint the intercepted join point
-   * @return the default context name
+   * @return the default span name
    */
   protected String findMethodName(ProceedingJoinPoint joinPoint) {
     MethodSignature sig = (MethodSignature) joinPoint.getSignature();

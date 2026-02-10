@@ -14,13 +14,12 @@ public class LoggingContextLifecycleAdapter implements SpanLifecycleAdapter {
   @Override
   public void afterOpened(Span span, @Nullable Span previousSpan) {
     set(span);
-    log.debug("Context [{}] opened", span.getName());
+    log.debug("Span [{}] opened", span.getName());
   }
 
   @Override
   public void afterClosed(Span span, @Nullable Span currentSpan) {
-    log.debug(
-        "Context [{}] closed; durationMilli={}", span.getName(), span.getDuration().toMillis());
+    log.debug("Span [{}] closed; durationMilli={}", span.getName(), span.getDuration().toMillis());
     if (currentSpan != null) {
       set(currentSpan);
     } else {

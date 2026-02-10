@@ -22,12 +22,12 @@ import org.springframework.util.StringUtils;
  * with {@code @Traceable}, and ensures that a {@link Span} is properly created and opened for the
  * duration of the method execution.
  *
- * <p>If a parent context exists and the {@link TraceScope} is {@code REQUIRED}, a child span is
- * created. If {@link TraceScope#REQUIRES_NEW} is used, a new root context is created, ignoring any
- * existing parent context.
+ * <p>If a parent span exists and the {@link TraceScope} is {@code REQUIRED}, a child span is
+ * created. If {@link TraceScope#REQUIRES_NEW} is used, a new root span is created, ignoring any
+ * existing parent span.
  *
- * <p>The context is automatically closed at the end of the method via {@code try-with-resources},
- * ensuring proper restoration of any previous context.
+ * <p>The span is automatically closed at the end of the method via {@code try-with-resources},
+ * ensuring proper restoration of any previous span.
  */
 @Aspect
 public class TracePropagatedAspect {
@@ -50,12 +50,12 @@ public class TracePropagatedAspect {
    * <p>Depending on the {@link TraceScope}:
    *
    * <ul>
-   *   <li>{@link TraceScope#REQUIRED}: uses the current context if available, creating a child span
-   *       if a parent exists, otherwise creates a new root context.
-   *   <li>{@link TraceScope#REQUIRES_NEW}: always creates a new root context.
+   *   <li>{@link TraceScope#REQUIRED}: uses the current span if available, creating a child span if
+   *       a parent exists, otherwise creates a new root span.
+   *   <li>{@link TraceScope#REQUIRES_NEW}: always creates a new root span.
    * </ul>
    *
-   * <p>The created context is opened before method execution and automatically closed.
+   * <p>The created span is opened before method execution and automatically closed.
    *
    * @param joinPoint the join point representing the intercepted method
    * @return the method's return value
@@ -87,11 +87,11 @@ public class TracePropagatedAspect {
   }
 
   /**
-   * Determines the name of the trace context based on the {@link Traceable} annotation.
+   * Determines the name of the span based on the {@link Traceable} annotation.
    *
    * @param joinPoint the intercepted join point
    * @param traceable the traceable annotation
-   * @return the context name to use
+   * @return the span name to use
    */
   protected String findContextName(ProceedingJoinPoint joinPoint, Traceable traceable) {
     return StringUtils.hasLength(traceable.name()) ? traceable.name() : findMethodName(joinPoint);
@@ -117,10 +117,10 @@ public class TracePropagatedAspect {
   }
 
   /**
-   * Builds a default method name for the trace context using the declaring class and method name.
+   * Builds a default method name for the span using the declaring class and method name.
    *
    * @param joinPoint the intercepted join point
-   * @return the default context name
+   * @return the default span name
    */
   protected String findMethodName(ProceedingJoinPoint joinPoint) {
     MethodSignature sig = (MethodSignature) joinPoint.getSignature();
