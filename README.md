@@ -1,5 +1,9 @@
 # TraceKitchen
 
+[![Build Status](https://github.com/malczuuu/tracekitchen/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/malczuuu/tracekitchen/actions/workflows/gradle-build.yml)
+[![Sonatype](https://img.shields.io/maven-central/v/io.github.malczuuu.tracekit/tracekit)][maven-central]
+[![License](https://img.shields.io/github/license/malczuuu/tracekitchen)](https://github.com/malczuuu/tracekitchen/blob/main/LICENSE)
+
 What's cooking in here? A playground for exploring simple tracing model and traces propagation in **Spring Boot**.
 
 ## Project Overview
@@ -95,3 +99,5 @@ Used to:
 - validate trace context propagation across service boundaries,
 - test client-side integrations,
 - simulate multi-service tracing scenarios.
+
+[maven-central]: https://central.sonatype.com/namespace/io.github.malczuuu.tracekit
