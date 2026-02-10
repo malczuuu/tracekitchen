@@ -50,6 +50,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
  */
 public class TracingAwareFilter extends OncePerRequestFilter implements Ordered {
 
+  /** Returns the order of this filter in the filter chain. */
   public static final int ORDER = Ordered.HIGHEST_PRECEDENCE + 100;
 
   private final ServletRequestExtractor servletRequestExtractor;

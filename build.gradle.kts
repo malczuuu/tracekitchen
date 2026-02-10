@@ -4,6 +4,26 @@ plugins {
     id("internal.common-convention")
     id("internal.idea-convention")
     alias(libs.plugins.spotless)
+    alias(libs.plugins.nmcp).apply(false)
+    alias(libs.plugins.nmcp.aggregation)
+}
+
+dependencies {
+    nmcpAggregation(project(":tracekit"))
+    nmcpAggregation(project(":tracekit-boot4:tracekit-boot4-aspect"))
+    nmcpAggregation(project(":tracekit-boot4:tracekit-boot4-core"))
+    nmcpAggregation(project(":tracekit-boot4:tracekit-boot4-restclient"))
+    nmcpAggregation(project(":tracekit-boot4:tracekit-boot4-starter"))
+    nmcpAggregation(project(":tracekit-boot4:tracekit-boot4-webmvc"))
+}
+
+nmcpAggregation {
+    centralPortal {
+        username = System.getenv("PUBLISHING_USERNAME")
+        password = System.getenv("PUBLISHING_PASSWORD")
+
+        publishingType = "USER_MANAGED"
+    }
 }
 
 spotless {
