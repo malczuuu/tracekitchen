@@ -94,12 +94,19 @@ class ServletRequestExtractorTest {
   }
 
   @Test
-  void givenRequestWithoutSpanId_whenExtractingSpan_shouldNotGenerate() {
+  void givenRequestWithoutSpanId_whenExtractingSpan_shouldHonorHeader() {
     MockHttpServletRequest request = new MockHttpServletRequest();
     request.addHeader("X-Test-Trace-Id", "x-test-trace-id-value");
+    request.addHeader("X-Test-Parent-Span-Id", "x-test-parent-span-id-value");
 
     Optional<Span> optionalSpan = servletRequestExtractor.extract(request);
-    assertThat(optionalSpan).isEmpty();
+    assertThat(optionalSpan).isPresent();
+
+    Span span = optionalSpan.get();
+    assertThat(span.getTrace().getTraceId()).isEqualTo("x-test-trace-id-value");
+    assertThat(span.getTrace().getSpanId()).isNotNull();
+    assertThat(span.getTrace().getSpanId()).isNotEqualTo("x-test-span-id-value");
+    assertThat(span.getTrace().getParentSpanId()).isNull();
   }
 
   @Test

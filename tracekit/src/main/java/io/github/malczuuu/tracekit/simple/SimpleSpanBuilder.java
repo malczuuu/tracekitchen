@@ -20,12 +20,13 @@
  */
 package io.github.malczuuu.tracekit.simple;
 
+import static java.util.Objects.requireNonNull;
+
 import io.github.malczuuu.tracekit.Span;
 import io.github.malczuuu.tracekit.SpanBuilder;
 import io.github.malczuuu.tracekit.SpanLifecycleAdapter;
 import io.github.malczuuu.tracekit.TraceFactory;
 import java.time.Clock;
-import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 
 final class SimpleSpanBuilder implements SpanBuilder {
@@ -95,28 +96,28 @@ final class SimpleSpanBuilder implements SpanBuilder {
 
   @Override
   public boolean isComplete() {
-    return hasText(traceId) && hasText(spanId);
+    return hasText(traceId);
   }
 
   @Override
   public Span build() {
-    if (isComplete()) {
-      Objects.requireNonNull(traceId);
-      Objects.requireNonNull(spanId);
-      return new SimpleSpan(
-          name,
-          new SimpleTrace(traceId, spanId, parentSpanId, sampled),
-          clock,
-          lifecycleAdapter,
-          traceFactory);
-    } else {
-      return new SimpleSpan(
-          name,
-          new SimpleTrace(traceFactory.makeTraceId(), traceFactory.makeSpanId(), null, sampled),
-          clock,
-          lifecycleAdapter,
-          traceFactory);
-    }
+    return new SimpleSpan(name, buildTrace(), clock, lifecycleAdapter, traceFactory);
+  }
+
+  private SimpleTrace buildTrace() {
+    String traceId = isTraceIdValid() ? this.traceId : traceFactory.makeTraceId();
+    String spanId = isSpanIdValid() ? this.spanId : traceFactory.makeSpanId();
+    String parentSpanId = isSpanIdValid() ? this.parentSpanId : null;
+
+    return new SimpleTrace(requireNonNull(traceId), requireNonNull(spanId), parentSpanId, sampled);
+  }
+
+  private boolean isTraceIdValid() {
+    return hasText(traceId);
+  }
+
+  private boolean isSpanIdValid() {
+    return hasText(traceId) && hasText(spanId);
   }
 
   private static boolean hasText(@Nullable String str) {

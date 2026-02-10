@@ -75,13 +75,12 @@ public interface SpanBuilder {
    * Indicates whether this builder contains a complete trace span that can be used to continue an
    * existing trace.
    *
-   * <p>This method returns {@code true} only if both {@code traceId} and {@code spanId} are present
-   * and non-blank.
+   * <p>This method returns {@code true} only if at least {@code traceId} is present and non-blank.
    *
    * <p>It does not validate identifier formats and does not indicate whether {@link #build()} will
    * generate a new root trace.
    *
-   * @return {@code true} if a complete span is present; {@code false} otherwise
+   * @return {@code true} if a {@code traceId} is present; {@code false} otherwise
    */
   boolean isComplete();
 
