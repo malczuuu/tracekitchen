@@ -10,7 +10,7 @@ plugins {
 
 rootProject.name = "tracekitchen"
 
-include(":tracekitchen-core")
+include(":tracekit")
 
 include(":tracekitchen-spring:tracekitchen-spring-core")
 include(":tracekitchen-spring:tracekitchen-spring-aspect")

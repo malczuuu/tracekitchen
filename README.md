@@ -12,7 +12,7 @@ Spring-based applications.
 
 ## Core Modules
 
-### `tracekitchen-core`
+### `tracekit`
 
 The foundational module of the project.
 

@@ -5,7 +5,7 @@ plugins {
 dependencies {
     implementation(platform(libs.spring.boot.dependencies))
 
-    api(project(":tracekitchen-core"))
+    api(project(":tracekit"))
     api(project(":tracekitchen-spring:tracekitchen-spring-core"))
     api(project(":tracekitchen-spring:tracekitchen-spring-aspect"))
     api(project(":tracekitchen-spring:tracekitchen-spring-restclient"))

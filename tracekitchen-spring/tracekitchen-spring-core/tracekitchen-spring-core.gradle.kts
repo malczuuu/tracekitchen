@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
     implementation(platform(libs.spring.boot.dependencies))
-    api(project(":tracekitchen-core"))
+    api(project(":tracekit"))
 
     annotationProcessor(platform(libs.spring.boot.dependencies))
     annotationProcessor(libs.spring.boot.configuration.processor)
