@@ -14,24 +14,20 @@ import org.springframework.context.annotation.Bean;
 
 /** Auto-configuration for TraceKit Aspect module. */
 @AutoConfiguration
-@ConditionalOnBooleanProperty(name = "tracekitchen.aspect.enabled", matchIfMissing = true)
+@ConditionalOnBooleanProperty(name = "tracekit.aspect.enabled", matchIfMissing = true)
 @ConditionalOnClass({AopAutoConfiguration.class, Advice.class})
 @EnableConfigurationProperties(TracekitAspectProperties.class)
 public final class TracekitAspectAutoConfiguration {
 
   @Bean
-  @ConditionalOnBooleanProperty(
-      name = "tracekitchen.aspect.scheduled-enabled",
-      matchIfMissing = true)
+  @ConditionalOnBooleanProperty(name = "tracekit.aspect.scheduled-enabled", matchIfMissing = true)
   @ConditionalOnMissingBean(ScheduledTracingAspect.class)
   ScheduledTracingAspect tracekitScheduledTracingAspect(Tracer tracer) {
     return new ScheduledTracingAspect(tracer);
   }
 
   @Bean
-  @ConditionalOnBooleanProperty(
-      name = "tracekitchen.aspect.traceable-enabled",
-      matchIfMissing = true)
+  @ConditionalOnBooleanProperty(name = "tracekit.aspect.traceable-enabled", matchIfMissing = true)
   @ConditionalOnMissingBean(TraceableTracingAspect.class)
   TraceableTracingAspect tracekitTraceableTracingAspect(Tracer tracer) {
     return new TraceableTracingAspect(tracer);

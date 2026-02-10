@@ -32,7 +32,7 @@ This module can be used in plain Java applications and serves as the base for al
 
 ### `tracekit-spring:tracekit-spring-core`
 
-Provides core Spring support for TraceKitchen.
+Provides core Spring support for TraceKit.
 
 This module adapts the core tracing model to Spring's runtime model and dependency injection system.
 

@@ -14,10 +14,10 @@ import org.springframework.context.annotation.Bean;
 
 /** Auto-configuration for TraceKit WebMVC module. */
 @AutoConfiguration
-@ConditionalOnBooleanProperty(name = "tracekitchen.webmvc.enabled", matchIfMissing = true)
+@ConditionalOnBooleanProperty(name = "tracekit.webmvc.enabled", matchIfMissing = true)
 @ConditionalOnClass(WebMvcAutoConfiguration.class)
 @EnableConfigurationProperties(TracekitWebMvcProperties.class)
-public class TracekitWebMvcAutoConfiguration {
+public final class TracekitWebMvcAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(TracingAwareFilter.class)

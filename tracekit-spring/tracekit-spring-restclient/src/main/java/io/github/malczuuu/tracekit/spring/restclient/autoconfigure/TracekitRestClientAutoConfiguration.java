@@ -14,7 +14,7 @@ import org.springframework.boot.restclient.autoconfigure.RestClientAutoConfigura
 import org.springframework.context.annotation.Bean;
 
 @AutoConfiguration
-@ConditionalOnBooleanProperty(name = "tracekitchen.restclient.enabled", matchIfMissing = true)
+@ConditionalOnBooleanProperty(name = "tracekit.restclient.enabled", matchIfMissing = true)
 @ConditionalOnClass(RestClientAutoConfiguration.class)
 @EnableConfigurationProperties(TracekitRestClientProperties.class)
 public final class TracekitRestClientAutoConfiguration {

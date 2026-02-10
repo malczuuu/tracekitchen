@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Bean;
 /** Auto-configuration for TraceKit module. */
 @AutoConfiguration
 @EnableConfigurationProperties(TracekitProperties.class)
-public class TracekitAutoConfiguration {
+public final class TracekitAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(LoggingContextSimpleTracerBuilderCustomizer.class)
