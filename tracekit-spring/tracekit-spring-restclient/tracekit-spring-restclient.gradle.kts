@@ -13,5 +13,6 @@ dependencies {
     compileOnly(libs.spring.boot.starter.restclient)
 
     testImplementation(libs.spring.boot.starter.restclient.test)
+    testImplementation(libs.spring.boot.starter.webmvc.test)
     testRuntimeOnly(libs.junit.platform.launcher)
 }

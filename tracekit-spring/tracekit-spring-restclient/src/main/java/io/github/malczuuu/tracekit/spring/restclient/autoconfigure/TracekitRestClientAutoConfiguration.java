@@ -14,6 +14,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.restclient.autoconfigure.RestClientAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 
+/** Auto-configuration for TraceKit RestClient module. */
 @AutoConfiguration
 @ConditionalOnBean(Tracer.class)
 @ConditionalOnBooleanProperty(name = "tracekit.restclient.enabled", matchIfMissing = true)
