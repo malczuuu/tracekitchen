@@ -11,6 +11,15 @@ import org.jspecify.annotations.Nullable;
 /** Simple implementation of the {@link Tracer} interface. */
 public class SimpleTracer implements Tracer {
 
+  /**
+   * Creates {@link SimpleTracer} instance with default configuration.
+   *
+   * @return new default instance
+   */
+  public static SimpleTracer create() {
+    return new SimpleTracerBuilder().build();
+  }
+
   private final TraceFactory traceFactory;
   private final SpanLifecycleAdapter lifecycleAdapter;
   private final Clock clock;
