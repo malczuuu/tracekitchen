@@ -35,11 +35,11 @@ final class CompositeLifecycleAdapter implements SpanLifecycleAdapter {
   private final List<SpanLifecycleAdapter> delegates;
 
   private CompositeLifecycleAdapter() {
-    this(List.of());
+    this(new ArrayList<>());
   }
 
   private CompositeLifecycleAdapter(List<SpanLifecycleAdapter> delegates) {
-    this.delegates = List.copyOf(delegates);
+    this.delegates = new ArrayList<>(delegates);
   }
 
   CompositeLifecycleAdapter add(SpanLifecycleAdapter lifecycleAdapter) {

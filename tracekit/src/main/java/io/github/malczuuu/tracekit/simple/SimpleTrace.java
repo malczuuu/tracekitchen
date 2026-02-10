@@ -92,9 +92,10 @@ final class SimpleTrace implements Trace {
     if (obj == null) {
       return false;
     }
-    if (!(obj instanceof Trace that)) {
+    if (!(obj instanceof Trace)) {
       return false;
     }
+    Trace that = (Trace) obj;
     return Objects.equals(traceId, that.getTraceId())
         && Objects.equals(spanId, that.getSpanId())
         && Objects.equals(parentSpanId, that.getParentSpanId())

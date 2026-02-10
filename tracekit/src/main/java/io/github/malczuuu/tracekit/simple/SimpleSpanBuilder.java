@@ -121,6 +121,6 @@ final class SimpleSpanBuilder implements SpanBuilder {
   }
 
   private static boolean hasText(@Nullable String str) {
-    return str != null && !str.isBlank();
+    return str != null && !str.trim().isEmpty();
   }
 }
