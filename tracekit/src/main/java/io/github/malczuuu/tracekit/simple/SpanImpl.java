@@ -127,6 +127,11 @@ final class SpanImpl implements Span {
         });
   }
 
+  /**
+   * Kept package-private for testing purposes.
+   *
+   * @param time span opening time
+   */
   void openAt(Instant time) {
     if (closedAt != null) {
       throw new IllegalStateException("Cannot open a closed span");
@@ -137,6 +142,11 @@ final class SpanImpl implements Span {
     openedAt = time;
   }
 
+  /**
+   * Kept package-private for testing purposes.
+   *
+   * @param time span closing time
+   */
   void closeAt(Instant time) {
     if (openedAt == null) {
       throw new IllegalStateException("Cannot close a non-open span");

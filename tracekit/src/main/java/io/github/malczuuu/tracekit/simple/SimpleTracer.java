@@ -15,8 +15,7 @@ public class SimpleTracer implements Tracer {
   private final SpanLifecycleAdapter lifecycleAdapter;
   private final Clock clock;
 
-  public SimpleTracer(
-      TraceFactory traceFactory, SpanLifecycleAdapter lifecycleAdapter, Clock clock) {
+  SimpleTracer(TraceFactory traceFactory, SpanLifecycleAdapter lifecycleAdapter, Clock clock) {
     this.traceFactory = traceFactory;
     this.lifecycleAdapter = lifecycleAdapter;
     this.clock = clock;
