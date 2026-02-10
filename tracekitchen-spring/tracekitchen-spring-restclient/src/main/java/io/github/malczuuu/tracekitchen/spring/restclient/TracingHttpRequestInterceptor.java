@@ -1,6 +1,6 @@
 package io.github.malczuuu.tracekitchen.spring.restclient;
 
-import io.github.malczuuu.tracekitchen.TraceContext;
+import io.github.malczuuu.tracekitchen.TraceContextSnapshot;
 import io.github.malczuuu.tracekitchen.Tracer;
 import io.github.malczuuu.tracekitchen.spring.TraceHeaderSettings;
 import java.io.IOException;
@@ -22,7 +22,7 @@ public class TracingHttpRequestInterceptor implements ClientHttpRequestIntercept
   @Override
   public ClientHttpResponse intercept(
       HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-    TraceContext context = tracer.getCurrentContext();
+    TraceContextSnapshot context = tracer.getCurrentContext();
 
     if (context != null) {
       attachContextHeaders(request, context);
@@ -31,7 +31,7 @@ public class TracingHttpRequestInterceptor implements ClientHttpRequestIntercept
     return execution.execute(request, body);
   }
 
-  private void attachContextHeaders(HttpRequest request, TraceContext context) {
+  private void attachContextHeaders(HttpRequest request, TraceContextSnapshot context) {
     if (!settings.getTraceIdHeaderNames().isEmpty()) {
       request.getHeaders().add(settings.getTraceIdHeaderNames().get(0), context.getTraceId());
     }

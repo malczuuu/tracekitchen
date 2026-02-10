@@ -16,7 +16,7 @@ public interface TraceContextAware {
   /**
    * Returns the associated tracing context.
    *
-   * @return the associated {@link TraceContext}, or {@code null} if none
+   * @return the associated {@link TraceContextSnapshot}, or {@code null} if none
    */
-  @Nullable TraceContext getContext();
+  @Nullable TraceContextSnapshot getContext();
 }

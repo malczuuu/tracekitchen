@@ -6,7 +6,7 @@ import org.jspecify.annotations.Nullable;
 
 final class CompositeLifecycleAdapter implements TraceContextLifecycleAdapter {
 
-  public static CompositeLifecycleAdapter empty() {
+  static CompositeLifecycleAdapter empty() {
     return new CompositeLifecycleAdapter();
   }
 

@@ -2,6 +2,7 @@ package io.github.malczuuu.tracekitchen.spring.aspect;
 
 import io.github.malczuuu.tracekitchen.OpenContext;
 import io.github.malczuuu.tracekitchen.TraceContext;
+import io.github.malczuuu.tracekitchen.TraceContextSnapshot;
 import io.github.malczuuu.tracekitchen.Tracer;
 import java.lang.reflect.Method;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -54,13 +55,12 @@ public class TraceScheduledAspect {
    */
   @Around("@annotation(org.springframework.scheduling.annotation.Scheduled)")
   public Object aroundScheduled(ProceedingJoinPoint joinPoint) throws Throwable {
-    TraceContext context = tracer.getCurrentContext();
+    TraceContextSnapshot parent = tracer.getCurrentContext();
 
-    if (context == null) {
-      context = tracer.newRootContext(findMethodName(joinPoint));
-    } else {
-      context = context.makeChild(findMethodName(joinPoint));
-    }
+    TraceContext context =
+        parent == null
+            ? tracer.newRootContext(findMethodName(joinPoint))
+            : parent.makeChild(findMethodName(joinPoint));
 
     try (OpenContext open = context.open()) {
       return joinPoint.proceed();

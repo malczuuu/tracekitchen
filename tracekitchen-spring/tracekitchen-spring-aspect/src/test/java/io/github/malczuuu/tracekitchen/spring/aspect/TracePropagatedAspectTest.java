@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.github.malczuuu.tracekitchen.OpenContext;
 import io.github.malczuuu.tracekitchen.TraceContext;
+import io.github.malczuuu.tracekitchen.TraceContextSnapshot;
 import io.github.malczuuu.tracekitchen.Tracer;
 import io.github.malczuuu.tracekitchen.annotation.TraceScope;
 import io.github.malczuuu.tracekitchen.annotation.Traceable;
@@ -33,7 +34,7 @@ class TracePropagatedAspectTest {
   void givenNoContext_whenCallingTraceableMethodWithoutName_shouldSpawnNewContext() {
     assertThat(tracer.getCurrentContext()).isNull();
 
-    TraceContext result = dummyService.traceableDefaultWithoutName();
+    TraceContextSnapshot result = dummyService.traceableDefaultWithoutName();
 
     assertThat(result).isNotNull();
     assertThat(result.getName()).isEqualTo("DummyService.traceableDefaultWithoutName");
@@ -48,7 +49,7 @@ class TracePropagatedAspectTest {
   void givenNoContext_whenCallingTraceableMethodWithName_shouldSpawnNewContext() {
     assertThat(tracer.getCurrentContext()).isNull();
 
-    TraceContext result = dummyService.traceableDefaultWithName();
+    TraceContextSnapshot result = dummyService.traceableDefaultWithName();
 
     assertThat(result).isNotNull();
     assertThat(result.getName()).isEqualTo("nameOfTraceableDefault");
@@ -63,7 +64,7 @@ class TracePropagatedAspectTest {
   void givenOpenContext_whenCallingTraceableMethodWithoutName_shouldSpawnChild() {
     TraceContext parent = tracer.newRootContext("parent");
     try (OpenContext ignored = parent.open()) {
-      TraceContext result = dummyService.traceableDefaultWithoutName();
+      TraceContextSnapshot result = dummyService.traceableDefaultWithoutName();
 
       assertThat(result).isNotNull();
       assertThat(result.getName()).isEqualTo("DummyService.traceableDefaultWithoutName");
@@ -81,7 +82,7 @@ class TracePropagatedAspectTest {
   void givenOpenContext_whenCallingTraceableMethodWithName_shouldSpawnChild() {
     TraceContext parent = tracer.newRootContext("parent");
     try (OpenContext ignored = parent.open()) {
-      TraceContext result = dummyService.traceableDefaultWithName();
+      TraceContextSnapshot result = dummyService.traceableDefaultWithName();
 
       assertThat(result).isNotNull();
       assertThat(result.getName()).isEqualTo("nameOfTraceableDefault");
@@ -99,7 +100,7 @@ class TracePropagatedAspectTest {
   void givenNoContext_whenCallingRequiresNewMethodWithoutName_shouldSpawnNewContext() {
     assertThat(tracer.getCurrentContext()).isNull();
 
-    TraceContext result = dummyService.traceableRequiresNewWithoutName();
+    TraceContextSnapshot result = dummyService.traceableRequiresNewWithoutName();
 
     assertThat(result).isNotNull();
     assertThat(result.getName()).isEqualTo("DummyService.traceableRequiresNewWithoutName");
@@ -114,7 +115,7 @@ class TracePropagatedAspectTest {
   void givenNoContext_whenCallingRequiresNewMethodWithName_shouldSpawnNewContext() {
     assertThat(tracer.getCurrentContext()).isNull();
 
-    TraceContext result = dummyService.traceableRequiresNewWithName();
+    TraceContextSnapshot result = dummyService.traceableRequiresNewWithName();
 
     assertThat(result).isNotNull();
     assertThat(result.getName()).isEqualTo("nameOfTraceableRequiresNew");
@@ -129,7 +130,7 @@ class TracePropagatedAspectTest {
   void givenOpenContext_whenCallingRequiresNewMethodWithoutName_shouldSpawnNewContext() {
     TraceContext parent = tracer.newRootContext("parent");
     try (OpenContext ignored = parent.open()) {
-      TraceContext result = dummyService.traceableRequiresNewWithoutName();
+      TraceContextSnapshot result = dummyService.traceableRequiresNewWithoutName();
 
       assertThat(result).isNotNull();
       assertThat(result.getName()).isEqualTo("DummyService.traceableRequiresNewWithoutName");
@@ -147,7 +148,7 @@ class TracePropagatedAspectTest {
   void givenOpenContext_whenCallingRequiresNewMethodWithName_shouldSpawnNewContext() {
     TraceContext parent = tracer.newRootContext("parent");
     try (OpenContext ignored = parent.open()) {
-      TraceContext result = dummyService.traceableRequiresNewWithName();
+      TraceContextSnapshot result = dummyService.traceableRequiresNewWithName();
 
       assertThat(result).isNotNull();
       assertThat(result.getName()).isEqualTo("nameOfTraceableRequiresNew");
@@ -165,7 +166,7 @@ class TracePropagatedAspectTest {
   void givenNoContext_whenCallingUntracedMethod_shouldNotSpawnContext() {
     assertThat(tracer.getCurrentContext()).isNull();
 
-    TraceContext result = dummyService.untraced();
+    TraceContextSnapshot result = dummyService.untraced();
     assertThat(result).isNull();
 
     assertThat(tracer.getCurrentContext()).isNull();
@@ -175,7 +176,7 @@ class TracePropagatedAspectTest {
   void givenOpenContext_whenCallingUntracedMethod_shouldReuseOpenContext() {
     TraceContext parent = tracer.newRootContext("parent");
     try (OpenContext ignored = parent.open()) {
-      TraceContext result = dummyService.untraced();
+      TraceContextSnapshot result = dummyService.untraced();
 
       assertThat(result).isNotNull();
       assertThat(result).isSameAs(parent);
@@ -194,26 +195,26 @@ class TracePropagatedAspectTest {
     }
 
     @Traceable
-    public TraceContext traceableDefaultWithoutName() {
+    public TraceContextSnapshot traceableDefaultWithoutName() {
       return tracer.getCurrentContext();
     }
 
     @Traceable(name = "nameOfTraceableDefault")
-    public TraceContext traceableDefaultWithName() {
+    public TraceContextSnapshot traceableDefaultWithName() {
       return tracer.getCurrentContext();
     }
 
     @Traceable(scope = TraceScope.REQUIRES_NEW)
-    public TraceContext traceableRequiresNewWithoutName() {
+    public TraceContextSnapshot traceableRequiresNewWithoutName() {
       return tracer.getCurrentContext();
     }
 
     @Traceable(scope = TraceScope.REQUIRES_NEW, name = "nameOfTraceableRequiresNew")
-    public TraceContext traceableRequiresNewWithName() {
+    public TraceContextSnapshot traceableRequiresNewWithName() {
       return tracer.getCurrentContext();
     }
 
-    public TraceContext untraced() {
+    public TraceContextSnapshot untraced() {
       return tracer.getCurrentContext();
     }
   }

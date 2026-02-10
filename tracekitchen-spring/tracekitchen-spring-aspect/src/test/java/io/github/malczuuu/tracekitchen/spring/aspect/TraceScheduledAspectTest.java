@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.github.malczuuu.tracekitchen.OpenContext;
 import io.github.malczuuu.tracekitchen.TraceContext;
+import io.github.malczuuu.tracekitchen.TraceContextSnapshot;
 import io.github.malczuuu.tracekitchen.Tracer;
 import io.github.malczuuu.tracekitchen.spring.aspect.autoconfigure.TracekitchenAspectAutoConfiguration;
 import io.github.malczuuu.tracekitchen.spring.autoconfigure.TracekitchenAutoConfiguration;
@@ -32,7 +33,7 @@ class TraceScheduledAspectTest {
   void givenNoContext_whenCallingScheduledMethod_shouldSpawnNewRootContext() {
     assertThat(tracer.getCurrentContext()).isNull();
 
-    TraceContext result = service.scheduledWithoutContext();
+    TraceContextSnapshot result = service.scheduledWithoutContext();
 
     assertThat(result).isNotNull();
     assertThat(result.getName()).isEqualTo("DummyScheduledService.scheduledWithoutContext");
@@ -48,7 +49,7 @@ class TraceScheduledAspectTest {
     TraceContext parent = tracer.newRootContext("parent");
     try (OpenContext ignored = parent.open()) {
 
-      TraceContext result = service.scheduledWithParentContext();
+      TraceContextSnapshot result = service.scheduledWithParentContext();
 
       assertThat(result).isNotNull();
       assertThat(result.getName()).isEqualTo("DummyScheduledService.scheduledWithParentContext");
@@ -72,12 +73,12 @@ class TraceScheduledAspectTest {
     }
 
     @Scheduled(fixedDelay = 1000)
-    public TraceContext scheduledWithoutContext() {
+    public TraceContextSnapshot scheduledWithoutContext() {
       return tracer.getCurrentContext();
     }
 
     @Scheduled(fixedDelay = 1000)
-    public TraceContext scheduledWithParentContext() {
+    public TraceContextSnapshot scheduledWithParentContext() {
       return tracer.getCurrentContext();
     }
   }

@@ -2,6 +2,7 @@ package io.github.malczuuu.tracekitchen.spring;
 
 import io.github.malczuuu.tracekitchen.OpenContext;
 import io.github.malczuuu.tracekitchen.TraceContext;
+import io.github.malczuuu.tracekitchen.TraceContextSnapshot;
 import io.github.malczuuu.tracekitchen.Tracer;
 import org.springframework.core.task.TaskDecorator;
 
@@ -15,7 +16,7 @@ public class TracingTaskDecorator implements TaskDecorator {
 
   @Override
   public Runnable decorate(Runnable runnable) {
-    TraceContext context = tracer.getCurrentContext();
+    TraceContextSnapshot context = tracer.getCurrentContext();
     if (context == null) {
       return runnable;
     }

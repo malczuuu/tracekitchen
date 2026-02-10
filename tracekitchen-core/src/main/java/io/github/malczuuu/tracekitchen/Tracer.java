@@ -70,7 +70,7 @@ public interface Tracer {
    * <p>This reflects the context most recently opened in the current thread (or execution scope in
    * reactive environments).
    *
-   * @return the current {@link TraceContext}, or {@code null} if no context is active
+   * @return the current {@link TraceContextSnapshot}, or {@code null} if no context is active
    */
-  @Nullable TraceContext getCurrentContext();
+  @Nullable TraceContextSnapshot getCurrentContext();
 }

@@ -30,7 +30,7 @@ public interface OpenContext extends AutoCloseable, TraceContextAware {
    * @return the non-null active {@link TraceContext}
    */
   @Override
-  TraceContext getContext();
+  TraceContextSnapshot getContext();
 
   /** Closes this context scope and restores the previously active context. */
   @Override

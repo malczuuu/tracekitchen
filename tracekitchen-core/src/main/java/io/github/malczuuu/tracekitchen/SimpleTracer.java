@@ -3,24 +3,7 @@ package io.github.malczuuu.tracekitchen;
 import java.time.Clock;
 import org.jspecify.annotations.Nullable;
 
-/**
- * Simple implementation of the {@link Tracer} interface.
- *
- * <p>This tracer provides a minimal, thread-safe tracing mechanism suitable for synchronous and
- * asynchronous applications. It supports creating trace contexts, building contexts from incoming
- * data, opening scopes, and automatically managing {@code MDC} values.
- *
- * <h2>Features:</h2>
- *
- * <ul>
- *   <li>Create root or child {@link TraceContext} instances
- *   <li>Build {@link TraceContext} from extracted or custom values
- *   <li>Open a {@link OpenContext} scope using {@code try-with-resources}
- *   <li>Automatically push/pop context to {@code ThreadLocal} stack
- *   <li>Allow propagating context data into MDC or consuming lifecycle events in any other way via
- *       {@link TraceContextLifecycleAdapter}
- * </ul>
- */
+/** Simple implementation of the {@link Tracer} interface. */
 public class SimpleTracer implements Tracer {
 
   private final TraceFactory traceFactory;
@@ -71,7 +54,7 @@ public class SimpleTracer implements Tracer {
    * @return the currently active {@link TraceContext}, or {@code null} if none
    */
   @Override
-  public @Nullable TraceContext getCurrentContext() {
+  public @Nullable TraceContextSnapshot getCurrentContext() {
     return ContextThreadLocalHolder.current();
   }
 }

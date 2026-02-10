@@ -209,7 +209,7 @@ final class TraceContextImpl implements TraceContext {
      * @return the non-null active {@link TraceContext}
      */
     @Override
-    public TraceContext getContext() {
+    public TraceContextSnapshot getContext() {
       return context;
     }
 

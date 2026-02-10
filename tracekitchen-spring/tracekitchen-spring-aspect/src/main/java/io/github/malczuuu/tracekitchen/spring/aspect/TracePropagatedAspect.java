@@ -2,6 +2,7 @@ package io.github.malczuuu.tracekitchen.spring.aspect;
 
 import io.github.malczuuu.tracekitchen.OpenContext;
 import io.github.malczuuu.tracekitchen.TraceContext;
+import io.github.malczuuu.tracekitchen.TraceContextSnapshot;
 import io.github.malczuuu.tracekitchen.Tracer;
 import io.github.malczuuu.tracekitchen.annotation.TraceScope;
 import io.github.malczuuu.tracekitchen.annotation.Traceable;
@@ -74,11 +75,10 @@ public class TracePropagatedAspect {
     String contextName = findContextName(joinPoint, traceable);
 
     TraceContext context;
-
     if (traceable.scope() == TraceScope.REQUIRES_NEW) {
       context = tracer.newRootContext(contextName);
     } else {
-      TraceContext parent = tracer.getCurrentContext();
+      TraceContextSnapshot parent = tracer.getCurrentContext();
       context = parent != null ? parent.makeChild(contextName) : tracer.newRootContext(contextName);
     }
 
