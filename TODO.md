@@ -2,9 +2,7 @@
 
 Must have:
 
-- [ ] Inclusion of unit/integration tests.
 - [ ] Integration with Actuator for metrics (decide what is there to metric at all).
-- [ ] Error handling in context stack (currently there are all `IllegalStateException`-s being thrown).
 - [ ] Documentation of how existing traceability frameworks inspired this project and what conclusions were established
   from experiments.
 - [ ] Documentation of how this can be used with existing tracing frameworks (W3C format, etc.).
