@@ -1,5 +1,6 @@
 plugins {
     id("internal.java-library-convention")
+    id("internal.publishing-convention")
 }
 
 dependencies {
@@ -11,4 +12,10 @@ dependencies {
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.testclock)
     testRuntimeOnly(libs.junit.platform.launcher)
+}
+
+// see buildSrc/src/main/kotlin/internal.publishing-convention.gradle.kts
+internalPublishing {
+    displayName = "TraceKit"
+    description = "TraceKit Project - Core Module"
 }

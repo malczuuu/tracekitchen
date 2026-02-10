@@ -1,5 +1,6 @@
 plugins {
     id("internal.java-library-convention")
+    id("internal.publishing-convention")
 }
 
 dependencies {
@@ -14,4 +15,10 @@ dependencies {
 
     testImplementation(libs.spring.boot.starter.test)
     testRuntimeOnly(libs.junit.platform.launcher)
+}
+
+// see buildSrc/src/main/kotlin/internal.publishing-convention.gradle.kts
+internalPublishing {
+    displayName = "TraceKit Boot4 Core"
+    description = "TraceKit Project - Core Integration Module - Spring Boot 4"
 }

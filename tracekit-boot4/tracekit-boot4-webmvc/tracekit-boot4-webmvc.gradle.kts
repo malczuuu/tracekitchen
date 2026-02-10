@@ -1,5 +1,6 @@
 plugins {
     id("internal.java-library-convention")
+    id("internal.publishing-convention")
 }
 
 dependencies {
@@ -14,4 +15,10 @@ dependencies {
 
     testImplementation(libs.spring.boot.starter.webmvc.test)
     testRuntimeOnly(libs.junit.platform.launcher)
+}
+
+// see buildSrc/src/main/kotlin/internal.publishing-convention.gradle.kts
+internalPublishing {
+    displayName = "TraceKit Boot4 RestClient"
+    description = "TraceKit Project - WebMVC Integration Module - Spring Boot 4"
 }
