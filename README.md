@@ -30,7 +30,7 @@ This module can be used in plain Java applications and serves as the base for al
 
 ## Spring Integration Modules
 
-### `tracekitchen-spring:tracekitchen-spring-core`
+### `tracekit-spring:tracekit-spring-core`
 
 Provides core Spring support for TraceKitchen.
 
@@ -44,20 +44,20 @@ Responsibilities include:
 
 This module does not define transport-specific behavior.
 
-### `tracekitchen-spring:tracekitchen-spring-aspect`
+### `tracekit-spring:tracekit-spring-aspect`
 
 Aspect-oriented integration for tracing.
 
 This module provides support for `@Traceable` annotation via AOP for automatic context opening/closing.
 
-### `tracekitchen-spring:tracekitchen-spring-restclient`
+### `tracekit-spring:tracekit-spring-restclient`
 
 Integration with Spring's HTTP client infrastructure.
 
 This module adds propagation interceptor for Spring Boot's `RestClient` and `RestTemplate`. Includes active trace
 context into outgoing requests.
 
-### `tracekitchen-spring:tracekitchen-spring-webmvc`
+### `tracekit-spring:tracekit-spring-webmvc`
 
 Server-side integration for Spring WebMVC.
 

@@ -12,14 +12,14 @@ idea {
         settings {
             runConfigurations {
                 create<Application>("launch app-downstream") {
-                    mainClass = "io.github.malczuuu.tracekitchen.app.downstream.DownstreamApplication"
-                    moduleName = "tracekitchen.internal.app-downstream.main"
+                    mainClass = "io.github.malczuuu.tracekit.app.downstream.DownstreamApplication"
+                    moduleName = "tracekitchen.testapp.app-downstream.main"
                     workingDirectory = rootProject.rootDir.absolutePath
                     programParameters = ""
                 }
                 create<Application>("launch app-entrypoint") {
-                    mainClass = "io.github.malczuuu.tracekitchen.app.entrypoint.EntrypointApplication"
-                    moduleName = "tracekitchen.internal.app-entrypoint.main"
+                    mainClass = "io.github.malczuuu.tracekit.app.entrypoint.EntrypointApplication"
+                    moduleName = "tracekitchen.testapp.app-entrypoint.main"
                     workingDirectory = rootProject.rootDir.absolutePath
                     programParameters = ""
                 }
@@ -29,10 +29,6 @@ idea {
                 }
                 create<Gradle>("test project") {
                     taskNames = listOf("check --rerun-tasks")
-                    projectPath = rootProject.rootDir.absolutePath
-                }
-                create<Gradle>("test project [with containers]") {
-                    taskNames = listOf("check --rerun-tasks -Pcontainers.enabled")
                     projectPath = rootProject.rootDir.absolutePath
                 }
             }
