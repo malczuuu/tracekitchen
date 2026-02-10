@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-    implementation(platform(libs.spring.boot.dependencies))
+    compileOnly(platform(libs.spring.boot.dependencies))
 
     api(project(":tracekit-boot4:tracekit-boot4-core"))
 
@@ -14,6 +14,7 @@ dependencies {
 
     compileOnly(libs.spring.boot.starter.restclient)
 
+    testImplementation(platform(libs.spring.boot.dependencies))
     testImplementation(libs.spring.boot.starter.restclient.test)
     testImplementation(libs.spring.boot.starter.webmvc.test)
     testRuntimeOnly(libs.junit.platform.launcher)

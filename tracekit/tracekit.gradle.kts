@@ -5,10 +5,11 @@ plugins {
 }
 
 dependencies {
-    implementation(platform(libs.spring.boot.dependencies))
+    compileOnly(platform(libs.spring.boot.dependencies))
 
     api(libs.jspecify)
 
+    testImplementation(platform(libs.spring.boot.dependencies))
     testImplementation(libs.assertj.core)
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.testclock)

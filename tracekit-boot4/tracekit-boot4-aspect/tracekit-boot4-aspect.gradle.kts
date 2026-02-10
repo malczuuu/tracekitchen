@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-    implementation(platform(libs.spring.boot.dependencies))
+    compileOnly(platform(libs.spring.boot.dependencies))
 
     api(project(":tracekit-boot4:tracekit-boot4-core"))
 
@@ -14,6 +14,7 @@ dependencies {
 
     compileOnly(libs.spring.boot.starter.aspectj)
 
+    testImplementation(platform(libs.spring.boot.dependencies))
     testImplementation(libs.spring.boot.starter.aspectj.test)
     testRuntimeOnly(libs.junit.platform.launcher)
 }

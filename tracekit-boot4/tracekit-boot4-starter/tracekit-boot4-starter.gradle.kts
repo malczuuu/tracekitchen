@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-    implementation(platform(libs.spring.boot.dependencies))
+    compileOnly(platform(libs.spring.boot.dependencies))
 
     api(project(":tracekit"))
     api(project(":tracekit-boot4:tracekit-boot4-core"))

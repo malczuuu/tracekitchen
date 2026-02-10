@@ -1,5 +1,6 @@
 [versions]
 idea-ext = "1.4"
+jspecify = "1.0.0"
 nmcp = "1.4.4"
 problem4j-spring = "2.1.2"
 spotless = "8.2.1"
@@ -36,7 +37,6 @@ spring-boot-starter-webmvc-test = { module = "org.springframework.boot:spring-bo
 
 assertj-core = { module = "org.assertj:assertj-core" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }
-jspecify = { module = "org.jspecify:jspecify" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
 micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-prometheus" }
@@ -53,4 +53,5 @@ springdoc-openapi-starter-webmvc-ui = { module = "org.springdoc:springdoc-openap
 
 ########################
 # individulal depedences
+jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
 testclock = { module = "com.mercateo:test-clock", version.ref = "testclock" }

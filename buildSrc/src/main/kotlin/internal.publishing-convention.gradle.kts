@@ -28,6 +28,12 @@ publishing {
                 from(components["javaPlatform"])
             }
 
+            versionMapping {
+                allVariants {
+                    fromResolutionResult()
+                }
+            }
+
             pom {
                 name = internalPublishing.displayName
                 description = internalPublishing.description
