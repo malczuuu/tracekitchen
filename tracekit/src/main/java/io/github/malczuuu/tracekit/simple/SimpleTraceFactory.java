@@ -5,7 +5,7 @@ import java.util.UUID;
 
 final class SimpleTraceFactory implements TraceFactory {
 
-  static TraceFactory getInstance() {
+  static SimpleTraceFactory getInstance() {
     return Holder.INSTANCE;
   }
 

@@ -79,7 +79,7 @@ class ThreadLocalSpanHolderTest {
   }
 
   private Span fakeContext(String traceId, String spanId) {
-    return new SpanImpl(
-        null, new TraceImpl(traceId, spanId), clock, lifecycleAdapter, traceFactory);
+    return new SimpleSpan(
+        null, new SimpleTrace(traceId, spanId), clock, lifecycleAdapter, traceFactory);
   }
 }

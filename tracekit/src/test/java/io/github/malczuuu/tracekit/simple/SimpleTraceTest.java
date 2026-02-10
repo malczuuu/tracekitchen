@@ -6,11 +6,11 @@ import io.github.malczuuu.tracekit.Trace;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class TraceImplTest {
+class SimpleTraceTest {
 
   @Test
   void shouldInitializeWithBasicConstructor() {
-    TraceImpl trace = new TraceImpl("trace-1", "span-1");
+    SimpleTrace trace = new SimpleTrace("trace-1", "span-1");
 
     assertThat(trace.getTraceId()).isEqualTo("trace-1");
     assertThat(trace.getSpanId()).isEqualTo("span-1");
@@ -20,8 +20,8 @@ class TraceImplTest {
 
   @Test
   void shouldProduceCorrectToString() {
-    Trace traceWithParent = new TraceImpl("t1", "s2", "s1", true);
-    Trace traceWithoutParent = new TraceImpl("t1", "s1");
+    Trace traceWithParent = new SimpleTrace("t1", "s2", "s1", true);
+    Trace traceWithoutParent = new SimpleTrace("t1", "s1");
 
     assertThat(traceWithParent.toString())
         .contains("traceId='t1'", "spanId='s2'", "parentSpanId='s1'", "sampled=true");
@@ -34,7 +34,7 @@ class TraceImplTest {
 
     @Test
     void shouldSpawnChild() {
-      Trace parent = new TraceImpl("t1", "s1", null, true);
+      Trace parent = new SimpleTrace("t1", "s1", null, true);
       Trace child = parent.spawnChild("s2");
 
       assertThat(child.getTraceId()).isEqualTo("t1");
@@ -45,9 +45,9 @@ class TraceImplTest {
 
     @Test
     void shouldIdentifyRelationships() {
-      Trace parent = new TraceImpl("t1", "s1");
+      Trace parent = new SimpleTrace("t1", "s1");
       Trace child = parent.spawnChild("s2");
-      Trace stranger = new TraceImpl("t2", "s3");
+      Trace stranger = new SimpleTrace("t2", "s3");
 
       assertThat(parent.isParentOf(child)).isTrue();
       assertThat(child.isChildOf(parent)).isTrue();
@@ -58,7 +58,7 @@ class TraceImplTest {
 
     @Test
     void shouldHandleNullsInRelationships() {
-      Trace trace = new TraceImpl("t1", "s1");
+      Trace trace = new SimpleTrace("t1", "s1");
 
       assertThat(trace.isParentOf(null)).isFalse();
       assertThat(trace.isChildOf(null)).isFalse();
@@ -70,8 +70,8 @@ class TraceImplTest {
 
     @Test
     void shouldBeEqual() {
-      Trace t1 = new TraceImpl("t", "s", "p", true);
-      Trace t2 = new TraceImpl("t", "s", "p", true);
+      Trace t1 = new SimpleTrace("t", "s", "p", true);
+      Trace t2 = new SimpleTrace("t", "s", "p", true);
 
       assertThat(t1).isEqualTo(t2);
       assertThat(t1.hashCode()).isEqualTo(t2.hashCode());
@@ -79,17 +79,17 @@ class TraceImplTest {
 
     @Test
     void shouldNotBeEqual() {
-      Trace base = new TraceImpl("t", "s", "p", true);
+      Trace base = new SimpleTrace("t", "s", "p", true);
 
-      assertThat(base).isNotEqualTo(new TraceImpl("diff", "s", "p", true));
-      assertThat(base).isNotEqualTo(new TraceImpl("t", "diff", "p", true));
-      assertThat(base).isNotEqualTo(new TraceImpl("t", "s", "diff", true));
-      assertThat(base).isNotEqualTo(new TraceImpl("t", "s", "p", false));
+      assertThat(base).isNotEqualTo(new SimpleTrace("diff", "s", "p", true));
+      assertThat(base).isNotEqualTo(new SimpleTrace("t", "diff", "p", true));
+      assertThat(base).isNotEqualTo(new SimpleTrace("t", "s", "diff", true));
+      assertThat(base).isNotEqualTo(new SimpleTrace("t", "s", "p", false));
     }
 
     @Test
     void shouldHandleEdgeCasesInEquals() {
-      Trace trace = new TraceImpl("t", "s");
+      Trace trace = new SimpleTrace("t", "s");
 
       assertThat(trace.equals(null)).isFalse();
       assertThat(trace.equals("some string")).isFalse();

@@ -8,7 +8,7 @@ import java.time.Clock;
 import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 
-final class SpanBuilderImpl implements SpanBuilder {
+final class SimpleSpanBuilder implements SpanBuilder {
 
   private final @Nullable String name;
   private final @Nullable String traceId;
@@ -20,11 +20,11 @@ final class SpanBuilderImpl implements SpanBuilder {
   private final SpanLifecycleAdapter lifecycleAdapter;
   private final TraceFactory traceFactory;
 
-  SpanBuilderImpl(Clock clock, SpanLifecycleAdapter lifecycleAdapter, TraceFactory traceFactory) {
+  SimpleSpanBuilder(Clock clock, SpanLifecycleAdapter lifecycleAdapter, TraceFactory traceFactory) {
     this(null, null, null, null, false, clock, lifecycleAdapter, traceFactory);
   }
 
-  SpanBuilderImpl(
+  SimpleSpanBuilder(
       @Nullable String name,
       @Nullable String traceId,
       @Nullable String spanId,
@@ -45,31 +45,31 @@ final class SpanBuilderImpl implements SpanBuilder {
 
   @Override
   public SpanBuilder withName(String name) {
-    return new SpanBuilderImpl(
+    return new SimpleSpanBuilder(
         name, traceId, spanId, parentSpanId, sampled, clock, lifecycleAdapter, traceFactory);
   }
 
   @Override
-  public SpanBuilderImpl withTraceId(String traceId) {
-    return new SpanBuilderImpl(
+  public SimpleSpanBuilder withTraceId(String traceId) {
+    return new SimpleSpanBuilder(
         name, traceId, spanId, parentSpanId, sampled, clock, lifecycleAdapter, traceFactory);
   }
 
   @Override
-  public SpanBuilderImpl withSpanId(String spanId) {
-    return new SpanBuilderImpl(
+  public SimpleSpanBuilder withSpanId(String spanId) {
+    return new SimpleSpanBuilder(
         name, traceId, spanId, parentSpanId, sampled, clock, lifecycleAdapter, traceFactory);
   }
 
   @Override
-  public SpanBuilderImpl withParentSpanId(String parentSpanId) {
-    return new SpanBuilderImpl(
+  public SimpleSpanBuilder withParentSpanId(String parentSpanId) {
+    return new SimpleSpanBuilder(
         name, traceId, spanId, parentSpanId, sampled, clock, lifecycleAdapter, traceFactory);
   }
 
   @Override
-  public SpanBuilderImpl withSampled(boolean sampled) {
-    return new SpanBuilderImpl(
+  public SimpleSpanBuilder withSampled(boolean sampled) {
+    return new SimpleSpanBuilder(
         name, traceId, spanId, parentSpanId, sampled, clock, lifecycleAdapter, traceFactory);
   }
 
@@ -83,23 +83,23 @@ final class SpanBuilderImpl implements SpanBuilder {
     if (isComplete()) {
       Objects.requireNonNull(traceId);
       Objects.requireNonNull(spanId);
-      return new SpanImpl(
+      return new SimpleSpan(
           name,
-          new TraceImpl(traceId, spanId, parentSpanId, sampled),
+          new SimpleTrace(traceId, spanId, parentSpanId, sampled),
           clock,
           lifecycleAdapter,
           traceFactory);
     } else {
-      return new SpanImpl(
+      return new SimpleSpan(
           name,
-          new TraceImpl(traceFactory.makeTraceId(), traceFactory.makeSpanId(), null, sampled),
+          new SimpleTrace(traceFactory.makeTraceId(), traceFactory.makeSpanId(), null, sampled),
           clock,
           lifecycleAdapter,
           traceFactory);
     }
   }
 
-  public boolean hasText(@Nullable String str) {
+  private static boolean hasText(@Nullable String str) {
     return str != null && !str.isBlank();
   }
 }

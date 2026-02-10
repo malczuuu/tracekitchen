@@ -28,7 +28,7 @@ public class SimpleTracer implements Tracer {
    */
   @Override
   public Span root() {
-    return new SpanImpl(clock, lifecycleAdapter, traceFactory);
+    return new SimpleSpan(clock, lifecycleAdapter, traceFactory);
   }
 
   /**
@@ -39,7 +39,7 @@ public class SimpleTracer implements Tracer {
    */
   @Override
   public Span root(String name) {
-    return new SpanImpl(name, clock, lifecycleAdapter, traceFactory);
+    return new SimpleSpan(name, clock, lifecycleAdapter, traceFactory);
   }
 
   /**
@@ -49,7 +49,7 @@ public class SimpleTracer implements Tracer {
    */
   @Override
   public SpanBuilder builder() {
-    return new SpanBuilderImpl(clock, lifecycleAdapter, traceFactory);
+    return new SimpleSpanBuilder(clock, lifecycleAdapter, traceFactory);
   }
 
   /**

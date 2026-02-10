@@ -12,7 +12,7 @@ import java.time.OffsetDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class SpanBuilderImplTest {
+class SimpleSpanBuilderTest {
 
   private Clock clock;
   private SpanLifecycleAdapter lifecycleAdapter;
@@ -27,7 +27,7 @@ class SpanBuilderImplTest {
 
   @Test
   void givenBuilder_whenFillingValues_shouldConstructNewObjectOnEachStep() {
-    SpanBuilder builder = new SpanBuilderImpl(clock, lifecycleAdapter, traceFactory);
+    SpanBuilder builder = new SimpleSpanBuilder(clock, lifecycleAdapter, traceFactory);
 
     var afterStep1 = builder.withTraceId("traceId");
     var afterStep2 = afterStep1.withSpanId("spanId");

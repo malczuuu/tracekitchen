@@ -6,18 +6,18 @@ import java.util.List;
 import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 
-class TraceImpl implements Trace {
+final class SimpleTrace implements Trace {
 
   private final String traceId;
   private final String spanId;
   private final @Nullable String parentSpanId;
   private final boolean sampled;
 
-  TraceImpl(String traceId, String spanId) {
+  SimpleTrace(String traceId, String spanId) {
     this(traceId, spanId, null, false);
   }
 
-  TraceImpl(String traceId, String spanId, @Nullable String parentSpanId, boolean sampled) {
+  SimpleTrace(String traceId, String spanId, @Nullable String parentSpanId, boolean sampled) {
     this.traceId = traceId;
     this.spanId = spanId;
     this.parentSpanId = parentSpanId;
@@ -64,7 +64,7 @@ class TraceImpl implements Trace {
 
   @Override
   public Trace spawnChild(String spanId) {
-    return new TraceImpl(traceId, spanId, this.spanId, sampled);
+    return new SimpleTrace(traceId, spanId, this.spanId, sampled);
   }
 
   @Override

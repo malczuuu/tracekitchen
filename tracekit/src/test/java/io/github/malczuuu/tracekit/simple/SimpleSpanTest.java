@@ -14,7 +14,7 @@ import java.time.OffsetDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class SpanImplTest {
+class SimpleSpanTest {
 
   private Clock clock;
   private SpanLifecycleAdapter lifecycleAdapter;
@@ -29,7 +29,7 @@ class SpanImplTest {
 
   @Test
   void givenContext_whenSpawningChild_shouldRetainParentSpanId() {
-    Span parent = new SpanImpl(clock, lifecycleAdapter, traceFactory);
+    Span parent = new SimpleSpan(clock, lifecycleAdapter, traceFactory);
 
     Span child = parent.spawnChild();
 
@@ -40,7 +40,7 @@ class SpanImplTest {
 
   @Test
   void givenOpenContext_whenOpening_shouldThrowException() {
-    SpanImpl span = new SpanImpl(clock, lifecycleAdapter, traceFactory);
+    SimpleSpan span = new SimpleSpan(clock, lifecycleAdapter, traceFactory);
 
     span.openAt(Instant.parse("2025-03-19T09:53:11Z"));
 
@@ -52,7 +52,7 @@ class SpanImplTest {
 
   @Test
   void givenClosedContext_whenOpening_shouldThrowException() {
-    SpanImpl span = new SpanImpl(clock, lifecycleAdapter, traceFactory);
+    SimpleSpan span = new SimpleSpan(clock, lifecycleAdapter, traceFactory);
 
     span.openAt(Instant.parse("2025-03-19T09:53:11Z"));
     span.closeAt(Instant.parse("2025-03-19T09:53:12Z"));
@@ -65,7 +65,7 @@ class SpanImplTest {
 
   @Test
   void givenNotOpenContext_whenClosing_shouldThrowException() {
-    SpanImpl span = new SpanImpl(clock, lifecycleAdapter, traceFactory);
+    SimpleSpan span = new SimpleSpan(clock, lifecycleAdapter, traceFactory);
 
     assertThat(span.getState()).isEqualTo(SpanState.NEW);
     assertThatThrownBy(() -> span.closeAt(Instant.parse("2025-03-19T09:53:11Z")))
@@ -75,7 +75,7 @@ class SpanImplTest {
 
   @Test
   void givenClosedContext_whenClosing_shouldThrowException() {
-    SpanImpl span = new SpanImpl(clock, lifecycleAdapter, traceFactory);
+    SimpleSpan span = new SimpleSpan(clock, lifecycleAdapter, traceFactory);
 
     span.openAt(Instant.parse("2025-03-19T09:53:11Z"));
     span.closeAt(Instant.parse("2025-03-19T09:53:12Z"));
@@ -88,7 +88,7 @@ class SpanImplTest {
 
   @Test
   void givenOpenContext_whenClosingWithTimeEarlierThanOpening_shouldThrowException() {
-    SpanImpl span = new SpanImpl(clock, lifecycleAdapter, traceFactory);
+    SimpleSpan span = new SimpleSpan(clock, lifecycleAdapter, traceFactory);
 
     span.openAt(Instant.parse("2025-03-19T09:53:14Z"));
 

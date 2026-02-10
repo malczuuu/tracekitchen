@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import org.jspecify.annotations.Nullable;
 
-final class SpanImpl implements Span {
+final class SimpleSpan implements Span {
 
   private final @Nullable String name;
   private final Trace trace;
@@ -29,26 +29,26 @@ final class SpanImpl implements Span {
   private @Nullable Instant openedAt = null;
   private @Nullable Instant closedAt = null;
 
-  SpanImpl(Clock clock, SpanLifecycleAdapter lifecycleAdapter, TraceFactory traceFactory) {
+  SimpleSpan(Clock clock, SpanLifecycleAdapter lifecycleAdapter, TraceFactory traceFactory) {
     this(
         null,
-        new TraceImpl(traceFactory.makeTraceId(), traceFactory.makeSpanId()),
+        new SimpleTrace(traceFactory.makeTraceId(), traceFactory.makeSpanId()),
         clock,
         lifecycleAdapter,
         traceFactory);
   }
 
-  SpanImpl(
+  SimpleSpan(
       String name, Clock clock, SpanLifecycleAdapter lifecycleAdapter, TraceFactory traceFactory) {
     this(
         name,
-        new TraceImpl(traceFactory.makeTraceId(), traceFactory.makeSpanId()),
+        new SimpleTrace(traceFactory.makeTraceId(), traceFactory.makeSpanId()),
         clock,
         lifecycleAdapter,
         traceFactory);
   }
 
-  SpanImpl(
+  SimpleSpan(
       @Nullable String name,
       Trace trace,
       Clock clock,
@@ -57,7 +57,7 @@ final class SpanImpl implements Span {
     this(name, trace, null, clock, lifecycleAdapter, traceFactory);
   }
 
-  private SpanImpl(
+  private SimpleSpan(
       @Nullable String name,
       Trace trace,
       @Nullable Map<String, String> attributes,
@@ -74,7 +74,7 @@ final class SpanImpl implements Span {
 
   @Override
   public Span spawnChild() {
-    return new SpanImpl(
+    return new SimpleSpan(
         name,
         trace.spawnChild(traceFactory.makeSpanId()),
         attributes,
@@ -85,7 +85,7 @@ final class SpanImpl implements Span {
 
   @Override
   public Span spawnChild(String name) {
-    return new SpanImpl(
+    return new SimpleSpan(
         name,
         trace.spawnChild(traceFactory.makeSpanId()),
         attributes,

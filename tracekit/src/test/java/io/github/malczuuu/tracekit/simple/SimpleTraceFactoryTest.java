@@ -6,7 +6,7 @@ import io.github.malczuuu.tracekit.TraceFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class TraceFactoryImplTest {
+class SimpleTraceFactoryTest {
 
   private TraceFactory traceFactory;
 
