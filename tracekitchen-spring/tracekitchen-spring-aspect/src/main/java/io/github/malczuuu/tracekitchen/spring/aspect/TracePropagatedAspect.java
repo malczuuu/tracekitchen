@@ -1,8 +1,7 @@
 package io.github.malczuuu.tracekitchen.spring.aspect;
 
-import io.github.malczuuu.tracekitchen.OpenContext;
-import io.github.malczuuu.tracekitchen.TraceContext;
-import io.github.malczuuu.tracekitchen.TraceContextSnapshot;
+import io.github.malczuuu.tracekitchen.OpenSpan;
+import io.github.malczuuu.tracekitchen.Span;
 import io.github.malczuuu.tracekitchen.Tracer;
 import io.github.malczuuu.tracekitchen.annotation.TraceScope;
 import io.github.malczuuu.tracekitchen.annotation.Traceable;
@@ -16,12 +15,12 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.StringUtils;
 
 /**
- * Aspect that automatically propagates a {@link TraceContext} for methods or classes annotated with
- * {@link Traceable}.
+ * Aspect that automatically propagates a {@link Span} for methods or classes annotated with {@link
+ * Traceable}.
  *
  * <p>The aspect intercepts calls to methods annotated with {@code @Traceable} or classes annotated
- * with {@code @Traceable}, and ensures that a {@link TraceContext} is properly created and opened
- * for the duration of the method execution.
+ * with {@code @Traceable}, and ensures that a {@link Span} is properly created and opened for the
+ * duration of the method execution.
  *
  * <p>If a parent context exists and the {@link TraceScope} is {@code REQUIRED}, a child span is
  * created. If {@link TraceScope#REQUIRES_NEW} is used, a new root context is created, ignoring any
@@ -74,15 +73,15 @@ public class TracePropagatedAspect {
 
     String contextName = findContextName(joinPoint, traceable);
 
-    TraceContext context;
+    Span span;
     if (traceable.scope() == TraceScope.REQUIRES_NEW) {
-      context = tracer.newRootContext(contextName);
+      span = tracer.root(contextName);
     } else {
-      TraceContextSnapshot parent = tracer.getCurrentContext();
-      context = parent != null ? parent.makeChild(contextName) : tracer.newRootContext(contextName);
+      Span parent = tracer.getCurrentSpan();
+      span = parent != null ? parent.spawnChild(contextName) : tracer.root(contextName);
     }
 
-    try (OpenContext open = context.open()) {
+    try (OpenSpan open = span.open()) {
       return joinPoint.proceed();
     }
   }

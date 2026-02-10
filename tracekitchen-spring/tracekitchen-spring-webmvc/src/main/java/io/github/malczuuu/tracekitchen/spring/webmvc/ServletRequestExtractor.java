@@ -1,7 +1,7 @@
 package io.github.malczuuu.tracekitchen.spring.webmvc;
 
-import io.github.malczuuu.tracekitchen.TraceContext;
-import io.github.malczuuu.tracekitchen.TraceContextBuilder;
+import io.github.malczuuu.tracekitchen.Span;
+import io.github.malczuuu.tracekitchen.SpanBuilder;
 import io.github.malczuuu.tracekitchen.TraceExtractor;
 import io.github.malczuuu.tracekitchen.Tracer;
 import io.github.malczuuu.tracekitchen.spring.TraceHeaderSettings;
@@ -20,8 +20,8 @@ public class ServletRequestExtractor implements TraceExtractor<HttpServletReques
   }
 
   @Override
-  public Optional<TraceContext> extract(HttpServletRequest origin) {
-    TraceContextBuilder builder = tracer.contextBuilder();
+  public Optional<Span> extract(HttpServletRequest origin) {
+    SpanBuilder builder = tracer.builder();
 
     builder = appendTraceId(origin, builder);
     builder = appendSpanId(origin, builder);
@@ -34,8 +34,7 @@ public class ServletRequestExtractor implements TraceExtractor<HttpServletReques
     return Optional.of(builder.build());
   }
 
-  protected TraceContextBuilder appendTraceId(
-      HttpServletRequest origin, TraceContextBuilder builder) {
+  protected SpanBuilder appendTraceId(HttpServletRequest origin, SpanBuilder builder) {
     Optional<String> optionalValue = findHeader(origin, settings.getTraceIdHeaderNames());
     if (optionalValue.isPresent()) {
       builder = builder.withTraceId(optionalValue.get());
@@ -43,8 +42,7 @@ public class ServletRequestExtractor implements TraceExtractor<HttpServletReques
     return builder;
   }
 
-  protected TraceContextBuilder appendSpanId(
-      HttpServletRequest origin, TraceContextBuilder builder) {
+  protected SpanBuilder appendSpanId(HttpServletRequest origin, SpanBuilder builder) {
     Optional<String> optionalValue = findHeader(origin, settings.getSpanIdHeaderNames());
     if (optionalValue.isPresent()) {
       builder = builder.withSpanId(optionalValue.get());
@@ -52,8 +50,7 @@ public class ServletRequestExtractor implements TraceExtractor<HttpServletReques
     return builder;
   }
 
-  protected TraceContextBuilder appendParentSpanId(
-      HttpServletRequest origin, TraceContextBuilder builder) {
+  protected SpanBuilder appendParentSpanId(HttpServletRequest origin, SpanBuilder builder) {
     Optional<String> optionalValue = findHeader(origin, settings.getParentIdHeaderNames());
     if (optionalValue.isPresent()) {
       builder = builder.withParentSpanId(optionalValue.get());

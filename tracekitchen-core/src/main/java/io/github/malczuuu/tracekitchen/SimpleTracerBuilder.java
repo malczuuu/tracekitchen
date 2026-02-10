@@ -35,13 +35,12 @@ public class SimpleTracerBuilder {
   }
 
   /**
-   * Adds the {@link TraceContextLifecycleAdapter} to receive context lifecycle events.
+   * Adds the {@link SpanLifecycleAdapter} to receive span lifecycle events.
    *
    * @param lifecycleAdapter the lifecycle adapter to add
-   * @return a new builder instance with the given context lifecycle adapter
+   * @return a new builder instance with the given span lifecycle adapter
    */
-  public SimpleTracerBuilder addLifecycleAdapter(
-      @Nullable TraceContextLifecycleAdapter lifecycleAdapter) {
+  public SimpleTracerBuilder addLifecycleAdapter(@Nullable SpanLifecycleAdapter lifecycleAdapter) {
     if (lifecycleAdapter == null) {
       return this;
     }

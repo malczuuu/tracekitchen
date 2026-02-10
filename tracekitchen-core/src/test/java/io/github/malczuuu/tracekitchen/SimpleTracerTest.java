@@ -26,22 +26,22 @@ class SimpleTracerTest {
 
   @Test
   void givenParentContext_whenOpeningChild_thenCurrentIsUpdatedAndRestored() {
-    TraceContext parent = tracer.newRootContext();
+    Span parent = tracer.root();
 
-    Assertions.assertThat(ContextThreadLocalHolder.current()).isNull();
+    Assertions.assertThat(ThreadLocalSpanHolder.current()).isNull();
 
     try (var op = parent.open()) {
-      assertThat(ContextThreadLocalHolder.current()).isSameAs(parent);
+      assertThat(ThreadLocalSpanHolder.current()).isSameAs(parent);
 
-      TraceContext child = parent.makeChild();
+      Span child = parent.spawnChild();
       try (var oc = child.open()) {
-        assertThat(ContextThreadLocalHolder.current()).isSameAs(child);
+        assertThat(ThreadLocalSpanHolder.current()).isSameAs(child);
       }
 
-      assertThat(ContextThreadLocalHolder.current()).isSameAs(parent);
+      assertThat(ThreadLocalSpanHolder.current()).isSameAs(parent);
     }
 
-    assertThat(ContextThreadLocalHolder.current()).isNull();
+    assertThat(ThreadLocalSpanHolder.current()).isNull();
   }
 
   @Test
@@ -52,29 +52,27 @@ class SimpleTracerTest {
     Tracer tracer =
         new SimpleTracerBuilder()
             .addLifecycleAdapter(
-                new TraceContextLifecycleAdapter() {
+                new SpanLifecycleAdapter() {
                   @Override
-                  public void afterOpened(
-                      @NonNull TraceContext context, @Nullable TraceContext previousContext) {
+                  public void afterOpened(@NonNull Span span, @Nullable Span previousSpan) {
                     onOpenedHits.incrementAndGet();
                   }
 
                   @Override
-                  public void afterClosed(
-                      @NonNull TraceContext context, @Nullable TraceContext currentContext) {
+                  public void afterClosed(@NonNull Span span, @Nullable Span currentSpan) {
                     onClosedHits.incrementAndGet();
                   }
                 })
             .withClock(clock)
             .build();
 
-    TraceContext parent = tracer.newRootContext();
+    Span parent = tracer.root();
 
     try (var op = parent.open()) {
       assertThat(onOpenedHits).hasValue(1);
       assertThat(onClosedHits).hasValue(0);
 
-      TraceContext child = parent.makeChild();
+      Span child = parent.spawnChild();
       try (var oc = child.open()) {
         assertThat(onOpenedHits).hasValue(2);
         assertThat(onClosedHits).hasValue(0);
@@ -94,32 +92,28 @@ class SimpleTracerTest {
     AtomicInteger adapter2Opened = new AtomicInteger();
     AtomicInteger adapter2Closed = new AtomicInteger();
 
-    TraceContextLifecycleAdapter adapter1 =
-        new TraceContextLifecycleAdapter() {
+    SpanLifecycleAdapter adapter1 =
+        new SpanLifecycleAdapter() {
           @Override
-          public void afterOpened(
-              @NonNull TraceContext context, @Nullable TraceContext previousContext) {
+          public void afterOpened(@NonNull Span span, @Nullable Span previousSpan) {
             adapter1Opened.incrementAndGet();
           }
 
           @Override
-          public void afterClosed(
-              @NonNull TraceContext context, @Nullable TraceContext currentContext) {
+          public void afterClosed(@NonNull Span span, @Nullable Span currentSpan) {
             adapter1Closed.incrementAndGet();
           }
         };
 
-    TraceContextLifecycleAdapter adapter2 =
-        new TraceContextLifecycleAdapter() {
+    SpanLifecycleAdapter adapter2 =
+        new SpanLifecycleAdapter() {
           @Override
-          public void afterOpened(
-              @NonNull TraceContext context, @Nullable TraceContext previousContext) {
+          public void afterOpened(@NonNull Span span, @Nullable Span previousSpan) {
             adapter2Opened.incrementAndGet();
           }
 
           @Override
-          public void afterClosed(
-              @NonNull TraceContext context, @Nullable TraceContext currentContext) {
+          public void afterClosed(@NonNull Span span, @Nullable Span currentSpan) {
             adapter2Closed.incrementAndGet();
           }
         };
@@ -131,7 +125,7 @@ class SimpleTracerTest {
             .withClock(clock)
             .build();
 
-    TraceContext parent = tracer.newRootContext();
+    Span parent = tracer.root();
 
     try (var p = parent.open()) {
       assertThat(adapter1Opened).hasValue(1);
@@ -139,7 +133,7 @@ class SimpleTracerTest {
       assertThat(adapter1Closed).hasValue(0);
       assertThat(adapter2Closed).hasValue(0);
 
-      TraceContext child = parent.makeChild();
+      Span child = parent.spawnChild();
       try (var c = child.open()) {
         assertThat(adapter1Opened).hasValue(2);
         assertThat(adapter2Opened).hasValue(2);
@@ -157,46 +151,46 @@ class SimpleTracerTest {
 
   @Test
   void givenNestedContexts_whenRetrievingCurrentContext_shouldUseCorrectOne() {
-    TraceContext parent = tracer.newRootContext();
+    Span parent = tracer.root();
 
-    assertThat(tracer.getCurrentContext()).isNull();
+    assertThat(tracer.getCurrentSpan()).isNull();
 
     try (var op = parent.open()) {
-      assertThat(tracer.getCurrentContext()).isSameAs(parent);
+      assertThat(tracer.getCurrentSpan().getTrace()).isEqualTo(parent.getTrace());
 
-      TraceContext child = parent.makeChild();
+      Span child = parent.spawnChild();
       try (var oc = child.open()) {
-        assertThat(tracer.getCurrentContext()).isSameAs(child);
+        assertThat(tracer.getCurrentSpan().getTrace()).isEqualTo(child.getTrace());
       }
 
-      assertThat(tracer.getCurrentContext()).isSameAs(parent);
+      assertThat(tracer.getCurrentSpan().getTrace()).isEqualTo(parent.getTrace());
     }
 
-    assertThat(tracer.getCurrentContext()).isNull();
+    assertThat(tracer.getCurrentSpan()).isNull();
   }
 
   @Test
   void givenOpenContext_shouldBeAwareOfCurrent() {
-    TraceContext parent = tracer.newRootContext();
+    Span parent = tracer.root();
 
     try (var op = parent.open()) {
-      assertThat(op.getContext()).isSameAs(parent);
+      assertThat(op.getSpan().getTrace()).isEqualTo(parent.getTrace());
 
-      TraceContext child = parent.makeChild();
+      Span child = parent.spawnChild();
       try (var oc = child.open()) {
-        assertThat(oc.getContext()).isSameAs(child);
+        assertThat(oc.getSpan().getTrace()).isSameAs(child.getTrace());
       }
 
-      assertThat(op.getContext()).isSameAs(parent);
+      assertThat(op.getSpan().getTrace()).isEqualTo(parent.getTrace());
     }
   }
 
   @Test
   void givenParentAndChildContext_whenOpeningAndClosingContext_shouldTrackDuration() {
-    TraceContext parent = tracer.newRootContext();
-    TraceContext child;
+    Span parent = tracer.root();
+    Span child;
     try (var op = parent.open()) {
-      child = parent.makeChild();
+      child = parent.spawnChild();
 
       clock.fastForward(Duration.ofSeconds(3));
       try (var oc = child.open()) {

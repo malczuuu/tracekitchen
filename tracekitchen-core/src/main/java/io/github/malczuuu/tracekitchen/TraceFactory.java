@@ -4,7 +4,7 @@ package io.github.malczuuu.tracekitchen;
  * Factory for generating trace and span identifiers.
  *
  * <p>Provides methods to create unique identifiers for distributed tracing. Typically used by
- * {@link Tracer} when creating new {@link TraceContext} instances.
+ * {@link Tracer} when creating new {@link Span} instances.
  *
  * <p>The default implementation generates 32-character hexadecimal strings for both trace IDs and
  * span IDs.

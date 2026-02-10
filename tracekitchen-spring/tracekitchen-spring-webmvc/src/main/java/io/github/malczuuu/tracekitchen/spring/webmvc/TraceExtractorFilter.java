@@ -1,7 +1,7 @@
 package io.github.malczuuu.tracekitchen.spring.webmvc;
 
-import io.github.malczuuu.tracekitchen.OpenContext;
-import io.github.malczuuu.tracekitchen.TraceContext;
+import io.github.malczuuu.tracekitchen.OpenSpan;
+import io.github.malczuuu.tracekitchen.Span;
 import io.github.malczuuu.tracekitchen.Tracer;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -28,12 +28,12 @@ public class TraceExtractorFilter extends OncePerRequestFilter implements Ordere
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
     String contextName = request.getMethod() + " " + request.getRequestURI();
-    TraceContext context =
+    Span span =
         servletRequestExtractor
             .extract(request)
-            .map(c -> c.makeChild(contextName))
-            .orElseGet(() -> tracer.newRootContext(contextName));
-    try (OpenContext o = context.open()) {
+            .map(c -> c.spawnChild(contextName))
+            .orElseGet(() -> tracer.root(contextName));
+    try (OpenSpan o = span.open()) {
       filterChain.doFilter(request, response);
     }
   }

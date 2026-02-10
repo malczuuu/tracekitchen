@@ -10,10 +10,10 @@ import java.time.OffsetDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class TraceContextImplTest {
+class SpanImplTest {
 
   private Clock clock;
-  private TraceContextLifecycleAdapter lifecycleAdapter;
+  private SpanLifecycleAdapter lifecycleAdapter;
   private TraceFactory traceFactory;
 
   @BeforeEach
@@ -25,75 +25,73 @@ class TraceContextImplTest {
 
   @Test
   void givenContext_whenSpawningChild_shouldRetainParentSpanId() {
-    TraceContext parent = new TraceContextImpl(clock, lifecycleAdapter, traceFactory);
+    Span parent = new SpanImpl(clock, lifecycleAdapter, traceFactory);
 
-    TraceContext child = parent.makeChild();
+    Span child = parent.spawnChild();
 
-    assertThat(parent.getParentSpanId()).isNull();
-    assertThat(child.getTraceId()).isEqualTo(parent.getTraceId());
-    assertThat(child.getSpanId()).isNotEqualTo(parent.getSpanId());
-    assertThat(child.getParentSpanId()).isEqualTo(parent.getSpanId());
-    assertThat(child.getState()).isEqualTo(ContextState.NEW);
+    assertThat(parent.getTrace().getParentSpanId()).isNull();
+    assertThat(child.getTrace()).matches(it -> it.isChildOf(parent.getTrace()));
+    assertThat(child.getState()).isEqualTo(SpanState.NEW);
   }
 
   @Test
   void givenOpenContext_whenOpening_shouldThrowException() {
-    TraceContextImpl context = new TraceContextImpl(clock, lifecycleAdapter, traceFactory);
+    SpanImpl context = new SpanImpl(clock, lifecycleAdapter, traceFactory);
 
     context.openAt(Instant.parse("2025-03-19T09:53:11Z"));
 
-    assertThat(context.getState()).isEqualTo(ContextState.OPEN);
+    assertThat(context.getState()).isEqualTo(SpanState.OPEN);
     assertThatThrownBy(() -> context.openAt(Instant.parse("2025-03-19T09:53:13Z")))
         .isInstanceOf(IllegalStateException.class)
-        .matches(e -> e.getMessage().equals("Cannot open an already opened context"));
+        .matches(e -> e.getMessage().equals("Cannot open an already opened span"));
   }
 
   @Test
   void givenClosedContext_whenOpening_shouldThrowException() {
-    TraceContextImpl context = new TraceContextImpl(clock, lifecycleAdapter, traceFactory);
+    SpanImpl context = new SpanImpl(clock, lifecycleAdapter, traceFactory);
 
     context.openAt(Instant.parse("2025-03-19T09:53:11Z"));
     context.closeAt(Instant.parse("2025-03-19T09:53:12Z"));
 
-    assertThat(context.getState()).isEqualTo(ContextState.CLOSED);
+    assertThat(context.getState()).isEqualTo(SpanState.CLOSED);
     assertThatThrownBy(() -> context.openAt(Instant.parse("2025-03-19T09:53:13Z")))
         .isInstanceOf(IllegalStateException.class)
-        .matches(e -> e.getMessage().equals("Cannot open a closed context"));
+        .matches(e -> e.getMessage().equals("Cannot open a closed span"));
   }
 
   @Test
   void givenNotOpenContext_whenClosing_shouldThrowException() {
-    TraceContextImpl context = new TraceContextImpl(clock, lifecycleAdapter, traceFactory);
+    SpanImpl context = new SpanImpl(clock, lifecycleAdapter, traceFactory);
 
-    assertThat(context.getState()).isEqualTo(ContextState.NEW);
+    assertThat(context.getState()).isEqualTo(SpanState.NEW);
     assertThatThrownBy(() -> context.closeAt(Instant.parse("2025-03-19T09:53:11Z")))
         .isInstanceOf(IllegalStateException.class)
-        .matches(e -> e.getMessage().equals("Cannot close a non-open context"));
+        .matches(e -> e.getMessage().equals("Cannot close a non-open span"));
   }
 
   @Test
   void givenClosedContext_whenClosing_shouldThrowException() {
-    TraceContextImpl context = new TraceContextImpl(clock, lifecycleAdapter, traceFactory);
+    SpanImpl context = new SpanImpl(clock, lifecycleAdapter, traceFactory);
 
     context.openAt(Instant.parse("2025-03-19T09:53:11Z"));
     context.closeAt(Instant.parse("2025-03-19T09:53:12Z"));
 
-    assertThat(context.getState()).isEqualTo(ContextState.CLOSED);
+    assertThat(context.getState()).isEqualTo(SpanState.CLOSED);
     assertThatThrownBy(() -> context.closeAt(Instant.parse("2025-03-19T09:53:13Z")))
         .isInstanceOf(IllegalStateException.class)
-        .matches(e -> e.getMessage().equals("Cannot close an already closed context"));
+        .matches(e -> e.getMessage().equals("Cannot close an already closed span"));
   }
 
   @Test
   void givenOpenContext_whenClosingWithTimeEarlierThanOpening_shouldThrowException() {
-    TraceContextImpl context = new TraceContextImpl(clock, lifecycleAdapter, traceFactory);
+    SpanImpl context = new SpanImpl(clock, lifecycleAdapter, traceFactory);
 
     context.openAt(Instant.parse("2025-03-19T09:53:14Z"));
 
-    assertThat(context.getState()).isEqualTo(ContextState.OPEN);
+    assertThat(context.getState()).isEqualTo(SpanState.OPEN);
     assertThatThrownBy(() -> context.closeAt(Instant.parse("2025-03-19T09:53:13Z")))
         .isInstanceOf(IllegalStateException.class)
         .matches(
-            e -> e.getMessage().equals("Cannot close context with time earlier than opening time"));
+            e -> e.getMessage().equals("Cannot close span with time earlier than opening time"));
   }
 }

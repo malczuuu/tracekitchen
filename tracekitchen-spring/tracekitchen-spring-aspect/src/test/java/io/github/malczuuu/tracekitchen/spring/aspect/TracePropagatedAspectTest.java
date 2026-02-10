@@ -2,9 +2,8 @@ package io.github.malczuuu.tracekitchen.spring.aspect;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.github.malczuuu.tracekitchen.OpenContext;
-import io.github.malczuuu.tracekitchen.TraceContext;
-import io.github.malczuuu.tracekitchen.TraceContextSnapshot;
+import io.github.malczuuu.tracekitchen.OpenSpan;
+import io.github.malczuuu.tracekitchen.Span;
 import io.github.malczuuu.tracekitchen.Tracer;
 import io.github.malczuuu.tracekitchen.annotation.TraceScope;
 import io.github.malczuuu.tracekitchen.annotation.Traceable;
@@ -32,156 +31,156 @@ class TracePropagatedAspectTest {
 
   @Test
   void givenNoContext_whenCallingTraceableMethodWithoutName_shouldSpawnNewContext() {
-    assertThat(tracer.getCurrentContext()).isNull();
+    assertThat(tracer.getCurrentSpan()).isNull();
 
-    TraceContextSnapshot result = dummyService.traceableDefaultWithoutName();
+    Span result = dummyService.traceableDefaultWithoutName();
 
     assertThat(result).isNotNull();
     assertThat(result.getName()).isEqualTo("DummyService.traceableDefaultWithoutName");
-    assertThat(result.getTraceId()).isNotNull();
-    assertThat(result.getSpanId()).isNotNull();
-    assertThat(result.getParentSpanId()).isNull();
+    assertThat(result.getTrace().getTraceId()).isNotNull();
+    assertThat(result.getTrace().getSpanId()).isNotNull();
+    assertThat(result.getTrace().getParentSpanId()).isNull();
 
-    assertThat(tracer.getCurrentContext()).isNull();
+    assertThat(tracer.getCurrentSpan()).isNull();
   }
 
   @Test
   void givenNoContext_whenCallingTraceableMethodWithName_shouldSpawnNewContext() {
-    assertThat(tracer.getCurrentContext()).isNull();
+    assertThat(tracer.getCurrentSpan()).isNull();
 
-    TraceContextSnapshot result = dummyService.traceableDefaultWithName();
+    Span result = dummyService.traceableDefaultWithName();
 
     assertThat(result).isNotNull();
     assertThat(result.getName()).isEqualTo("nameOfTraceableDefault");
-    assertThat(result.getTraceId()).isNotNull();
-    assertThat(result.getSpanId()).isNotNull();
-    assertThat(result.getParentSpanId()).isNull();
+    assertThat(result.getTrace().getTraceId()).isNotNull();
+    assertThat(result.getTrace().getSpanId()).isNotNull();
+    assertThat(result.getTrace().getParentSpanId()).isNull();
 
-    assertThat(tracer.getCurrentContext()).isNull();
+    assertThat(tracer.getCurrentSpan()).isNull();
   }
 
   @Test
   void givenOpenContext_whenCallingTraceableMethodWithoutName_shouldSpawnChild() {
-    TraceContext parent = tracer.newRootContext("parent");
-    try (OpenContext ignored = parent.open()) {
-      TraceContextSnapshot result = dummyService.traceableDefaultWithoutName();
+    Span parent = tracer.root("parent");
+    try (OpenSpan ignored = parent.open()) {
+      Span result = dummyService.traceableDefaultWithoutName();
 
       assertThat(result).isNotNull();
       assertThat(result.getName()).isEqualTo("DummyService.traceableDefaultWithoutName");
-      assertThat(result.getTraceId()).isNotNull();
-      assertThat(result.getTraceId()).isEqualTo(parent.getTraceId());
-      assertThat(result.getSpanId()).isNotNull();
-      assertThat(result.getSpanId()).isNotEqualTo(parent.getSpanId());
-      assertThat(result.getParentSpanId()).isEqualTo(parent.getSpanId());
+      assertThat(result.getTrace().getTraceId()).isNotNull();
+      assertThat(result.getTrace().getTraceId()).isEqualTo(parent.getTrace().getTraceId());
+      assertThat(result.getTrace().getSpanId()).isNotNull();
+      assertThat(result.getTrace().getSpanId()).isNotEqualTo(parent.getTrace().getSpanId());
+      assertThat(result.getTrace().getParentSpanId()).isEqualTo(parent.getTrace().getSpanId());
 
-      assertThat(tracer.getCurrentContext()).isEqualTo(parent);
+      assertThat(tracer.getCurrentSpan()).isEqualTo(parent);
     }
   }
 
   @Test
   void givenOpenContext_whenCallingTraceableMethodWithName_shouldSpawnChild() {
-    TraceContext parent = tracer.newRootContext("parent");
-    try (OpenContext ignored = parent.open()) {
-      TraceContextSnapshot result = dummyService.traceableDefaultWithName();
+    Span parent = tracer.root("parent");
+    try (OpenSpan ignored = parent.open()) {
+      Span result = dummyService.traceableDefaultWithName();
 
       assertThat(result).isNotNull();
       assertThat(result.getName()).isEqualTo("nameOfTraceableDefault");
-      assertThat(result.getTraceId()).isNotNull();
-      assertThat(result.getTraceId()).isEqualTo(parent.getTraceId());
-      assertThat(result.getSpanId()).isNotNull();
-      assertThat(result.getSpanId()).isNotEqualTo(parent.getSpanId());
-      assertThat(result.getParentSpanId()).isEqualTo(parent.getSpanId());
+      assertThat(result.getTrace().getTraceId()).isNotNull();
+      assertThat(result.getTrace().getTraceId()).isEqualTo(parent.getTrace().getTraceId());
+      assertThat(result.getTrace().getSpanId()).isNotNull();
+      assertThat(result.getTrace().getSpanId()).isNotEqualTo(parent.getTrace().getSpanId());
+      assertThat(result.getTrace().getParentSpanId()).isEqualTo(parent.getTrace().getSpanId());
 
-      assertThat(tracer.getCurrentContext()).isEqualTo(parent);
+      assertThat(tracer.getCurrentSpan()).isEqualTo(parent);
     }
   }
 
   @Test
   void givenNoContext_whenCallingRequiresNewMethodWithoutName_shouldSpawnNewContext() {
-    assertThat(tracer.getCurrentContext()).isNull();
+    assertThat(tracer.getCurrentSpan()).isNull();
 
-    TraceContextSnapshot result = dummyService.traceableRequiresNewWithoutName();
+    Span result = dummyService.traceableRequiresNewWithoutName();
 
     assertThat(result).isNotNull();
     assertThat(result.getName()).isEqualTo("DummyService.traceableRequiresNewWithoutName");
-    assertThat(result.getTraceId()).isNotNull();
-    assertThat(result.getSpanId()).isNotNull();
-    assertThat(result.getParentSpanId()).isNull();
+    assertThat(result.getTrace().getTraceId()).isNotNull();
+    assertThat(result.getTrace().getSpanId()).isNotNull();
+    assertThat(result.getTrace().getParentSpanId()).isNull();
 
-    assertThat(tracer.getCurrentContext()).isNull();
+    assertThat(tracer.getCurrentSpan()).isNull();
   }
 
   @Test
   void givenNoContext_whenCallingRequiresNewMethodWithName_shouldSpawnNewContext() {
-    assertThat(tracer.getCurrentContext()).isNull();
+    assertThat(tracer.getCurrentSpan()).isNull();
 
-    TraceContextSnapshot result = dummyService.traceableRequiresNewWithName();
+    Span result = dummyService.traceableRequiresNewWithName();
 
     assertThat(result).isNotNull();
     assertThat(result.getName()).isEqualTo("nameOfTraceableRequiresNew");
-    assertThat(result.getTraceId()).isNotNull();
-    assertThat(result.getSpanId()).isNotNull();
-    assertThat(result.getParentSpanId()).isNull();
+    assertThat(result.getTrace().getTraceId()).isNotNull();
+    assertThat(result.getTrace().getSpanId()).isNotNull();
+    assertThat(result.getTrace().getParentSpanId()).isNull();
 
-    assertThat(tracer.getCurrentContext()).isNull();
+    assertThat(tracer.getCurrentSpan()).isNull();
   }
 
   @Test
   void givenOpenContext_whenCallingRequiresNewMethodWithoutName_shouldSpawnNewContext() {
-    TraceContext parent = tracer.newRootContext("parent");
-    try (OpenContext ignored = parent.open()) {
-      TraceContextSnapshot result = dummyService.traceableRequiresNewWithoutName();
+    Span parent = tracer.root("parent");
+    try (OpenSpan ignored = parent.open()) {
+      Span result = dummyService.traceableRequiresNewWithoutName();
 
       assertThat(result).isNotNull();
       assertThat(result.getName()).isEqualTo("DummyService.traceableRequiresNewWithoutName");
-      assertThat(result.getTraceId()).isNotNull();
-      assertThat(result.getTraceId()).isNotEqualTo(parent.getTraceId());
-      assertThat(result.getSpanId()).isNotNull();
-      assertThat(result.getSpanId()).isNotEqualTo(parent.getSpanId());
-      assertThat(result.getParentSpanId()).isNull();
+      assertThat(result.getTrace().getTraceId()).isNotNull();
+      assertThat(result.getTrace().getTraceId()).isNotEqualTo(parent.getTrace().getTraceId());
+      assertThat(result.getTrace().getSpanId()).isNotNull();
+      assertThat(result.getTrace().getSpanId()).isNotEqualTo(parent.getTrace().getSpanId());
+      assertThat(result.getTrace().getParentSpanId()).isNull();
 
-      assertThat(tracer.getCurrentContext()).isEqualTo(parent);
+      assertThat(tracer.getCurrentSpan()).isEqualTo(parent);
     }
   }
 
   @Test
   void givenOpenContext_whenCallingRequiresNewMethodWithName_shouldSpawnNewContext() {
-    TraceContext parent = tracer.newRootContext("parent");
-    try (OpenContext ignored = parent.open()) {
-      TraceContextSnapshot result = dummyService.traceableRequiresNewWithName();
+    Span parent = tracer.root("parent");
+    try (OpenSpan ignored = parent.open()) {
+      Span result = dummyService.traceableRequiresNewWithName();
 
       assertThat(result).isNotNull();
       assertThat(result.getName()).isEqualTo("nameOfTraceableRequiresNew");
-      assertThat(result.getTraceId()).isNotNull();
-      assertThat(result.getTraceId()).isNotEqualTo(parent.getTraceId());
-      assertThat(result.getSpanId()).isNotNull();
-      assertThat(result.getSpanId()).isNotEqualTo(parent.getSpanId());
-      assertThat(result.getParentSpanId()).isNull();
+      assertThat(result.getTrace().getTraceId()).isNotNull();
+      assertThat(result.getTrace().getTraceId()).isNotEqualTo(parent.getTrace().getTraceId());
+      assertThat(result.getTrace().getSpanId()).isNotNull();
+      assertThat(result.getTrace().getSpanId()).isNotEqualTo(parent.getTrace().getSpanId());
+      assertThat(result.getTrace().getParentSpanId()).isNull();
 
-      assertThat(tracer.getCurrentContext()).isEqualTo(parent);
+      assertThat(tracer.getCurrentSpan()).isEqualTo(parent);
     }
   }
 
   @Test
   void givenNoContext_whenCallingUntracedMethod_shouldNotSpawnContext() {
-    assertThat(tracer.getCurrentContext()).isNull();
+    assertThat(tracer.getCurrentSpan()).isNull();
 
-    TraceContextSnapshot result = dummyService.untraced();
+    Span result = dummyService.untraced();
     assertThat(result).isNull();
 
-    assertThat(tracer.getCurrentContext()).isNull();
+    assertThat(tracer.getCurrentSpan()).isNull();
   }
 
   @Test
   void givenOpenContext_whenCallingUntracedMethod_shouldReuseOpenContext() {
-    TraceContext parent = tracer.newRootContext("parent");
-    try (OpenContext ignored = parent.open()) {
-      TraceContextSnapshot result = dummyService.untraced();
+    Span parent = tracer.root("parent");
+    try (OpenSpan ignored = parent.open()) {
+      Span result = dummyService.untraced();
 
       assertThat(result).isNotNull();
       assertThat(result).isSameAs(parent);
 
-      assertThat(tracer.getCurrentContext()).isEqualTo(parent);
+      assertThat(tracer.getCurrentSpan()).isEqualTo(parent);
     }
   }
 
@@ -195,27 +194,27 @@ class TracePropagatedAspectTest {
     }
 
     @Traceable
-    public TraceContextSnapshot traceableDefaultWithoutName() {
-      return tracer.getCurrentContext();
+    public Span traceableDefaultWithoutName() {
+      return tracer.getCurrentSpan();
     }
 
     @Traceable(name = "nameOfTraceableDefault")
-    public TraceContextSnapshot traceableDefaultWithName() {
-      return tracer.getCurrentContext();
+    public Span traceableDefaultWithName() {
+      return tracer.getCurrentSpan();
     }
 
     @Traceable(scope = TraceScope.REQUIRES_NEW)
-    public TraceContextSnapshot traceableRequiresNewWithoutName() {
-      return tracer.getCurrentContext();
+    public Span traceableRequiresNewWithoutName() {
+      return tracer.getCurrentSpan();
     }
 
     @Traceable(scope = TraceScope.REQUIRES_NEW, name = "nameOfTraceableRequiresNew")
-    public TraceContextSnapshot traceableRequiresNewWithName() {
-      return tracer.getCurrentContext();
+    public Span traceableRequiresNewWithName() {
+      return tracer.getCurrentSpan();
     }
 
-    public TraceContextSnapshot untraced() {
-      return tracer.getCurrentContext();
+    public Span untraced() {
+      return tracer.getCurrentSpan();
     }
   }
 }

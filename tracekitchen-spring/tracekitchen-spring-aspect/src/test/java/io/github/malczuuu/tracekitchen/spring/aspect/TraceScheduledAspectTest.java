@@ -2,9 +2,8 @@ package io.github.malczuuu.tracekitchen.spring.aspect;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.github.malczuuu.tracekitchen.OpenContext;
-import io.github.malczuuu.tracekitchen.TraceContext;
-import io.github.malczuuu.tracekitchen.TraceContextSnapshot;
+import io.github.malczuuu.tracekitchen.OpenSpan;
+import io.github.malczuuu.tracekitchen.Span;
 import io.github.malczuuu.tracekitchen.Tracer;
 import io.github.malczuuu.tracekitchen.spring.aspect.autoconfigure.TracekitchenAspectAutoConfiguration;
 import io.github.malczuuu.tracekitchen.spring.autoconfigure.TracekitchenAutoConfiguration;
@@ -31,35 +30,35 @@ class TraceScheduledAspectTest {
 
   @Test
   void givenNoContext_whenCallingScheduledMethod_shouldSpawnNewRootContext() {
-    assertThat(tracer.getCurrentContext()).isNull();
+    assertThat(tracer.getCurrentSpan()).isNull();
 
-    TraceContextSnapshot result = service.scheduledWithoutContext();
+    Span result = service.scheduledWithoutContext();
 
     assertThat(result).isNotNull();
     assertThat(result.getName()).isEqualTo("DummyScheduledService.scheduledWithoutContext");
-    assertThat(result.getTraceId()).isNotNull();
-    assertThat(result.getSpanId()).isNotNull();
-    assertThat(result.getParentSpanId()).isNull();
+    assertThat(result.getTrace().getTraceId()).isNotNull();
+    assertThat(result.getTrace().getSpanId()).isNotNull();
+    assertThat(result.getTrace().getParentSpanId()).isNull();
 
-    assertThat(tracer.getCurrentContext()).isNull();
+    assertThat(tracer.getCurrentSpan()).isNull();
   }
 
   @Test
   void givenOpenContext_whenCallingScheduledMethod_shouldReuseExistingContext() {
-    TraceContext parent = tracer.newRootContext("parent");
-    try (OpenContext ignored = parent.open()) {
+    Span parent = tracer.root("parent");
+    try (OpenSpan ignored = parent.open()) {
 
-      TraceContextSnapshot result = service.scheduledWithParentContext();
+      Span result = service.scheduledWithParentContext();
 
       assertThat(result).isNotNull();
       assertThat(result.getName()).isEqualTo("DummyScheduledService.scheduledWithParentContext");
-      assertThat(result.getTraceId()).isNotNull();
-      assertThat(result.getTraceId()).isEqualTo(parent.getTraceId());
-      assertThat(result.getSpanId()).isNotNull();
-      assertThat(result.getSpanId()).isNotEqualTo(parent.getSpanId());
-      assertThat(result.getParentSpanId()).isEqualTo(parent.getSpanId());
+      assertThat(result.getTrace().getTraceId()).isNotNull();
+      assertThat(result.getTrace().getTraceId()).isEqualTo(parent.getTrace().getTraceId());
+      assertThat(result.getTrace().getSpanId()).isNotNull();
+      assertThat(result.getTrace().getSpanId()).isNotEqualTo(parent.getTrace().getSpanId());
+      assertThat(result.getTrace().getParentSpanId()).isEqualTo(parent.getTrace().getSpanId());
 
-      assertThat(tracer.getCurrentContext()).isEqualTo(parent);
+      assertThat(tracer.getCurrentSpan()).isEqualTo(parent);
     }
   }
 
@@ -73,13 +72,13 @@ class TraceScheduledAspectTest {
     }
 
     @Scheduled(fixedDelay = 1000)
-    public TraceContextSnapshot scheduledWithoutContext() {
-      return tracer.getCurrentContext();
+    public Span scheduledWithoutContext() {
+      return tracer.getCurrentSpan();
     }
 
     @Scheduled(fixedDelay = 1000)
-    public TraceContextSnapshot scheduledWithParentContext() {
-      return tracer.getCurrentContext();
+    public Span scheduledWithParentContext() {
+      return tracer.getCurrentSpan();
     }
   }
 }

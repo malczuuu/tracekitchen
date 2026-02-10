@@ -1,6 +1,6 @@
 package io.github.malczuuu.tracekitchen.spring.restclient;
 
-import io.github.malczuuu.tracekitchen.TraceContextSnapshot;
+import io.github.malczuuu.tracekitchen.Span;
 import io.github.malczuuu.tracekitchen.Tracer;
 import io.github.malczuuu.tracekitchen.spring.TraceHeaderSettings;
 import java.io.IOException;
@@ -22,24 +22,28 @@ public class TracingHttpRequestInterceptor implements ClientHttpRequestIntercept
   @Override
   public ClientHttpResponse intercept(
       HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-    TraceContextSnapshot context = tracer.getCurrentContext();
+    Span span = tracer.getCurrentSpan();
 
-    if (context != null) {
-      attachContextHeaders(request, context);
+    if (span != null) {
+      attachContextHeaders(request, span);
     }
 
     return execution.execute(request, body);
   }
 
-  private void attachContextHeaders(HttpRequest request, TraceContextSnapshot context) {
+  private void attachContextHeaders(HttpRequest request, Span span) {
     if (!settings.getTraceIdHeaderNames().isEmpty()) {
-      request.getHeaders().add(settings.getTraceIdHeaderNames().get(0), context.getTraceId());
+      request
+          .getHeaders()
+          .add(settings.getTraceIdHeaderNames().get(0), span.getTrace().getTraceId());
     }
     if (!settings.getSpanIdHeaderNames().isEmpty()) {
-      request.getHeaders().add(settings.getSpanIdHeaderNames().get(0), context.getSpanId());
+      request.getHeaders().add(settings.getSpanIdHeaderNames().get(0), span.getTrace().getSpanId());
     }
     if (!settings.getParentIdHeaderNames().isEmpty()) {
-      request.getHeaders().add(settings.getParentIdHeaderNames().get(0), context.getParentSpanId());
+      request
+          .getHeaders()
+          .add(settings.getParentIdHeaderNames().get(0), span.getTrace().getParentSpanId());
     }
   }
 }

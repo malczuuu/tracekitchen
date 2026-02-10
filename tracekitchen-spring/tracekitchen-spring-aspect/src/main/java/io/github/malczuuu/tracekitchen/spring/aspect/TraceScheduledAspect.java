@@ -1,8 +1,7 @@
 package io.github.malczuuu.tracekitchen.spring.aspect;
 
-import io.github.malczuuu.tracekitchen.OpenContext;
-import io.github.malczuuu.tracekitchen.TraceContext;
-import io.github.malczuuu.tracekitchen.TraceContextSnapshot;
+import io.github.malczuuu.tracekitchen.OpenSpan;
+import io.github.malczuuu.tracekitchen.Span;
 import io.github.malczuuu.tracekitchen.Tracer;
 import java.lang.reflect.Method;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -11,13 +10,11 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 
 /**
- * Aspect that automatically propagates a {@link TraceContext} for methods annotated with {@code
- * Scheduled}.
+ * Aspect that automatically propagates a {@link Span} for methods annotated with {@code Scheduled}.
  *
- * <p>This aspect intercepts execution of scheduled methods and ensures that a {@link TraceContext}
- * is available during the method's execution. If no context is active, a new root context is
- * created. If a context already exists, a child span is created to maintain proper tracing
- * hierarchy.
+ * <p>This aspect intercepts execution of scheduled methods and ensures that a {@link Span} is
+ * available during the method's execution. If no context is active, a new root context is created.
+ * If a context already exists, a child span is created to maintain proper tracing hierarchy.
  *
  * <p>The context is automatically closed at the end of the method via try-with-resources, ensuring
  * that any previous context is restored.
@@ -44,9 +41,9 @@ public class TraceScheduledAspect {
   /**
    * Around advice that wraps execution of methods annotated with {@code Scheduled}.
    *
-   * <p>If there is an active {@link TraceContext}, a child span is created. Otherwise, a new root
-   * context is created. The context is opened before method execution and automatically closed to
-   * restore any previous context.
+   * <p>If there is an active {@link Span}, a child span is created. Otherwise, a new root context
+   * is created. The context is opened before method execution and automatically closed to restore
+   * any previous context.
    *
    * @param joinPoint the join point representing the intercepted scheduled method
    * @return the method's return value
@@ -55,14 +52,14 @@ public class TraceScheduledAspect {
    */
   @Around("@annotation(org.springframework.scheduling.annotation.Scheduled)")
   public Object aroundScheduled(ProceedingJoinPoint joinPoint) throws Throwable {
-    TraceContextSnapshot parent = tracer.getCurrentContext();
+    Span parent = tracer.getCurrentSpan();
 
-    TraceContext context =
+    Span span =
         parent == null
-            ? tracer.newRootContext(findMethodName(joinPoint))
-            : parent.makeChild(findMethodName(joinPoint));
+            ? tracer.root(findMethodName(joinPoint))
+            : parent.spawnChild(findMethodName(joinPoint));
 
-    try (OpenContext open = context.open()) {
+    try (OpenSpan open = span.open()) {
       return joinPoint.proceed();
     }
   }
