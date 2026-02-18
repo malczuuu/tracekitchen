@@ -1,5 +1,5 @@
 [versions]
-idea-ext = "1.4"
+idea-ext = "1.4.1"
 jspecify = "1.0.0"
 nmcp = "1.4.4"
 problem4j-spring = "2.1.2"
