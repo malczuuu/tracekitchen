@@ -55,9 +55,13 @@ import org.springframework.web.client.RestOperations;
 class TracingHttpRequestInterceptorTest {
 
   @LocalServerPort private int port;
+
   @Autowired private DummyController dummyController;
+
   @Autowired private Tracer tracer;
+
   @Autowired private RestClient restClient;
+
   @Autowired private RestOperations restOperations;
 
   @AfterEach

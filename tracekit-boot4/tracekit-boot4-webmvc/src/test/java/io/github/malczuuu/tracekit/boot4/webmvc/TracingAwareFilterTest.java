@@ -57,6 +57,7 @@ import org.springframework.web.bind.annotation.RestController;
 class TracingAwareFilterTest {
 
   @Autowired private DummyController dummyController;
+
   @Autowired private MockMvc mockMvc;
 
   @BeforeEach

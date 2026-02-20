@@ -72,12 +72,11 @@ public class ScheduledTracingAspect {
    */
   @Around("@annotation(org.springframework.scheduling.annotation.Scheduled)")
   public Object aroundScheduled(ProceedingJoinPoint joinPoint) throws Throwable {
-    Span parent = tracer.getCurrentSpan();
-
     Span span =
-        parent == null
-            ? tracer.root(findMethodName(joinPoint))
-            : parent.spawnChild(findMethodName(joinPoint));
+        tracer
+            .findCurrentSpan()
+            .map(s -> s.spawnChild(findMethodName(joinPoint)))
+            .orElseGet(() -> tracer.root(findMethodName(joinPoint)));
 
     try (OpenSpan open = span.open()) {
       return joinPoint.proceed();

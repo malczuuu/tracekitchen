@@ -48,11 +48,12 @@ import org.springframework.test.context.ActiveProfiles;
 class ScheduledTracingAspectTest {
 
   @Autowired private DummyScheduledService service;
+
   @Autowired private Tracer tracer;
 
   @Test
   void givenNoContext_whenCallingScheduledMethod_shouldSpawnNewRootContext() {
-    assertThat(tracer.getCurrentSpan()).isNull();
+    assertThat(tracer.findCurrentSpan()).isEmpty();
 
     Span result = service.scheduledWithoutContext();
 
@@ -62,7 +63,7 @@ class ScheduledTracingAspectTest {
     assertThat(result.getTrace().getSpanId()).isNotNull();
     assertThat(result.getTrace().getParentSpanId()).isNull();
 
-    assertThat(tracer.getCurrentSpan()).isNull();
+    assertThat(tracer.findCurrentSpan()).isEmpty();
   }
 
   @Test
@@ -95,7 +96,7 @@ class ScheduledTracingAspectTest {
 
     @Scheduled(fixedDelay = 1000)
     public Span scheduledWithoutContext() {
-      return tracer.getCurrentSpan();
+      return tracer.findCurrentSpan().orElse(null);
     }
 
     @Scheduled(fixedDelay = 1000)

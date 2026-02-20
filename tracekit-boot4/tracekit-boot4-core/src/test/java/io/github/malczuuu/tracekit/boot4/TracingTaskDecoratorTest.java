@@ -47,7 +47,7 @@ class TracingTaskDecoratorTest {
 
   @Test
   void givenNoActiveSpan_whenDecorating_shouldReturnOriginalRunnable() {
-    Runnable original = () -> testSpan = tracer.getCurrentSpan();
+    Runnable original = () -> testSpan = tracer.findCurrentSpan().orElse(null);
 
     Runnable decorated = decorator.decorate(original);
 

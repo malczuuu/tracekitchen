@@ -49,11 +49,12 @@ import org.springframework.test.context.ActiveProfiles;
 class TraceableTracingAspectTest {
 
   @Autowired private DummyService dummyService;
+
   @Autowired private Tracer tracer;
 
   @Test
   void givenNoContext_whenCallingTraceableMethodWithoutName_shouldSpawnNewContext() {
-    assertThat(tracer.getCurrentSpan()).isNull();
+    assertThat(tracer.findCurrentSpan()).isEmpty();
 
     Span result = dummyService.traceableDefaultWithoutName();
 
@@ -63,12 +64,12 @@ class TraceableTracingAspectTest {
     assertThat(result.getTrace().getSpanId()).isNotNull();
     assertThat(result.getTrace().getParentSpanId()).isNull();
 
-    assertThat(tracer.getCurrentSpan()).isNull();
+    assertThat(tracer.findCurrentSpan()).isEmpty();
   }
 
   @Test
   void givenNoContext_whenCallingTraceableMethodWithName_shouldSpawnNewContext() {
-    assertThat(tracer.getCurrentSpan()).isNull();
+    assertThat(tracer.findCurrentSpan()).isEmpty();
 
     Span result = dummyService.traceableDefaultWithName();
 
@@ -78,7 +79,7 @@ class TraceableTracingAspectTest {
     assertThat(result.getTrace().getSpanId()).isNotNull();
     assertThat(result.getTrace().getParentSpanId()).isNull();
 
-    assertThat(tracer.getCurrentSpan()).isNull();
+    assertThat(tracer.findCurrentSpan()).isEmpty();
   }
 
   @Test
@@ -119,7 +120,7 @@ class TraceableTracingAspectTest {
 
   @Test
   void givenNoContext_whenCallingRequiresNewMethodWithoutName_shouldSpawnNewContext() {
-    assertThat(tracer.getCurrentSpan()).isNull();
+    assertThat(tracer.findCurrentSpan()).isEmpty();
 
     Span result = dummyService.traceableRequiresNewWithoutName();
 
@@ -129,12 +130,12 @@ class TraceableTracingAspectTest {
     assertThat(result.getTrace().getSpanId()).isNotNull();
     assertThat(result.getTrace().getParentSpanId()).isNull();
 
-    assertThat(tracer.getCurrentSpan()).isNull();
+    assertThat(tracer.findCurrentSpan()).isEmpty();
   }
 
   @Test
   void givenNoContext_whenCallingRequiresNewMethodWithName_shouldSpawnNewContext() {
-    assertThat(tracer.getCurrentSpan()).isNull();
+    assertThat(tracer.findCurrentSpan()).isEmpty();
 
     Span result = dummyService.traceableRequiresNewWithName();
 
@@ -144,7 +145,7 @@ class TraceableTracingAspectTest {
     assertThat(result.getTrace().getSpanId()).isNotNull();
     assertThat(result.getTrace().getParentSpanId()).isNull();
 
-    assertThat(tracer.getCurrentSpan()).isNull();
+    assertThat(tracer.findCurrentSpan()).isEmpty();
   }
 
   @Test
@@ -185,12 +186,12 @@ class TraceableTracingAspectTest {
 
   @Test
   void givenNoContext_whenCallingUntracedMethod_shouldNotSpawnContext() {
-    assertThat(tracer.getCurrentSpan()).isNull();
+    assertThat(tracer.findCurrentSpan()).isEmpty();
 
     Span result = dummyService.untraced();
     assertThat(result).isNull();
 
-    assertThat(tracer.getCurrentSpan()).isNull();
+    assertThat(tracer.findCurrentSpan()).isEmpty();
   }
 
   @Test
@@ -236,7 +237,7 @@ class TraceableTracingAspectTest {
     }
 
     public Span untraced() {
-      return tracer.getCurrentSpan();
+      return tracer.findCurrentSpan().orElse(null);
     }
   }
 }

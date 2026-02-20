@@ -176,7 +176,7 @@ class SimpleTracerTest {
   void givenNestedContexts_whenRetrievingCurrentContext_shouldUseCorrectOne() {
     Span parent = tracer.root();
 
-    assertThat(tracer.getCurrentSpan()).isNull();
+    assertThat(tracer.findCurrentSpan()).isEmpty();
 
     try (var op = parent.open()) {
       Span parentSpan = tracer.getCurrentSpan();
@@ -194,7 +194,7 @@ class SimpleTracerTest {
       assertThat(parentSpan).isNotNull().extracting(Span::getTrace).isEqualTo(parent.getTrace());
     }
 
-    assertThat(tracer.getCurrentSpan()).isNull();
+    assertThat(tracer.findCurrentSpan()).isEmpty();
   }
 
   @Test

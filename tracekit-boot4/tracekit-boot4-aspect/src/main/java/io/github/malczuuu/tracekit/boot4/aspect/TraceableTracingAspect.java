@@ -96,8 +96,11 @@ public class TraceableTracingAspect {
     if (traceable.scope() == TraceScope.REQUIRES_NEW) {
       span = tracer.root(contextName);
     } else {
-      Span parent = tracer.getCurrentSpan();
-      span = parent != null ? parent.spawnChild(contextName) : tracer.root(contextName);
+      span =
+          tracer
+              .findCurrentSpan()
+              .map(s -> s.spawnChild(contextName))
+              .orElseGet(() -> tracer.root(contextName));
     }
 
     try (OpenSpan open = span.open()) {

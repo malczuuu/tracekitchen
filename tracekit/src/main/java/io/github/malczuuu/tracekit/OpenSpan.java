@@ -37,7 +37,10 @@ public interface OpenSpan extends AutoCloseable, SpanAware {
   @Override
   Span getSpan();
 
-  /** Closes this span and restores the previously active one. */
+  /**
+   * Closes this span and restores the previously active one. If used alongside {@code
+   * try-with-resources}, should not be called manually.
+   */
   @Override
   void close();
 }

@@ -20,13 +20,16 @@
  */
 package io.github.malczuuu.tracekit.simple;
 
+import io.github.malczuuu.tracekit.MalformedSpanException;
+import io.github.malczuuu.tracekit.NoCurrentSpanException;
 import io.github.malczuuu.tracekit.Span;
 import io.github.malczuuu.tracekit.SpanBuilder;
 import io.github.malczuuu.tracekit.SpanLifecycleAdapter;
+import io.github.malczuuu.tracekit.SpanState;
 import io.github.malczuuu.tracekit.TraceFactory;
 import io.github.malczuuu.tracekit.Tracer;
 import java.time.Clock;
-import org.jspecify.annotations.Nullable;
+import java.util.Optional;
 
 /** Simple implementation of the {@link Tracer} interface. */
 public class SimpleTracer implements Tracer {
@@ -84,10 +87,34 @@ public class SimpleTracer implements Tracer {
   /**
    * {@inheritDoc}
    *
-   * @return the currently active {@link Span}, or {@code null} if none
+   * @return the {@link Optional} holding current {@link Span}, or {@link Optional#empty()} if no
+   *     span is active
    */
   @Override
-  public @Nullable Span getCurrentSpan() {
-    return ThreadLocalSpanHolder.current();
+  public Optional<Span> findCurrentSpan() {
+    Span span = ThreadLocalSpanHolder.current();
+    if (span == null) {
+      return Optional.empty();
+    }
+    validateCurrentSpan(span);
+    return Optional.of(span);
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @throws NoCurrentSpanException if no span is active
+   * @return the current {@link Span}
+   */
+  @Override
+  public final Span getCurrentSpan() throws NoCurrentSpanException {
+    return findCurrentSpan().orElseThrow(() -> new NoCurrentSpanException("no span is active"));
+  }
+
+  protected void validateCurrentSpan(Span span) {
+    if (span.getState() != SpanState.OPEN) {
+      throw new MalformedSpanException(
+          "active span is not OPEN, current state is " + span.getState());
+    }
   }
 }

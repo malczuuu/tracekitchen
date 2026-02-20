@@ -58,10 +58,10 @@ public class TracingTaskDecorator implements TaskDecorator {
    */
   @Override
   public Runnable decorate(Runnable runnable) {
-    Span span = tracer.getCurrentSpan();
-    if (span == null) {
-      return runnable;
-    }
+    return tracer.findCurrentSpan().map(span -> wrap(runnable, span)).orElse(runnable);
+  }
+
+  private Runnable wrap(Runnable runnable, Span span) {
     return () -> {
       Span child = span.spawnChild(span.getName() + " [subroutine]");
       try (OpenSpan open = child.open()) {

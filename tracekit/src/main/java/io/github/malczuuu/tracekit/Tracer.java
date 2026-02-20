@@ -20,7 +20,7 @@
  */
 package io.github.malczuuu.tracekit;
 
-import org.jspecify.annotations.Nullable;
+import java.util.Optional;
 
 /**
  * Main entry point for tracing operations.
@@ -56,12 +56,26 @@ public interface Tracer {
   SpanBuilder builder();
 
   /**
-   * Returns the currently active span, or {@code null} if none.
+   * Returns the {@link Optional} holding currently active span, or {@link Optional#empty()} if no
+   * span is active
    *
    * <p>This reflects the span most recently opened in the current thread (or execution scope in
    * reactive environments).
    *
-   * @return the current {@link Span}, or {@code null} if no span is active
+   * @return the {@link Optional} holding current {@link Span}, or {@link Optional#empty()} if no
+   *     span is active
    */
-  @Nullable Span getCurrentSpan();
+  Optional<Span> findCurrentSpan();
+
+  /**
+   * Returns the currently active span, or throws {@link NoCurrentSpanException} if no span is
+   * active
+   *
+   * <p>This reflects the span most recently opened in the current thread (or execution scope in
+   * reactive environments).
+   *
+   * @throws NoCurrentSpanException if no span is active
+   * @return the current {@link Span}
+   */
+  Span getCurrentSpan() throws NoCurrentSpanException;
 }
