@@ -31,6 +31,8 @@ import io.github.malczuuu.tracekit.TraceFactory;
 import io.github.malczuuu.tracekit.Tracer;
 import java.time.Clock;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
 
 /** Simple implementation of the {@link Tracer} interface. */
 public class SimpleTracer implements Tracer {
@@ -110,6 +112,31 @@ public class SimpleTracer implements Tracer {
   @Override
   public final Span getCurrentSpan() throws NoCurrentSpanException {
     return findCurrentSpan().orElseThrow(() -> new NoCurrentSpanException("no span is active"));
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @param executor the executor service to wrap
+   * @return a tracing-aware {@link ExecutorService} that delegates to the given executor
+   */
+  @Override
+  public ExecutorService wrap(ExecutorService executor) {
+    if (executor instanceof ScheduledExecutorService) {
+      return wrap((ScheduledExecutorService) executor);
+    }
+    return new TracingExecutor(executor, this);
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @param executor the scheduled executor service to wrap
+   * @return a tracing-aware {@link ScheduledExecutorService} that delegates to the given executor
+   */
+  @Override
+  public ScheduledExecutorService wrap(ScheduledExecutorService executor) {
+    return new TracingScheduledExecutor(executor, this);
   }
 
   protected void validateCurrentSpan(Span span) {

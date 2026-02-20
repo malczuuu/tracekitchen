@@ -28,7 +28,8 @@ Responsibilities include:
 - root and child context creation,
 - span hierarchy management,
 - lifecycle handling (`open` / `close`),
-- lifecycle callback adapters.
+- lifecycle callback adapters,
+- context propagation utilities for thread pools.
 
 This module can be used in plain Java applications and serves as the base for all other integrations.
 

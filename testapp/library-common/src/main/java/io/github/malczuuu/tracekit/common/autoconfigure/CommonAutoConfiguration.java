@@ -4,6 +4,8 @@ import io.github.malczuuu.tracekit.common.LoggingAdviceInspector;
 import io.github.malczuuu.tracekit.common.LoggingFilter;
 import io.github.malczuuu.tracekit.common.OpenApiPathSorter;
 import java.time.Clock;
+import java.time.ZoneId;
+
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -17,7 +19,7 @@ public final class CommonAutoConfiguration {
   @Bean
   @ConditionalOnMissingBean(Clock.class)
   Clock clock() {
-    return Clock.systemDefaultZone();
+    return Clock.system(ZoneId.systemDefault());
   }
 
   @Bean

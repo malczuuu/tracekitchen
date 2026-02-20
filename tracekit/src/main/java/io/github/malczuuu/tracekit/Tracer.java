@@ -22,6 +22,8 @@
 package io.github.malczuuu.tracekit;
 
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Main entry point for tracing operations.
@@ -79,4 +81,29 @@ public interface Tracer {
    * @return the current {@link Span}
    */
   Span getCurrentSpan() throws NoCurrentSpanException;
+
+  /**
+   * Wraps the given {@link ExecutorService} so that trace context is automatically propagated to
+   * all submitted tasks.
+   *
+   * <p>Every {@link Runnable} and {@link java.util.concurrent.Callable} submitted through the
+   * returned executor will run inside a child span whose parent is the span active at submission
+   * time. If no span is active when a task is submitted, the task runs without any trace context.
+   *
+   * @param executor the executor service to wrap
+   * @return a tracing-aware {@link ExecutorService} that delegates to the given executor
+   */
+  ExecutorService wrap(ExecutorService executor);
+
+  /**
+   * Wraps the given {@link ScheduledExecutorService} so that every scheduled task runs within a new
+   * root span.
+   *
+   * <p>Unlike {@link #wrap(ExecutorService)}, which propagates the current trace context, scheduled
+   * tasks are independent operations and each receives its own trace context.
+   *
+   * @param executor the scheduled executor service to wrap
+   * @return a tracing-aware {@link ScheduledExecutorService} that delegates to the given executor
+   */
+  ScheduledExecutorService wrap(ScheduledExecutorService executor);
 }
