@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2026 Damian Malczewski
+ * Copyright (c) $YEAR Damian Malczewski
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,7 +19,3 @@
  * SOFTWARE.
  */
 
-@NullMarked
-package io.github.malczuuu.tracekit.simple;
-
-import org.jspecify.annotations.NullMarked;
