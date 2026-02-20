@@ -1,4 +1,5 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
     id("internal.common-convention")
@@ -6,7 +7,7 @@ plugins {
 }
 
 java {
-    toolchain.languageVersion = providers.gradleProperty("internal.java.version").map { JavaLanguageVersion.of(it) }
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
 }
 
 tasks.withType<JavaCompile>().configureEach {
@@ -17,7 +18,6 @@ tasks.withType<JavaCompile>().configureEach {
 tasks.withType<Jar>().configureEach {
     manifest {
         attributes["Implementation-Title"] = project.name
-        attributes["Build-Jdk-Spec"] = java.toolchain.languageVersion.get().toString()
         attributes["Created-By"] = "Gradle ${gradle.gradleVersion}"
 
         if (project.version != Project.DEFAULT_VERSION) {
@@ -34,7 +34,7 @@ tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 
     testLogging {
-        events("passed", "skipped", "failed", "standardOut", "standardError")
+        events(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED)
         exceptionFormat = TestExceptionFormat.SHORT
         showStandardStreams = true
     }
