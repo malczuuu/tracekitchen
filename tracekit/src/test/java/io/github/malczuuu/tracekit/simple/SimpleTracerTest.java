@@ -179,14 +179,19 @@ class SimpleTracerTest {
     assertThat(tracer.getCurrentSpan()).isNull();
 
     try (var op = parent.open()) {
-      assertThat(tracer.getCurrentSpan().getTrace()).isEqualTo(parent.getTrace());
+      Span parentSpan = tracer.getCurrentSpan();
+      assertThat(parentSpan).isNotNull().extracting(Span::getTrace).isEqualTo(parent.getTrace());
 
       Span child = parent.spawnChild();
       try (var oc = child.open()) {
-        assertThat(tracer.getCurrentSpan().getTrace()).isEqualTo(child.getTrace());
+        Span childSpan = tracer.getCurrentSpan();
+        assertThat(childSpan).isNotNull();
+        assertThat(childSpan).isNotNull().extracting(Span::getTrace).isEqualTo(child.getTrace());
       }
 
-      assertThat(tracer.getCurrentSpan().getTrace()).isEqualTo(parent.getTrace());
+      parentSpan = tracer.getCurrentSpan();
+      assertThat(parentSpan).isNotNull();
+      assertThat(parentSpan).isNotNull().extracting(Span::getTrace).isEqualTo(parent.getTrace());
     }
 
     assertThat(tracer.getCurrentSpan()).isNull();

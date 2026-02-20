@@ -1,4 +1,5 @@
 plugins {
+    id("internal.errorprone-convention")
     id("internal.java-library-convention")
     id("internal.publishing-convention")
     alias(libs.plugins.nmcp)
@@ -12,6 +13,9 @@ dependencies {
     api(project(":tracekit-boot4:tracekit-boot4-aspect"))
     api(project(":tracekit-boot4:tracekit-boot4-restclient"))
     api(project(":tracekit-boot4:tracekit-boot4-webmvc"))
+
+    errorprone(libs.errorprone.core)
+    errorprone(libs.nullaway)
 }
 
 // see buildSrc/src/main/kotlin/internal.publishing-convention.gradle.kts

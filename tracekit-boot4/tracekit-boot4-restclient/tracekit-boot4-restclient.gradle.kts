@@ -1,4 +1,5 @@
 plugins {
+    id("internal.errorprone-convention")
     id("internal.java-library-convention")
     id("internal.publishing-convention")
     alias(libs.plugins.nmcp)
@@ -18,6 +19,9 @@ dependencies {
     testImplementation(libs.spring.boot.starter.restclient.test)
     testImplementation(libs.spring.boot.starter.webmvc.test)
     testRuntimeOnly(libs.junit.platform.launcher)
+
+    errorprone(libs.errorprone.core)
+    errorprone(libs.nullaway)
 }
 
 // see buildSrc/src/main/kotlin/internal.publishing-convention.gradle.kts

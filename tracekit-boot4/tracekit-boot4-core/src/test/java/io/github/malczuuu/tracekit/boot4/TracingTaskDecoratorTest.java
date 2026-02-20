@@ -26,9 +26,11 @@ import io.github.malczuuu.tracekit.OpenSpan;
 import io.github.malczuuu.tracekit.Span;
 import io.github.malczuuu.tracekit.Tracer;
 import io.github.malczuuu.tracekit.simple.SimpleTracer;
+import org.jspecify.annotations.NullUnmarked;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+@NullUnmarked
 class TracingTaskDecoratorTest {
 
   private Tracer tracer;

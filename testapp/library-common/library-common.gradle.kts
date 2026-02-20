@@ -1,9 +1,10 @@
 plugins {
+    id("internal.errorprone-convention")
     id("internal.java-library-convention")
 }
 
 dependencies {
-    compileOnly(platform(project(":testapp:library-bom")))
+    api(platform(project(":testapp:library-bom")))
 
     api(project(":tracekit-boot4:tracekit-boot4-starter"))
 
@@ -20,4 +21,7 @@ dependencies {
     testImplementation(libs.spring.boot.starter.webmvc.test)
     testImplementation(libs.spring.boot.starter.restclient.test)
     testRuntimeOnly(libs.junit.platform.launcher)
+
+    errorprone(libs.errorprone.core)
+    errorprone(libs.nullaway)
 }

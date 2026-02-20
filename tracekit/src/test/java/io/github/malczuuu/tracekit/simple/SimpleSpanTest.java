@@ -31,6 +31,7 @@ import io.github.malczuuu.tracekit.TraceFactory;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -67,7 +68,7 @@ class SimpleSpanTest {
     assertThat(span.getState()).isEqualTo(SpanState.OPEN);
     assertThatThrownBy(() -> span.openAt(Instant.parse("2025-03-19T09:53:13Z")))
         .isInstanceOf(IllegalStateException.class)
-        .matches(e -> e.getMessage().equals("Cannot open an already opened span"));
+        .matches(e -> Objects.equals(e.getMessage(), "Cannot open an already opened span"));
   }
 
   @Test
@@ -80,7 +81,7 @@ class SimpleSpanTest {
     assertThat(span.getState()).isEqualTo(SpanState.CLOSED);
     assertThatThrownBy(() -> span.openAt(Instant.parse("2025-03-19T09:53:13Z")))
         .isInstanceOf(IllegalStateException.class)
-        .matches(e -> e.getMessage().equals("Cannot open a closed span"));
+        .matches(e -> Objects.equals(e.getMessage(), "Cannot open a closed span"));
   }
 
   @Test
@@ -90,7 +91,7 @@ class SimpleSpanTest {
     assertThat(span.getState()).isEqualTo(SpanState.NEW);
     assertThatThrownBy(() -> span.closeAt(Instant.parse("2025-03-19T09:53:11Z")))
         .isInstanceOf(IllegalStateException.class)
-        .matches(e -> e.getMessage().equals("Cannot close a non-open span"));
+        .matches(e -> Objects.equals(e.getMessage(), "Cannot close a non-open span"));
   }
 
   @Test
@@ -103,7 +104,7 @@ class SimpleSpanTest {
     assertThat(span.getState()).isEqualTo(SpanState.CLOSED);
     assertThatThrownBy(() -> span.closeAt(Instant.parse("2025-03-19T09:53:13Z")))
         .isInstanceOf(IllegalStateException.class)
-        .matches(e -> e.getMessage().equals("Cannot close an already closed span"));
+        .matches(e -> Objects.equals(e.getMessage(), "Cannot close an already closed span"));
   }
 
   @Test
@@ -116,6 +117,8 @@ class SimpleSpanTest {
     assertThatThrownBy(() -> span.closeAt(Instant.parse("2025-03-19T09:53:13Z")))
         .isInstanceOf(IllegalStateException.class)
         .matches(
-            e -> e.getMessage().equals("Cannot close span with time earlier than opening time"));
+            e ->
+                Objects.equals(
+                    e.getMessage(), "Cannot close span with time earlier than opening time"));
   }
 }

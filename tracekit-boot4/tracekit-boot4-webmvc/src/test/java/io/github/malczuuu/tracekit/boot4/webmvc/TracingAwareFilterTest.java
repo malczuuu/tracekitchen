@@ -28,6 +28,7 @@ import io.github.malczuuu.tracekit.Span;
 import io.github.malczuuu.tracekit.Tracer;
 import io.github.malczuuu.tracekit.boot4.autoconfigure.TracekitAutoConfiguration;
 import io.github.malczuuu.tracekit.boot4.webmvc.autoconfigure.TracekitWebMvcAutoConfiguration;
+import org.jspecify.annotations.NullUnmarked;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @ActiveProfiles(profiles = {"test"})
+@NullUnmarked
 @SpringBootTest(
     classes = {
       TracekitAutoConfiguration.class,

@@ -27,6 +27,7 @@ import io.github.malczuuu.tracekit.Span;
 import io.github.malczuuu.tracekit.Tracer;
 import io.github.malczuuu.tracekit.boot4.aspect.autoconfigure.TracekitAspectAutoConfiguration;
 import io.github.malczuuu.tracekit.boot4.autoconfigure.TracekitAutoConfiguration;
+import org.jspecify.annotations.NullUnmarked;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,6 +38,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles(profiles = {"test"})
 @EnableAspectJAutoProxy
+@NullUnmarked
 @SpringBootTest(
     classes = {
       TracekitAutoConfiguration.class,

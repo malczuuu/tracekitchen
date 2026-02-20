@@ -69,3 +69,5 @@ spotless {
         lineEndings = LineEnding.UNIX
     }
 }
+
+defaultTasks("spotlessApply", "build")

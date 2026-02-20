@@ -26,6 +26,7 @@ import io.github.malczuuu.tracekit.OpenSpan;
 import io.github.malczuuu.tracekit.Span;
 import io.github.malczuuu.tracekit.Tracer;
 import java.net.URI;
+import org.jspecify.annotations.NullUnmarked;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestOperations;
 
 @ActiveProfiles(profiles = {"test"})
+@NullUnmarked
 @SpringBootTest(
     classes = {TracingHttpRequestInterceptorTest.CurrentTestConfiguration.class},
     properties = {
