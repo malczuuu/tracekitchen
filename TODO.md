@@ -3,9 +3,6 @@
 Must have:
 
 - [ ] Integration with Actuator for metrics (decide what is there to metric at all).
-- [ ] Documentation of how existing traceability frameworks inspired this project and what conclusions were established
-  from experiments.
-- [ ] Documentation of how this can be used with existing tracing frameworks (W3C format, etc.).
 - [ ] Demo on how to integrate it with non-Spring HTTP clients (ex. Feign).
 
 Nice to have (because main focus is on HTTP and blocking environment):

@@ -68,6 +68,56 @@ Server-side integration for Spring Boot 4 WebMVC.
 This module adds extractor filer for Spring Boot's WebMVC stack. Consumes tracing headers from incoming HTTP requests to
 propagate into application.
 
+## Inspiration
+
+This project was primarily inspired by [Micrometer Tracing](https://micrometer.io/docs/tracing) (formerly Spring Cloud
+Sleuth). While Micrometer Tracing provides a comprehensive, production-grade observability facade, it comes with a
+significant surface area - including tight coupling to the Observation API, baggage propagation, and multiple backend
+bridges (Brave, OpenTelemetry).
+
+TraceKit was born from the following conclusions:
+
+- **Most applications need only basic trace propagation** - a trace ID, span ID, and parent span ID are sufficient for
+  correlating logs across services.
+- **A simpler API reduces cognitive overhead** - Micrometer's layered abstractions (`Observation` -> `Tracer` -> `Span`)
+  are powerful but complex for straightforward use cases.
+- **Lifecycle should be explicit** - spans are opened within `try-with-resources` blocks, making the start and end of
+  traced operations visible in the code.
+
+TraceKit intentionally does **not** aim to replace Micrometer Tracing. Instead, it offers a lightweight alternative for
+projects where full observability infrastructure is unnecessary.
+
+## Compatibility with Existing Tracing Frameworks
+
+TraceKit uses **configurable HTTP headers** for trace context propagation. By default, no header names are set - you
+configure them via application properties to match your environment:
+
+```yaml
+tracekit:
+  trace-id-header-names: X-Trace-Id
+  span-id-header-names: X-Span-Id
+  parent-span-id-header-names: X-Parent-Span-Id
+```
+
+### Using with W3C Trace Context
+
+TraceKit does **not** natively parse the [W3C `traceparent`](https://www.w3.org/TR/trace-context/) header format
+(`00-<trace-id>-<span-id>-<flags>`). However, if your infrastructure propagates trace and span IDs as **separate
+headers** (e.g. via a gateway or sidecar that decomposes `traceparent`), you can point TraceKit at those headers
+directly.
+
+For systems using [B3 propagation](https://github.com/openzipkin/b3-propagation) (Zipkin-style), configure:
+
+```yaml
+tracekit:
+  trace-id-header-names: X-B3-TraceId
+  span-id-header-names: X-B3-SpanId
+  parent-span-id-header-names: X-B3-ParentSpanId
+```
+
+Multiple header names are supported (comma-separated), allowing TraceKit to coexist with other tracing systems by
+reading from whichever header is present.
+
 ## Internal Modules
 
 ### `internal:library-bom`
