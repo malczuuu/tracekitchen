@@ -19,6 +19,7 @@
  * SOFTWARE.
  */
 
+/** Default implementation of the tracing API backed by {@link java.lang.ThreadLocal}. */
 @NullMarked
 package io.github.malczuuu.tracekit.simple;
 

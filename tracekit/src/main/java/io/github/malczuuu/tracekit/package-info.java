@@ -19,6 +19,7 @@
  * SOFTWARE.
  */
 
+/** Core tracing API - defines the trace context model, span lifecycle, and tracer abstraction. */
 @NullMarked
 package io.github.malczuuu.tracekit;
 

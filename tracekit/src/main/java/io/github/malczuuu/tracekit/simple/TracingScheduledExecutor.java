@@ -38,7 +38,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * A {@link ScheduledExecutorService} decorator that wraps every task to run within a new root span.
  *
- * <p>Scheduled tasks are treated as independent operations — each execution receives its own trace
+ * <p>Scheduled tasks are treated as independent operations - each execution receives its own trace
  * context rather than inheriting one from the scheduling thread.
  */
 final class TracingScheduledExecutor implements ScheduledExecutorService {

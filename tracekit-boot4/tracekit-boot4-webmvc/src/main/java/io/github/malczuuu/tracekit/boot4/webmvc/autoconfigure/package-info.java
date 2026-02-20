@@ -19,6 +19,7 @@
  * SOFTWARE.
  */
 
+/** Auto-configuration for the TraceKit WebMVC module. */
 @NullMarked
 package io.github.malczuuu.tracekit.boot4.webmvc.autoconfigure;
 

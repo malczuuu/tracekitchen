@@ -19,6 +19,7 @@
  * SOFTWARE.
  */
 
+/** Core Spring Boot 4 support for TraceKit - shared abstractions and header settings. */
 @NullMarked
 package io.github.malczuuu.tracekit.boot4;
 

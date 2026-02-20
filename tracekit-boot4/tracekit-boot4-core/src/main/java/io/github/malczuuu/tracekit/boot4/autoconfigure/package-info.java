@@ -19,6 +19,7 @@
  * SOFTWARE.
  */
 
+/** Auto-configuration for TraceKit core Spring Boot 4 module. */
 @NullMarked
 package io.github.malczuuu.tracekit.boot4.autoconfigure;
 

@@ -19,6 +19,12 @@
  * SOFTWARE.
  */
 
+/**
+ * Trace context propagation for Spring Boot 4 {@code RestClient} and {@code RestTemplate}.
+ *
+ * @see org.springframework.web.client.RestClient
+ * @see org.springframework.web.client.RestTemplate
+ */
 @NullMarked
 package io.github.malczuuu.tracekit.boot4.restclient;
 

@@ -19,6 +19,7 @@
  * SOFTWARE.
  */
 
+/** Server-side trace context extraction for Spring Boot 4 WebMVC. */
 @NullMarked
 package io.github.malczuuu.tracekit.boot4.webmvc;
 

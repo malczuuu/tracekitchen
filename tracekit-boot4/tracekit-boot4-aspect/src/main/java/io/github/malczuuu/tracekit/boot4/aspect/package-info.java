@@ -19,6 +19,11 @@
  * SOFTWARE.
  */
 
+/**
+ * AOP-based tracing support - aspect for {@code @Traceable} annotation processing.
+ *
+ * @see io.github.malczuuu.tracekit.Traceable
+ */
 @NullMarked
 package io.github.malczuuu.tracekit.boot4.aspect;
 
