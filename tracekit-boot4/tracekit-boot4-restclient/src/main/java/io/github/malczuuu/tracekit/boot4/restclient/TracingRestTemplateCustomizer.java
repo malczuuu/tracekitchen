@@ -24,7 +24,7 @@ package io.github.malczuuu.tracekit.boot4.restclient;
 import org.springframework.boot.restclient.RestTemplateCustomizer;
 
 /**
- * Functional interface for customizing {@code RestTEmplate} with tracing capabilities.
+ * Functional interface for customizing {@code RestTemplate} with tracing capabilities.
  *
  * <p>This interface is a specialization of {@link RestTemplateCustomizer} and to be used as a
  * {@code @ConditionalOnMissingBean} target in Spring configuration. It allows applications to
