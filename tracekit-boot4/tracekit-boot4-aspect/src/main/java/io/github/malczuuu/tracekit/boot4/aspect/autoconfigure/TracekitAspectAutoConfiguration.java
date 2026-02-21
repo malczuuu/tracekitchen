@@ -24,7 +24,10 @@ package io.github.malczuuu.tracekit.boot4.aspect.autoconfigure;
 import io.github.malczuuu.tracekit.Tracer;
 import io.github.malczuuu.tracekit.boot4.aspect.ScheduledTracingAspect;
 import io.github.malczuuu.tracekit.boot4.aspect.TraceableTracingAspect;
+import io.github.malczuuu.tracekit.boot4.autoconfigure.TracekitAutoConfiguration;
 import org.aspectj.weaver.Advice;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.aop.AopAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -35,12 +38,22 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 
 /** Auto-configuration for TraceKit Aspect module. */
-@AutoConfiguration
+@AutoConfiguration(after = TracekitAutoConfiguration.class)
 @ConditionalOnBean(Tracer.class)
 @ConditionalOnBooleanProperty(name = "tracekit.aspect.enabled", matchIfMissing = true)
 @ConditionalOnClass({AopAutoConfiguration.class, Advice.class})
 @EnableConfigurationProperties(TracekitAspectProperties.class)
 public final class TracekitAspectAutoConfiguration {
+
+  private static final Logger log = LoggerFactory.getLogger(TracekitAspectAutoConfiguration.class);
+
+  /**
+   * Creates a new instance of {@link TracekitAspectAutoConfiguration} and logs the registration of
+   * the TraceKit Aspect auto-configuration for diagnostics.
+   */
+  public TracekitAspectAutoConfiguration() {
+    log.info("Registered TraceKit Aspect - {}", TracekitAutoConfiguration.class.getSimpleName());
+  }
 
   @Bean
   @ConditionalOnBooleanProperty(name = "tracekit.aspect.scheduled-enabled", matchIfMissing = true)

@@ -22,9 +22,12 @@
 package io.github.malczuuu.tracekit.boot4.webmvc.autoconfigure;
 
 import io.github.malczuuu.tracekit.Tracer;
+import io.github.malczuuu.tracekit.boot4.autoconfigure.TracekitAutoConfiguration;
 import io.github.malczuuu.tracekit.boot4.autoconfigure.TracekitProperties;
 import io.github.malczuuu.tracekit.boot4.webmvc.ServletRequestExtractor;
 import io.github.malczuuu.tracekit.boot4.webmvc.TracingAwareFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
@@ -35,12 +38,23 @@ import org.springframework.boot.webmvc.autoconfigure.WebMvcAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 
 /** Auto-configuration for TraceKit WebMVC module. */
-@AutoConfiguration
+@AutoConfiguration(after = TracekitAutoConfiguration.class)
 @ConditionalOnBean(Tracer.class)
 @ConditionalOnBooleanProperty(name = "tracekit.webmvc.enabled", matchIfMissing = true)
 @ConditionalOnClass(WebMvcAutoConfiguration.class)
 @EnableConfigurationProperties(TracekitWebMvcProperties.class)
 public final class TracekitWebMvcAutoConfiguration {
+
+  private static final Logger log = LoggerFactory.getLogger(TracekitWebMvcAutoConfiguration.class);
+
+  /**
+   * Creates a new instance of {@link TracekitWebMvcAutoConfiguration} and logs the registration of
+   * the TraceKit WebMVC auto-configuration for diagnostics.
+   */
+  public TracekitWebMvcAutoConfiguration() {
+    log.info(
+        "Registered TraceKit WebMVC - {}", TracekitWebMvcAutoConfiguration.class.getSimpleName());
+  }
 
   @Bean
   @ConditionalOnMissingBean(TracingAwareFilter.class)

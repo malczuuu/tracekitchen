@@ -5,15 +5,16 @@ import io.github.malczuuu.tracekit.common.LoggingFilter;
 import io.github.malczuuu.tracekit.common.OpenApiPathSorter;
 import java.time.Clock;
 import java.time.ZoneId;
-
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.client.RestClient;
 
 @AutoConfiguration
 @EnableConfigurationProperties(CommonProperties.class)
+@Import(TaskExecutorConfiguration.class)
 public final class CommonAutoConfiguration {
 
   @Bean

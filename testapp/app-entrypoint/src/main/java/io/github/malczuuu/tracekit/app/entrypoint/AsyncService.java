@@ -1,11 +1,10 @@
 package io.github.malczuuu.tracekit.app.entrypoint;
 
+import io.github.malczuuu.tracekit.Span;
+import io.github.malczuuu.tracekit.Tracer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncConfigurer;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,17 +12,21 @@ public class AsyncService {
 
   private static final Logger log = LoggerFactory.getLogger(AsyncService.class);
 
-  public AsyncService(ObjectProvider<AsyncConfigurer> configurers) {
-    log.info("A");
+  private final Tracer tracer;
+
+  public AsyncService(Tracer tracer) {
+    this.tracer = tracer;
   }
 
   @Async
   public void async() {
-    log.info("async");
+    Span span = tracer.getCurrentSpan();
+    log.atInfo().addKeyValue("spanName", span.getName()).log("executing async task");
   }
 
-  @Scheduled(fixedRateString = "5s", initialDelayString = "3s")
-  public void scheduled() {
-    log.info("scheduled");
+  @Async("queueTaskExecutor")
+  public void queuedAsync() {
+    Span span = tracer.getCurrentSpan();
+    log.atInfo().addKeyValue("spanName", span.getName()).log("executing queued async task");
   }
 }

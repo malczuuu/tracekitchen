@@ -22,10 +22,13 @@
 package io.github.malczuuu.tracekit.boot4.restclient.autoconfigure;
 
 import io.github.malczuuu.tracekit.Tracer;
+import io.github.malczuuu.tracekit.boot4.autoconfigure.TracekitAutoConfiguration;
 import io.github.malczuuu.tracekit.boot4.autoconfigure.TracekitProperties;
 import io.github.malczuuu.tracekit.boot4.restclient.TracingHttpRequestInterceptor;
 import io.github.malczuuu.tracekit.boot4.restclient.TracingRestClientCustomizer;
 import io.github.malczuuu.tracekit.boot4.restclient.TracingRestTemplateCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
@@ -36,12 +39,25 @@ import org.springframework.boot.restclient.autoconfigure.RestClientAutoConfigura
 import org.springframework.context.annotation.Bean;
 
 /** Auto-configuration for TraceKit RestClient module. */
-@AutoConfiguration
+@AutoConfiguration(after = TracekitAutoConfiguration.class)
 @ConditionalOnBean(Tracer.class)
 @ConditionalOnBooleanProperty(name = "tracekit.restclient.enabled", matchIfMissing = true)
 @ConditionalOnClass(RestClientAutoConfiguration.class)
 @EnableConfigurationProperties(TracekitRestClientProperties.class)
 public final class TracekitRestClientAutoConfiguration {
+
+  private static final Logger log =
+      LoggerFactory.getLogger(TracekitRestClientAutoConfiguration.class);
+
+  /**
+   * Creates a new instance of {@link TracekitRestClientAutoConfiguration} and logs the registration
+   * of the TraceKit RestClient auto-configuration for diagnostics.
+   */
+  public TracekitRestClientAutoConfiguration() {
+    log.info(
+        "Registered TraceKit RestClient - {}",
+        TracekitRestClientAutoConfiguration.class.getSimpleName());
+  }
 
   @Bean
   @ConditionalOnMissingBean(TracingHttpRequestInterceptor.class)
