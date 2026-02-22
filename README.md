@@ -6,6 +6,21 @@
 
 What's cooking in here? A playground for exploring simple tracing model and traces propagation in **Spring Boot**.
 
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Core Modules](#core-modules)
+  - [`tracekit`](#tracekit)
+- [Spring Integration Modules](#spring-integration-modules)
+  - [`tracekit-boot4:tracekit-boot4-core`](#tracekit-boot4tracekit-boot4-core)
+  - [`tracekit-boot4:tracekit-boot4-aspect`](#tracekit-boot4tracekit-boot4-aspect)
+  - [`tracekit-boot4:tracekit-boot4-restclient`](#tracekit-boot4tracekit-boot4-restclient)
+  - [`tracekit-boot4:tracekit-boot4-webmvc`](#tracekit-boot4tracekit-boot4-webmvc)
+- [Inspiration](#inspiration)
+- [Compatibility with Existing Tracing Frameworks](#compatibility-with-existing-tracing-frameworks)
+  - [Using with W3C Trace Context](#using-with-w3c-trace-context)
+- [Internal Modules](#internal-modules)
+
 ## Project Overview
 
 This repository is organized into **core library**, **Spring integrations**, and **internal applications** used for
@@ -24,16 +39,81 @@ This module defines the **trace context model** and its lifecycle without any de
 
 Responsibilities include:
 
-- `TraceContext` and `Tracer` abstraction,
-- root and child context creation,
+- `Tracer` abstraction for creating spans,
+- root and child span creation,
 - span hierarchy management,
-- lifecycle handling (`open` / `close`),
-- lifecycle callback adapters,
-- context propagation utilities for thread pools.
+- lifecycle handling (`open` / `close`) via `try-with-resources`,
+- trace context propagation utilities for thread pools.
 
 This module can be used in plain Java applications and serves as the base for all other integrations.
 
+TraceKit's core concept is the **span** – a unit of work that can be traced. Each span has a unique identifier and is
+part of a trace (which groups related spans).
+
+**Span Hierarchy:**
+
+- A **root span** starts a new trace with a new trace ID.
+- **Child spans** inherit the trace ID from their parent and maintain a parent-span-id link.
+- This creates a tree structure that can be correlated across logs and systems.
+
+**Explicit Lifecycle:**
+
+Spans are opened within `try-with-resources` blocks, making the start and end of operations visible:
+
+```java
+Tracer tracer = /* ... */;
+
+// Create a root span
+try (OpenSpan span = tracer.root("request").open()) {
+  // Your operation here - the span is active
+  doWork();
+  
+  // Create a child span
+  try (OpenSpan childSpan = span.getSpan().spawnChild("database-query").open()) {
+    // Database operation
+    queryDatabase();
+  }
+  // Child span automatically closes and restores parent
+}
+// Root span closes and restores previous context
+```
+
+**Building from Headers:**
+
+When receiving trace information from external sources (HTTP headers, messages), use the builder:
+
+```java
+Span span = tracer.builder()
+  .withTraceId(headersMap.get("X-Trace-Id"))
+  .withSpanId(headersMap.get("X-Span-Id"))
+  .withParentSpanId(headersMap.get("X-Parent-Span-Id"))
+  .withName("incoming-request")
+  .build();
+
+try (OpenSpan openSpan = span.open()) {
+  // Process the request with propagated context
+}
+```
+
+**Thread Pool Integration:**
+
+For operations in thread pools or async contexts, use executor wrapping to propagate context:
+
+```java
+ExecutorService executor = tracer.wrap(Executors.newFixedThreadPool(10));
+
+// Tasks executed via wrapped executor inherit the current trace context
+executor.submit(() -> {
+  // This runs with the trace context from when submit() was called
+  doWork();
+});
+```
+
 ## Spring Integration Modules
+
+These modules provide seamless integration of the core tracing model with Spring Boot 4 applications. They build on top
+of the core `tracekit` module and handle framework-specific concerns like dependency injection, servlet filtering, HTTP
+client interception, and aspect-oriented programming.
 
 ### `tracekit-boot4:tracekit-boot4-core`
 
