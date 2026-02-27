@@ -7,7 +7,7 @@ nmcp = "1.4.4"
 nullaway = "0.13.1"
 problem4j-spring = "2.2.0"
 spotless = "8.2.1"
-spring-boot = "4.0.2"
+spring-boot = "4.0.3"
 springdoc-openapi = "3.0.1"
 testclock = "1.0.4"
 
